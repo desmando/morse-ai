@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+data/raw/
+data/augmented/
+*.wav
+*.mp3
+*.pt
+*.onnx
+*.npz
