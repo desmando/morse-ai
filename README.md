@@ -30,7 +30,10 @@ it between machines would be wasted bandwidth/storage. Each machine just re-runs
    750Hz tone MP3s + transcripts, 5-40 WPM), segment into clips aligned to text, and
    synthesize noisy/faded/QRM'd variants to approximate real off-air HF reception
    (the clean ARRL audio alone is not representative of what the radio will actually
-   produce).
+   produce). `synthesize_morse_audio.py` additionally generates keyed-tone audio
+   directly from text (e.g. the `lm/` QSO corpus) for far more training volume than
+   the real ARRL recordings alone, with exact (not approximate) label alignment -
+   feed its manifest into `augment_hf_channel.py` the same way as the real clips.
 2. **`model/`** — CNN-LSTM-CTC acoustic decoder (spectrogram in, character sequence
    out). Architecture follows the approach validated by AG1LE's real-time Morse
    decoder (1.5% CER / 97.2% word accuracy training on these same ARRL files).
