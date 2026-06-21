@@ -13,13 +13,15 @@ generate_band(): a stream of CQs and QSOs concatenated the way they'd
 actually key up on the air.
 
 Usage:
-  python generate_qso_corpus.py --num-qsos 2000 --out ../data/text_corpus/qso_corpus.txt
+  python generate_qso_corpus.py --num-qsos 2000
 """
 import argparse
 import random
+import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from paths import DATA_ROOT
 
 US_PREFIXES = ["K", "W", "N", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AI",
                "KA", "KB", "KC", "KD", "KE", "KF", "KG", "WA", "WB", "WC", "WD"]
@@ -164,7 +166,7 @@ def generate_band(rng: random.Random, n_qsos: int) -> str:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--num-qsos", type=int, default=2000)
-    parser.add_argument("--out", default=str(REPO_ROOT / "data" / "text_corpus" / "qso_corpus.txt"))
+    parser.add_argument("--out", default=str(DATA_ROOT / "text_corpus" / "qso_corpus.txt"))
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
 

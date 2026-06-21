@@ -13,11 +13,15 @@ Usage:
 """
 import argparse
 import re
+import sys
 import time
 from pathlib import Path
 from urllib.parse import urljoin
 
 import requests
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from paths import DATA_ROOT
 
 HEADERS = {
     "User-Agent": "morse-ai-dataprep/0.1 (personal research project; contact combat.medic@gmail.com)"
@@ -60,7 +64,7 @@ def main():
                          help="comma-separated WPM speeds, e.g. 5,10,20,40")
     parser.add_argument("--limit-per-speed", type=int, default=10,
                          help="max clip pairs to download per speed (0 = no limit)")
-    parser.add_argument("--out-dir", default=str(Path(__file__).resolve().parent.parent / "data" / "raw" / "arrl"))
+    parser.add_argument("--out-dir", default=str(DATA_ROOT / "raw" / "arrl"))
     parser.add_argument("--delay", type=float, default=0.5, help="seconds between downloads")
     args = parser.parse_args()
 

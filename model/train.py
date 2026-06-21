@@ -2,7 +2,7 @@
 whatever GPU machine you've got (e.g. the RTX 3080 box), or paste into a
 notebook cell if you end up using one instead.
 
-  python train.py --manifest ../data/manifests/augmented_manifest.csv --epochs 30
+  python train.py --epochs 30
 
   --dry-run: runs a couple of CPU batches to smoke-test the pipeline (shapes,
   loss computation) without writing checkpoints. Use this to verify the script
@@ -20,15 +20,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from model.decoder import CWDecoder, MorseClipDataset, collate_batch, ctc_greedy_decode
 from model.vocab import Vocab
-
-REPO_ROOT = Path(__file__).resolve().parent.parent
+from paths import DATA_ROOT
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", default=str(REPO_ROOT / "data" / "manifests" / "augmented_manifest.csv"))
-    parser.add_argument("--vocab", default=str(REPO_ROOT / "data" / "manifests" / "vocab.txt"))
-    parser.add_argument("--checkpoint-dir", default=str(REPO_ROOT / "model" / "checkpoints"))
+    parser.add_argument("--manifest", default=str(DATA_ROOT / "manifests" / "augmented_manifest.csv"))
+    parser.add_argument("--vocab", default=str(DATA_ROOT / "manifests" / "vocab.txt"))
+    parser.add_argument("--checkpoint-dir", default=str(DATA_ROOT / "checkpoints"))
     parser.add_argument("--epochs", type=int, default=30)
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--lr", type=float, default=1e-3)

@@ -14,11 +14,13 @@ Usage:
 import argparse
 import csv
 import re
+import sys
 from pathlib import Path
 
 import soundfile as sf
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from paths import DATA_ROOT
 
 
 def clean_transcript(raw: str) -> str:
@@ -51,10 +53,10 @@ def slice_clips(audio, sr: int, text: str, clip_seconds: float):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--raw-dir", default=str(REPO_ROOT / "data" / "raw" / "arrl"))
-    parser.add_argument("--clips-dir", default=str(REPO_ROOT / "data" / "processed" / "clips"))
-    parser.add_argument("--manifest-out", default=str(REPO_ROOT / "data" / "manifests" / "clips_manifest.csv"))
-    parser.add_argument("--vocab-out", default=str(REPO_ROOT / "data" / "manifests" / "vocab.txt"))
+    parser.add_argument("--raw-dir", default=str(DATA_ROOT / "raw" / "arrl"))
+    parser.add_argument("--clips-dir", default=str(DATA_ROOT / "processed" / "clips"))
+    parser.add_argument("--manifest-out", default=str(DATA_ROOT / "manifests" / "clips_manifest.csv"))
+    parser.add_argument("--vocab-out", default=str(DATA_ROOT / "manifests" / "vocab.txt"))
     parser.add_argument("--clip-seconds", type=float, default=4.0)
     args = parser.parse_args()
 
@@ -88,7 +90,7 @@ def main():
             clip_path = out_dir / clip_name
             sf.write(clip_path, clip_audio, sr)
             rows.append({
-                "clip_path": str(clip_path.relative_to(REPO_ROOT)),
+                "clip_path": str(clip_path.relative_to(DATA_ROOT)),
                 "label": label,
                 "wpm": speed_dir,
                 "source": mp3_path.name,

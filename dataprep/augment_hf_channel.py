@@ -9,18 +9,19 @@ real off-air audio during training.
 Ground-truth label text is unaffected by any of this - only the audio changes.
 
 Usage:
-  python augment_hf_channel.py --manifest ../data/manifests/clips_manifest.csv \
-      --variants-per-clip 3 --snr-db-range -3,20
+  python augment_hf_channel.py --variants-per-clip 3 --snr-db-range -3,20
 """
 import argparse
 import csv
+import sys
 from pathlib import Path
 
 import numpy as np
 import soundfile as sf
 from scipy.signal import butter, filtfilt, hilbert
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from paths import DATA_ROOT
 
 
 def bandlimited_noise(n_samples: int, sr: int, rng: np.random.Generator,
@@ -114,9 +115,9 @@ def augment_clip(audio: np.ndarray, sr: int, rng: np.random.Generator, snr_range
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", default=str(REPO_ROOT / "data" / "manifests" / "clips_manifest.csv"))
-    parser.add_argument("--out-dir", default=str(REPO_ROOT / "data" / "augmented"))
-    parser.add_argument("--manifest-out", default=str(REPO_ROOT / "data" / "manifests" / "augmented_manifest.csv"))
+    parser.add_argument("--manifest", default=str(DATA_ROOT / "manifests" / "clips_manifest.csv"))
+    parser.add_argument("--out-dir", default=str(DATA_ROOT / "augmented"))
+    parser.add_argument("--manifest-out", default=str(DATA_ROOT / "manifests" / "augmented_manifest.csv"))
     parser.add_argument("--variants-per-clip", type=int, default=3)
     parser.add_argument("--snr-db-range", default="-3,20")
     parser.add_argument("--seed", type=int, default=0)
@@ -135,7 +136,7 @@ def main():
         clean_rows = list(reader)
 
     for row in clean_rows:
-        clip_path = REPO_ROOT / row["clip_path"]
+        clip_path = DATA_ROOT / row["clip_path"]
         audio, sr = sf.read(clip_path)
         if audio.ndim > 1:
             audio = audio.mean(axis=1)
@@ -149,7 +150,7 @@ def main():
             aug_path = speed_dir / aug_name
             sf.write(aug_path, aug_audio, sr)
             rows.append({
-                "clip_path": str(aug_path.relative_to(REPO_ROOT)),
+                "clip_path": str(aug_path.relative_to(DATA_ROOT)),
                 "label": row["label"],
                 "wpm": row["wpm"],
                 "source": row["source"],

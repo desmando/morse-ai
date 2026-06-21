@@ -16,8 +16,7 @@ from torch.utils.data import Dataset
 
 from model.features import extract_features, N_FREQ_BINS
 from model.vocab import Vocab
-
-REPO_ROOT = Path(__file__).resolve().parent.parent
+from paths import DATA_ROOT
 
 
 class MorseClipDataset(Dataset):
@@ -31,7 +30,7 @@ class MorseClipDataset(Dataset):
 
     def __getitem__(self, idx: int):
         row = self.rows[idx]
-        audio, sr = sf.read(REPO_ROOT / row["clip_path"])
+        audio, sr = sf.read(DATA_ROOT / row["clip_path"])
         if audio.ndim > 1:
             audio = audio.mean(axis=1)
         features = extract_features(audio, sr)  # (T, F)
