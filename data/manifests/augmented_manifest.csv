@@ -1,0 +1,1415 @@
+clip_path,label,wpm,source,snr_db
+data\augmented\20wpm\260106_20WPM_000_aug00.wav,= NOW 20,20wpm,260106_20WPM.mp3,13.8
+data\augmented\20wpm\260106_20WPM_000_aug01.wav,= NOW 20,20wpm,260106_20WPM.mp3,19.4
+data\augmented\20wpm\260106_20WPM_001_aug00.wav,WPM =,20wpm,260106_20WPM.mp3,5.2
+data\augmented\20wpm\260106_20WPM_001_aug01.wav,WPM =,20wpm,260106_20WPM.mp3,5.7
+data\augmented\20wpm\260106_20WPM_002_aug00.wav,TEXT IS,20wpm,260106_20WPM.mp3,18.8
+data\augmented\20wpm\260106_20WPM_002_aug01.wav,TEXT IS,20wpm,260106_20WPM.mp3,-0.7
+data\augmented\20wpm\260106_20WPM_003_aug00.wav,FROM MAR,20wpm,260106_20WPM.mp3,2.5
+data\augmented\20wpm\260106_20WPM_003_aug01.wav,FROM MAR,20wpm,260106_20WPM.mp3,11.3
+data\augmented\20wpm\260106_20WPM_004_aug00.wav,CH 2024,20wpm,260106_20WPM.mp3,3.4
+data\augmented\20wpm\260106_20WPM_004_aug01.wav,CH 2024,20wpm,260106_20WPM.mp3,13.7
+data\augmented\20wpm\260106_20WPM_005_aug00.wav,QST PAG,20wpm,260106_20WPM.mp3,10.4
+data\augmented\20wpm\260106_20WPM_005_aug01.wav,QST PAG,20wpm,260106_20WPM.mp3,18.0
+data\augmented\20wpm\260106_20WPM_006_aug00.wav,E 44 = T,20wpm,260106_20WPM.mp3,8.2
+data\augmented\20wpm\260106_20WPM_006_aug01.wav,E 44 = T,20wpm,260106_20WPM.mp3,16.8
+data\augmented\20wpm\260106_20WPM_007_aug00.wav,WO GAIN,20wpm,260106_20WPM.mp3,14.3
+data\augmented\20wpm\260106_20WPM_007_aug01.wav,WO GAIN,20wpm,260106_20WPM.mp3,11.4
+data\augmented\20wpm\260106_20WPM_008_aug00.wav,CONTROL,20wpm,260106_20WPM.mp3,2.3
+data\augmented\20wpm\260106_20WPM_008_aug01.wav,CONTROL,20wpm,260106_20WPM.mp3,6.8
+data\augmented\20wpm\260106_20WPM_009_aug00.wav,KEYS AD,20wpm,260106_20WPM.mp3,13.6
+data\augmented\20wpm\260106_20WPM_009_aug01.wav,KEYS AD,20wpm,260106_20WPM.mp3,3.3
+data\augmented\20wpm\260106_20WPM_010_aug00.wav,JUST BOT,20wpm,260106_20WPM.mp3,8.7
+data\augmented\20wpm\260106_20WPM_010_aug01.wav,JUST BOT,20wpm,260106_20WPM.mp3,19.0
+data\augmented\20wpm\260106_20WPM_011_aug00.wav,H THE HE,20wpm,260106_20WPM.mp3,0.5
+data\augmented\20wpm\260106_20WPM_011_aug01.wav,H THE HE,20wpm,260106_20WPM.mp3,4.9
+data\augmented\20wpm\260106_20WPM_012_aug00.wav,ARD VOL,20wpm,260106_20WPM.mp3,12.1
+data\augmented\20wpm\260106_20WPM_012_aug01.wav,ARD VOL,20wpm,260106_20WPM.mp3,9.2
+data\augmented\20wpm\260106_20WPM_013_aug00.wav,"UME, PER",20wpm,260106_20WPM.mp3,-2.3
+data\augmented\20wpm\260106_20WPM_013_aug01.wav,"UME, PER",20wpm,260106_20WPM.mp3,15.0
+data\augmented\20wpm\260106_20WPM_014_aug00.wav,IOD AND,20wpm,260106_20WPM.mp3,11.6
+data\augmented\20wpm\260106_20WPM_014_aug01.wav,IOD AND,20wpm,260106_20WPM.mp3,13.1
+data\augmented\20wpm\260106_20WPM_015_aug00.wav,"COMMA, A",20wpm,260106_20WPM.mp3,9.7
+data\augmented\20wpm\260106_20WPM_015_aug01.wav,"COMMA, A",20wpm,260106_20WPM.mp3,9.3
+data\augmented\20wpm\260106_20WPM_016_aug00.wav,ND THE,20wpm,260106_20WPM.mp3,16.4
+data\augmented\20wpm\260106_20WPM_016_aug01.wav,ND THE,20wpm,260106_20WPM.mp3,13.3
+data\augmented\20wpm\260106_20WPM_017_aug00.wav,VOLUME O,20wpm,260106_20WPM.mp3,1.9
+data\augmented\20wpm\260106_20WPM_017_aug01.wav,VOLUME O,20wpm,260106_20WPM.mp3,-2.2
+data\augmented\20wpm\260106_20WPM_018_aug00.wav,F THE DE,20wpm,260106_20WPM.mp3,11.1
+data\augmented\20wpm\260106_20WPM_018_aug01.wav,F THE DE,20wpm,260106_20WPM.mp3,16.2
+data\augmented\20wpm\260106_20WPM_019_aug00.wav,"CODER,",20wpm,260106_20WPM.mp3,2.8
+data\augmented\20wpm\260106_20WPM_019_aug01.wav,"CODER,",20wpm,260106_20WPM.mp3,18.6
+data\augmented\20wpm\260106_20WPM_020_aug00.wav,LEFT AND,20wpm,260106_20WPM.mp3,11.1
+data\augmented\20wpm\260106_20WPM_020_aug01.wav,LEFT AND,20wpm,260106_20WPM.mp3,12.9
+data\augmented\20wpm\260106_20WPM_021_aug00.wav,RIGHT A,20wpm,260106_20WPM.mp3,9.1
+data\augmented\20wpm\260106_20WPM_021_aug01.wav,RIGHT A,20wpm,260106_20WPM.mp3,7.4
+data\augmented\20wpm\260106_20WPM_022_aug00.wav,NGLE BRA,20wpm,260106_20WPM.mp3,-1.2
+data\augmented\20wpm\260106_20WPM_022_aug01.wav,NGLE BRA,20wpm,260106_20WPM.mp3,18.3
+data\augmented\20wpm\260106_20WPM_023_aug00.wav,CKETS.,20wpm,260106_20WPM.mp3,13.3
+data\augmented\20wpm\260106_20WPM_023_aug01.wav,CKETS.,20wpm,260106_20WPM.mp3,0.0
+data\augmented\20wpm\260106_20WPM_024_aug00.wav,THE SPAC,20wpm,260106_20WPM.mp3,1.3
+data\augmented\20wpm\260106_20WPM_024_aug01.wav,THE SPAC,20wpm,260106_20WPM.mp3,-2.1
+data\augmented\20wpm\260106_20WPM_025_aug00.wav,E BAR CO,20wpm,260106_20WPM.mp3,11.7
+data\augmented\20wpm\260106_20WPM_025_aug01.wav,E BAR CO,20wpm,260106_20WPM.mp3,1.5
+data\augmented\20wpm\260106_20WPM_026_aug00.wav,NTROLS,20wpm,260106_20WPM.mp3,4.2
+data\augmented\20wpm\260106_20WPM_026_aug01.wav,NTROLS,20wpm,260106_20WPM.mp3,1.7
+data\augmented\20wpm\260106_20WPM_027_aug00.wav,THE DECO,20wpm,260106_20WPM.mp3,14.6
+data\augmented\20wpm\260106_20WPM_027_aug01.wav,THE DECO,20wpm,260106_20WPM.mp3,19.2
+data\augmented\20wpm\260106_20WPM_028_aug00.wav,DER RESP,20wpm,260106_20WPM.mp3,0.3
+data\augmented\20wpm\260106_20WPM_028_aug01.wav,DER RESP,20wpm,260106_20WPM.mp3,12.4
+data\augmented\20wpm\260106_20WPM_029_aug00.wav,ONSE TO,20wpm,260106_20WPM.mp3,18.4
+data\augmented\20wpm\260106_20WPM_029_aug01.wav,ONSE TO,20wpm,260106_20WPM.mp3,14.6
+data\augmented\20wpm\260106_20WPM_030_aug00.wav,LOST LO,20wpm,260106_20WPM.mp3,-1.3
+data\augmented\20wpm\260106_20WPM_030_aug01.wav,LOST LO,20wpm,260106_20WPM.mp3,4.6
+data\augmented\20wpm\260106_20WPM_031_aug00.wav,CK. WHEN,20wpm,260106_20WPM.mp3,-2.0
+data\augmented\20wpm\260106_20WPM_031_aug01.wav,CK. WHEN,20wpm,260106_20WPM.mp3,7.8
+data\augmented\20wpm\260106_20WPM_032_aug00.wav,THE DEC,20wpm,260106_20WPM.mp3,14.4
+data\augmented\20wpm\260106_20WPM_032_aug01.wav,THE DEC,20wpm,260106_20WPM.mp3,7.4
+data\augmented\20wpm\260106_20WPM_033_aug00.wav,ODER LOS,20wpm,260106_20WPM.mp3,7.0
+data\augmented\20wpm\260106_20WPM_033_aug01.wav,ODER LOS,20wpm,260106_20WPM.mp3,12.5
+data\augmented\20wpm\260106_20WPM_034_aug00.wav,ES LOCK,20wpm,260106_20WPM.mp3,9.9
+data\augmented\20wpm\260106_20WPM_034_aug01.wav,ES LOCK,20wpm,260106_20WPM.mp3,2.4
+data\augmented\20wpm\260106_20WPM_035_aug00.wav,DUE TO,20wpm,260106_20WPM.mp3,8.9
+data\augmented\20wpm\260106_20WPM_035_aug01.wav,DUE TO,20wpm,260106_20WPM.mp3,17.6
+data\augmented\20wpm\260106_20WPM_036_aug00.wav,A FREQUE,20wpm,260106_20WPM.mp3,2.6
+data\augmented\20wpm\260106_20WPM_036_aug01.wav,A FREQUE,20wpm,260106_20WPM.mp3,13.7
+data\augmented\20wpm\260106_20WPM_037_aug00.wav,NCY CHA,20wpm,260106_20WPM.mp3,7.7
+data\augmented\20wpm\260106_20WPM_037_aug01.wav,NCY CHA,20wpm,260106_20WPM.mp3,18.0
+data\augmented\20wpm\260106_20WPM_038_aug00.wav,"NGE, QSB",20wpm,260106_20WPM.mp3,4.1
+data\augmented\20wpm\260106_20WPM_038_aug01.wav,"NGE, QSB",20wpm,260106_20WPM.mp3,17.4
+data\augmented\20wpm\260106_20WPM_039_aug00.wav,", QRM, O",20wpm,260106_20WPM.mp3,5.3
+data\augmented\20wpm\260106_20WPM_039_aug01.wav,", QRM, O",20wpm,260106_20WPM.mp3,7.0
+data\augmented\20wpm\260106_20WPM_040_aug00.wav,R ANY OT,20wpm,260106_20WPM.mp3,9.0
+data\augmented\20wpm\260106_20WPM_040_aug01.wav,R ANY OT,20wpm,260106_20WPM.mp3,-1.0
+data\augmented\20wpm\260106_20WPM_041_aug00.wav,HER REA,20wpm,260106_20WPM.mp3,16.8
+data\augmented\20wpm\260106_20WPM_041_aug01.wav,HER REA,20wpm,260106_20WPM.mp3,5.2
+data\augmented\20wpm\260106_20WPM_042_aug00.wav,"SON, IT",20wpm,260106_20WPM.mp3,11.5
+data\augmented\20wpm\260106_20WPM_042_aug01.wav,"SON, IT",20wpm,260106_20WPM.mp3,4.9
+data\augmented\20wpm\260106_20WPM_043_aug00.wav,WILL KEE,20wpm,260106_20WPM.mp3,7.4
+data\augmented\20wpm\260106_20WPM_043_aug01.wav,WILL KEE,20wpm,260106_20WPM.mp3,15.9
+data\augmented\20wpm\260106_20WPM_044_aug00.wav,P TRYIN,20wpm,260106_20WPM.mp3,18.0
+data\augmented\20wpm\260106_20WPM_044_aug01.wav,P TRYIN,20wpm,260106_20WPM.mp3,9.6
+data\augmented\20wpm\260106_20WPM_045_aug00.wav,G TO DEC,20wpm,260106_20WPM.mp3,-2.5
+data\augmented\20wpm\260106_20WPM_045_aug01.wav,G TO DEC,20wpm,260106_20WPM.mp3,6.6
+data\augmented\20wpm\260106_20WPM_046_aug00.wav,ODE BASE,20wpm,260106_20WPM.mp3,-0.3
+data\augmented\20wpm\260106_20WPM_046_aug01.wav,ODE BASE,20wpm,260106_20WPM.mp3,12.1
+data\augmented\20wpm\260106_20WPM_047_aug00.wav,D ON ITS,20wpm,260106_20WPM.mp3,0.2
+data\augmented\20wpm\260106_20WPM_047_aug01.wav,D ON ITS,20wpm,260106_20WPM.mp3,13.7
+data\augmented\20wpm\260106_20WPM_048_aug00.wav,PREVIO,20wpm,260106_20WPM.mp3,2.2
+data\augmented\20wpm\260106_20WPM_048_aug01.wav,PREVIO,20wpm,260106_20WPM.mp3,17.7
+data\augmented\20wpm\260106_20WPM_049_aug00.wav,US ACTIV,20wpm,260106_20WPM.mp3,0.2
+data\augmented\20wpm\260106_20WPM_049_aug01.wav,US ACTIV,20wpm,260106_20WPM.mp3,7.4
+data\augmented\20wpm\260106_20WPM_050_aug00.wav,ITY. AT,20wpm,260106_20WPM.mp3,7.2
+data\augmented\20wpm\260106_20WPM_050_aug01.wav,ITY. AT,20wpm,260106_20WPM.mp3,17.6
+data\augmented\20wpm\260106_20WPM_051_aug00.wav,THIS POI,20wpm,260106_20WPM.mp3,5.8
+data\augmented\20wpm\260106_20WPM_051_aug01.wav,THIS POI,20wpm,260106_20WPM.mp3,19.0
+data\augmented\20wpm\260106_20WPM_052_aug00.wav,"NT, TEL",20wpm,260106_20WPM.mp3,10.4
+data\augmented\20wpm\260106_20WPM_052_aug01.wav,"NT, TEL",20wpm,260106_20WPM.mp3,8.1
+data\augmented\20wpm\260106_20WPM_053_aug00.wav,L THE AU,20wpm,260106_20WPM.mp3,9.9
+data\augmented\20wpm\260106_20WPM_053_aug01.wav,L THE AU,20wpm,260106_20WPM.mp3,1.2
+data\augmented\20wpm\260106_20WPM_054_aug00.wav,TOMATIC,20wpm,260106_20WPM.mp3,-0.2
+data\augmented\20wpm\260106_20WPM_054_aug01.wav,TOMATIC,20wpm,260106_20WPM.mp3,-0.8
+data\augmented\20wpm\260106_20WPM_055_aug00.wav,DECODE,20wpm,260106_20WPM.mp3,7.4
+data\augmented\20wpm\260106_20WPM_055_aug01.wav,DECODE,20wpm,260106_20WPM.mp3,4.5
+data\augmented\20wpm\260106_20WPM_056_aug00.wav,TO DROP,20wpm,260106_20WPM.mp3,15.2
+data\augmented\20wpm\260106_20WPM_056_aug01.wav,TO DROP,20wpm,260106_20WPM.mp3,18.3
+data\augmented\20wpm\260106_20WPM_057_aug00.wav,THE PAST,20wpm,260106_20WPM.mp3,19.4
+data\augmented\20wpm\260106_20WPM_057_aug01.wav,THE PAST,20wpm,260106_20WPM.mp3,-1.6
+data\augmented\20wpm\260106_20WPM_058_aug00.wav,HISTORY,20wpm,260106_20WPM.mp3,19.7
+data\augmented\20wpm\260106_20WPM_058_aug01.wav,HISTORY,20wpm,260106_20WPM.mp3,8.5
+data\augmented\20wpm\260106_20WPM_059_aug00.wav,AND ST,20wpm,260106_20WPM.mp3,14.2
+data\augmented\20wpm\260106_20WPM_059_aug01.wav,AND ST,20wpm,260106_20WPM.mp3,3.7
+data\augmented\20wpm\260106_20WPM_060_aug00.wav,ART FRES,20wpm,260106_20WPM.mp3,-2.7
+data\augmented\20wpm\260106_20WPM_060_aug01.wav,ART FRES,20wpm,260106_20WPM.mp3,3.8
+data\augmented\20wpm\260106_20WPM_061_aug00.wav,H. A PRE,20wpm,260106_20WPM.mp3,11.7
+data\augmented\20wpm\260106_20WPM_061_aug01.wav,H. A PRE,20wpm,260106_20WPM.mp3,8.6
+data\augmented\20wpm\260106_20WPM_062_aug00.wav,SS OF T,20wpm,260106_20WPM.mp3,6.9
+data\augmented\20wpm\260106_20WPM_062_aug01.wav,SS OF T,20wpm,260106_20WPM.mp3,19.5
+data\augmented\20wpm\260106_20WPM_063_aug00.wav,HE SPACE,20wpm,260106_20WPM.mp3,6.2
+data\augmented\20wpm\260106_20WPM_063_aug01.wav,HE SPACE,20wpm,260106_20WPM.mp3,10.1
+data\augmented\20wpm\260106_20WPM_064_aug00.wav,BAR TEL,20wpm,260106_20WPM.mp3,3.8
+data\augmented\20wpm\260106_20WPM_064_aug01.wav,BAR TEL,20wpm,260106_20WPM.mp3,18.2
+data\augmented\20wpm\260106_20WPM_065_aug00.wav,LS THE D,20wpm,260106_20WPM.mp3,16.6
+data\augmented\20wpm\260106_20WPM_065_aug01.wav,LS THE D,20wpm,260106_20WPM.mp3,11.7
+data\augmented\20wpm\260106_20WPM_066_aug00.wav,ECODER,20wpm,260106_20WPM.mp3,0.1
+data\augmented\20wpm\260106_20WPM_066_aug01.wav,ECODER,20wpm,260106_20WPM.mp3,14.0
+data\augmented\20wpm\260106_20WPM_067_aug00.wav,TO DROP,20wpm,260106_20WPM.mp3,12.6
+data\augmented\20wpm\260106_20WPM_067_aug01.wav,TO DROP,20wpm,260106_20WPM.mp3,3.1
+data\augmented\20wpm\260106_20WPM_068_aug00.wav,THIS CON,20wpm,260106_20WPM.mp3,15.9
+data\augmented\20wpm\260106_20WPM_068_aug01.wav,THIS CON,20wpm,260106_20WPM.mp3,4.9
+data\augmented\20wpm\260106_20WPM_069_aug00.wav,TINUATIO,20wpm,260106_20WPM.mp3,11.0
+data\augmented\20wpm\260106_20WPM_069_aug01.wav,TINUATIO,20wpm,260106_20WPM.mp3,-2.9
+data\augmented\20wpm\260106_20WPM_070_aug00.wav,"N, STAR",20wpm,260106_20WPM.mp3,16.9
+data\augmented\20wpm\260106_20WPM_070_aug01.wav,"N, STAR",20wpm,260106_20WPM.mp3,16.2
+data\augmented\20wpm\260106_20WPM_071_aug00.wav,"T FRESH,",20wpm,260106_20WPM.mp3,10.4
+data\augmented\20wpm\260106_20WPM_071_aug01.wav,"T FRESH,",20wpm,260106_20WPM.mp3,15.0
+data\augmented\20wpm\260106_20WPM_072_aug00.wav,AND LOO,20wpm,260106_20WPM.mp3,14.6
+data\augmented\20wpm\260106_20WPM_072_aug01.wav,AND LOO,20wpm,260106_20WPM.mp3,15.0
+data\augmented\20wpm\260106_20WPM_073_aug00.wav,K FOR A,20wpm,260106_20WPM.mp3,4.9
+data\augmented\20wpm\260106_20WPM_073_aug01.wav,K FOR A,20wpm,260106_20WPM.mp3,0.3
+data\augmented\20wpm\260106_20WPM_074_aug00.wav,NEW LOC,20wpm,260106_20WPM.mp3,-1.2
+data\augmented\20wpm\260106_20WPM_074_aug01.wav,NEW LOC,20wpm,260106_20WPM.mp3,14.1
+data\augmented\20wpm\260106_20WPM_075_aug00.wav,K. THIS,20wpm,260106_20WPM.mp3,10.9
+data\augmented\20wpm\260106_20WPM_075_aug01.wav,K. THIS,20wpm,260106_20WPM.mp3,13.5
+data\augmented\20wpm\260106_20WPM_076_aug00.wav,STEP IS,20wpm,260106_20WPM.mp3,3.8
+data\augmented\20wpm\260106_20WPM_076_aug01.wav,STEP IS,20wpm,260106_20WPM.mp3,5.6
+data\augmented\20wpm\260106_20WPM_077_aug00.wav,NECESSA,20wpm,260106_20WPM.mp3,1.6
+data\augmented\20wpm\260106_20WPM_077_aug01.wav,NECESSA,20wpm,260106_20WPM.mp3,4.5
+data\augmented\20wpm\260106_20WPM_078_aug00.wav,RY. BECA,20wpm,260106_20WPM.mp3,2.8
+data\augmented\20wpm\260106_20WPM_078_aug01.wav,RY. BECA,20wpm,260106_20WPM.mp3,16.1
+data\augmented\20wpm\260106_20WPM_079_aug00.wav,USE THE,20wpm,260106_20WPM.mp3,19.8
+data\augmented\20wpm\260106_20WPM_079_aug01.wav,USE THE,20wpm,260106_20WPM.mp3,16.9
+data\augmented\20wpm\260106_20WPM_080_aug00.wav,INTERNA,20wpm,260106_20WPM.mp3,18.1
+data\augmented\20wpm\260106_20WPM_080_aug01.wav,INTERNA,20wpm,260106_20WPM.mp3,11.3
+data\augmented\20wpm\260106_20WPM_081_aug00.wav,L TRANSC,20wpm,260106_20WPM.mp3,5.0
+data\augmented\20wpm\260106_20WPM_081_aug01.wav,L TRANSC,20wpm,260106_20WPM.mp3,3.6
+data\augmented\20wpm\260106_20WPM_082_aug00.wav,EIVER IS,20wpm,260106_20WPM.mp3,-2.8
+data\augmented\20wpm\260106_20WPM_082_aug01.wav,EIVER IS,20wpm,260106_20WPM.mp3,13.1
+data\augmented\20wpm\260106_20WPM_083_aug00.wav,BASED O,20wpm,260106_20WPM.mp3,18.5
+data\augmented\20wpm\260106_20WPM_083_aug01.wav,BASED O,20wpm,260106_20WPM.mp3,0.2
+data\augmented\20wpm\260106_20WPM_084_aug00.wav,N A DIR,20wpm,260106_20WPM.mp3,-0.4
+data\augmented\20wpm\260106_20WPM_084_aug01.wav,N A DIR,20wpm,260106_20WPM.mp3,11.5
+data\augmented\20wpm\260106_20WPM_085_aug00.wav,ECT CONV,20wpm,260106_20WPM.mp3,17.5
+data\augmented\20wpm\260106_20WPM_085_aug01.wav,ECT CONV,20wpm,260106_20WPM.mp3,2.1
+data\augmented\20wpm\260106_20WPM_086_aug00.wav,ERSION C,20wpm,260106_20WPM.mp3,5.6
+data\augmented\20wpm\260106_20WPM_086_aug01.wav,ERSION C,20wpm,260106_20WPM.mp3,6.2
+data\augmented\20wpm\260106_20WPM_087_aug00.wav,"IRCUIT,",20wpm,260106_20WPM.mp3,18.7
+data\augmented\20wpm\260106_20WPM_087_aug01.wav,"IRCUIT,",20wpm,260106_20WPM.mp3,6.2
+data\augmented\20wpm\260106_20WPM_088_aug00.wav,OFTEN A,20wpm,260106_20WPM.mp3,-1.9
+data\augmented\20wpm\260106_20WPM_088_aug01.wav,OFTEN A,20wpm,260106_20WPM.mp3,15.2
+data\augmented\20wpm\260106_20WPM_089_aug00.wav,SIGNAL,20wpm,260106_20WPM.mp3,-2.7
+data\augmented\20wpm\260106_20WPM_089_aug01.wav,SIGNAL,20wpm,260106_20WPM.mp3,7.9
+data\augmented\20wpm\260106_20WPM_090_aug00.wav,CAN BE H,20wpm,260106_20WPM.mp3,12.7
+data\augmented\20wpm\260106_20WPM_090_aug01.wav,CAN BE H,20wpm,260106_20WPM.mp3,6.7
+data\augmented\20wpm\260106_20WPM_091_aug00.wav,EARD AT,20wpm,260106_20WPM.mp3,-1.5
+data\augmented\20wpm\260106_20WPM_091_aug01.wav,EARD AT,20wpm,260106_20WPM.mp3,13.7
+data\augmented\20wpm\260106_20WPM_092_aug00.wav,THE CAR,20wpm,260106_20WPM.mp3,-2.0
+data\augmented\20wpm\260106_20WPM_092_aug01.wav,THE CAR,20wpm,260106_20WPM.mp3,13.3
+data\augmented\20wpm\260106_20WPM_093_aug00.wav,RIER FRE,20wpm,260106_20WPM.mp3,7.5
+data\augmented\20wpm\260106_20WPM_093_aug01.wav,RIER FRE,20wpm,260106_20WPM.mp3,-1.0
+data\augmented\20wpm\260106_20WPM_094_aug00.wav,QUENCY P,20wpm,260106_20WPM.mp3,11.7
+data\augmented\20wpm\260106_20WPM_094_aug01.wav,QUENCY P,20wpm,260106_20WPM.mp3,19.7
+data\augmented\20wpm\260106_20WPM_095_aug00.wav,LUS AND,20wpm,260106_20WPM.mp3,17.9
+data\augmented\20wpm\260106_20WPM_095_aug01.wav,LUS AND,20wpm,260106_20WPM.mp3,11.6
+data\augmented\20wpm\260106_20WPM_096_aug00.wav,MINUS T,20wpm,260106_20WPM.mp3,15.7
+data\augmented\20wpm\260106_20WPM_096_aug01.wav,MINUS T,20wpm,260106_20WPM.mp3,-0.6
+data\augmented\20wpm\260106_20WPM_097_aug00.wav,HE EQUIV,20wpm,260106_20WPM.mp3,9.6
+data\augmented\20wpm\260106_20WPM_097_aug01.wav,HE EQUIV,20wpm,260106_20WPM.mp3,2.3
+data\augmented\20wpm\260106_20WPM_098_aug00.wav,ALENT O,20wpm,260106_20WPM.mp3,2.5
+data\augmented\20wpm\260106_20WPM_098_aug01.wav,ALENT O,20wpm,260106_20WPM.mp3,-0.4
+data\augmented\20wpm\260106_20WPM_099_aug00.wav,F A BEAT,20wpm,260106_20WPM.mp3,18.6
+data\augmented\20wpm\260106_20WPM_099_aug01.wav,F A BEAT,20wpm,260106_20WPM.mp3,19.4
+data\augmented\20wpm\260106_20WPM_100_aug00.wav,NOTE. I,20wpm,260106_20WPM.mp3,7.2
+data\augmented\20wpm\260106_20WPM_100_aug01.wav,NOTE. I,20wpm,260106_20WPM.mp3,13.3
+data\augmented\20wpm\260106_20WPM_101_aug00.wav,F YOU SE,20wpm,260106_20WPM.mp3,14.5
+data\augmented\20wpm\260106_20WPM_101_aug01.wav,F YOU SE,20wpm,260106_20WPM.mp3,4.1
+data\augmented\20wpm\260106_20WPM_102_aug00.wav,LECT TH,20wpm,260106_20WPM.mp3,-0.6
+data\augmented\20wpm\260106_20WPM_102_aug01.wav,LECT TH,20wpm,260106_20WPM.mp3,1.6
+data\augmented\20wpm\260106_20WPM_103_aug00.wav,E WRONG,20wpm,260106_20WPM.mp3,1.0
+data\augmented\20wpm\260106_20WPM_103_aug01.wav,E WRONG,20wpm,260106_20WPM.mp3,4.0
+data\augmented\20wpm\260106_20WPM_104_aug00.wav,"SIGNAL,",20wpm,260106_20WPM.mp3,18.4
+data\augmented\20wpm\260106_20WPM_104_aug01.wav,"SIGNAL,",20wpm,260106_20WPM.mp3,12.4
+data\augmented\20wpm\260106_20WPM_105_aug00.wav,YOUR REC,20wpm,260106_20WPM.mp3,14.5
+data\augmented\20wpm\260106_20WPM_105_aug01.wav,YOUR REC,20wpm,260106_20WPM.mp3,12.8
+data\augmented\20wpm\260106_20WPM_106_aug00.wav,EIVER W,20wpm,260106_20WPM.mp3,4.3
+data\augmented\20wpm\260106_20WPM_106_aug01.wav,EIVER W,20wpm,260106_20WPM.mp3,12.8
+data\augmented\20wpm\260106_20WPM_107_aug00.wav,ILL BE C,20wpm,260106_20WPM.mp3,3.3
+data\augmented\20wpm\260106_20WPM_107_aug01.wav,ILL BE C,20wpm,260106_20WPM.mp3,14.6
+data\augmented\20wpm\260106_20WPM_108_aug00.wav,ENTERED,20wpm,260106_20WPM.mp3,2.3
+data\augmented\20wpm\260106_20WPM_108_aug01.wav,ENTERED,20wpm,260106_20WPM.mp3,2.7
+data\augmented\20wpm\260106_20WPM_109_aug00.wav,AT TWIC,20wpm,260106_20WPM.mp3,15.6
+data\augmented\20wpm\260106_20WPM_109_aug01.wav,AT TWIC,20wpm,260106_20WPM.mp3,11.3
+data\augmented\20wpm\260106_20WPM_110_aug00.wav,E THE BE,20wpm,260106_20WPM.mp3,-0.6
+data\augmented\20wpm\260106_20WPM_110_aug01.wav,E THE BE,20wpm,260106_20WPM.mp3,8.2
+data\augmented\20wpm\260106_20WPM_111_aug00.wav,AT NOTE,20wpm,260106_20WPM.mp3,6.0
+data\augmented\20wpm\260106_20WPM_111_aug01.wav,AT NOTE,20wpm,260106_20WPM.mp3,-1.9
+data\augmented\20wpm\260106_20WPM_112_aug00.wav,FROM = E,20wpm,260106_20WPM.mp3,18.4
+data\augmented\20wpm\260106_20WPM_112_aug01.wav,FROM = E,20wpm,260106_20WPM.mp3,2.8
+data\augmented\20wpm\260106_20WPM_113_aug00.wav,ND OF 2,20wpm,260106_20WPM.mp3,8.5
+data\augmented\20wpm\260106_20WPM_113_aug01.wav,ND OF 2,20wpm,260106_20WPM.mp3,-2.4
+data\augmented\20wpm\260106_20WPM_114_aug00.wav,0 WPM TE,20wpm,260106_20WPM.mp3,5.7
+data\augmented\20wpm\260106_20WPM_114_aug01.wav,0 WPM TE,20wpm,260106_20WPM.mp3,15.3
+data\augmented\20wpm\260106_20WPM_115_aug00.wav,XT = QST,20wpm,260106_20WPM.mp3,10.7
+data\augmented\20wpm\260106_20WPM_115_aug01.wav,XT = QST,20wpm,260106_20WPM.mp3,4.6
+data\augmented\20wpm\260106_20WPM_116_aug00.wav,DE W1A,20wpm,260106_20WPM.mp3,-1.6
+data\augmented\20wpm\260106_20WPM_116_aug01.wav,DE W1A,20wpm,260106_20WPM.mp3,10.3
+data\augmented\20wpm\260106_20WPM_117_aug00.wav,W <,20wpm,260106_20WPM.mp3,1.2
+data\augmented\20wpm\260106_20WPM_117_aug01.wav,W <,20wpm,260106_20WPM.mp3,17.7
+data\augmented\20wpm\260203_20WPM_000_aug00.wav,= NOW 20,20wpm,260203_20WPM.mp3,2.9
+data\augmented\20wpm\260203_20WPM_000_aug01.wav,= NOW 20,20wpm,260203_20WPM.mp3,18.2
+data\augmented\20wpm\260203_20WPM_001_aug00.wav,WPM = T,20wpm,260203_20WPM.mp3,6.9
+data\augmented\20wpm\260203_20WPM_001_aug01.wav,WPM = T,20wpm,260203_20WPM.mp3,14.0
+data\augmented\20wpm\260203_20WPM_002_aug00.wav,EXT IS F,20wpm,260203_20WPM.mp3,15.7
+data\augmented\20wpm\260203_20WPM_002_aug01.wav,EXT IS F,20wpm,260203_20WPM.mp3,3.9
+data\augmented\20wpm\260203_20WPM_003_aug00.wav,ROM APRI,20wpm,260203_20WPM.mp3,10.7
+data\augmented\20wpm\260203_20WPM_003_aug01.wav,ROM APRI,20wpm,260203_20WPM.mp3,7.5
+data\augmented\20wpm\260203_20WPM_004_aug00.wav,L 2024,20wpm,260203_20WPM.mp3,5.6
+data\augmented\20wpm\260203_20WPM_004_aug01.wav,L 2024,20wpm,260203_20WPM.mp3,-0.5
+data\augmented\20wpm\260203_20WPM_005_aug00.wav,QST PAGE,20wpm,260203_20WPM.mp3,5.7
+data\augmented\20wpm\260203_20WPM_005_aug01.wav,QST PAGE,20wpm,260203_20WPM.mp3,18.2
+data\augmented\20wpm\260203_20WPM_006_aug00.wav,53 = MI,20wpm,260203_20WPM.mp3,-2.1
+data\augmented\20wpm\260203_20WPM_006_aug01.wav,53 = MI,20wpm,260203_20WPM.mp3,10.0
+data\augmented\20wpm\260203_20WPM_007_aug00.wav,"CROWAVE,",20wpm,260203_20WPM.mp3,1.4
+data\augmented\20wpm\260203_20WPM_007_aug01.wav,"CROWAVE,",20wpm,260203_20WPM.mp3,18.2
+data\augmented\20wpm\260203_20WPM_008_aug00.wav,LENT ME,20wpm,260203_20WPM.mp3,13.4
+data\augmented\20wpm\260203_20WPM_008_aug01.wav,LENT ME,20wpm,260203_20WPM.mp3,4.2
+data\augmented\20wpm\260203_20WPM_009_aug00.wav,A TEST,20wpm,260203_20WPM.mp3,5.5
+data\augmented\20wpm\260203_20WPM_009_aug01.wav,A TEST,20wpm,260203_20WPM.mp3,16.5
+data\augmented\20wpm\260203_20WPM_010_aug00.wav,10 GIGAH,20wpm,260203_20WPM.mp3,0.5
+data\augmented\20wpm\260203_20WPM_010_aug01.wav,10 GIGAH,20wpm,260203_20WPM.mp3,14.2
+data\augmented\20wpm\260203_20WPM_011_aug00.wav,ERTZ TRA,20wpm,260203_20WPM.mp3,-1.2
+data\augmented\20wpm\260203_20WPM_011_aug01.wav,ERTZ TRA,20wpm,260203_20WPM.mp3,19.7
+data\augmented\20wpm\260203_20WPM_012_aug00.wav,NSVERTE,20wpm,260203_20WPM.mp3,4.5
+data\augmented\20wpm\260203_20WPM_012_aug01.wav,NSVERTE,20wpm,260203_20WPM.mp3,15.6
+data\augmented\20wpm\260203_20WPM_013_aug00.wav,R WITH T,20wpm,260203_20WPM.mp3,0.5
+data\augmented\20wpm\260203_20WPM_013_aug01.wav,R WITH T,20wpm,260203_20WPM.mp3,7.5
+data\augmented\20wpm\260203_20WPM_014_aug00.wav,WO SWITC,20wpm,260203_20WPM.mp3,-0.0
+data\augmented\20wpm\260203_20WPM_014_aug01.wav,WO SWITC,20wpm,260203_20WPM.mp3,16.3
+data\augmented\20wpm\260203_20WPM_015_aug00.wav,HABLE LO,20wpm,260203_20WPM.mp3,5.8
+data\augmented\20wpm\260203_20WPM_015_aug01.wav,HABLE LO,20wpm,260203_20WPM.mp3,-2.6
+data\augmented\20wpm\260203_20WPM_016_aug00.wav,"S, ONE W",20wpm,260203_20WPM.mp3,9.1
+data\augmented\20wpm\260203_20WPM_016_aug01.wav,"S, ONE W",20wpm,260203_20WPM.mp3,-1.9
+data\augmented\20wpm\260203_20WPM_017_aug00.wav,ITH A TR,20wpm,260203_20WPM.mp3,6.4
+data\augmented\20wpm\260203_20WPM_017_aug01.wav,ITH A TR,20wpm,260203_20WPM.mp3,8.4
+data\augmented\20wpm\260203_20WPM_018_aug00.wav,ADITIONA,20wpm,260203_20WPM.mp3,7.8
+data\augmented\20wpm\260203_20WPM_018_aug01.wav,ADITIONA,20wpm,260203_20WPM.mp3,2.9
+data\augmented\20wpm\260203_20WPM_019_aug00.wav,L CRYSTA,20wpm,260203_20WPM.mp3,13.5
+data\augmented\20wpm\260203_20WPM_019_aug01.wav,L CRYSTA,20wpm,260203_20WPM.mp3,0.6
+data\augmented\20wpm\260203_20WPM_020_aug00.wav,L OSCIL,20wpm,260203_20WPM.mp3,13.9
+data\augmented\20wpm\260203_20WPM_020_aug01.wav,L OSCIL,20wpm,260203_20WPM.mp3,0.6
+data\augmented\20wpm\260203_20WPM_021_aug00.wav,LATOR AN,20wpm,260203_20WPM.mp3,8.4
+data\augmented\20wpm\260203_20WPM_021_aug01.wav,LATOR AN,20wpm,260203_20WPM.mp3,19.0
+data\augmented\20wpm\260203_20WPM_022_aug00.wav,D THE OT,20wpm,260203_20WPM.mp3,9.0
+data\augmented\20wpm\260203_20WPM_022_aug01.wav,D THE OT,20wpm,260203_20WPM.mp3,8.4
+data\augmented\20wpm\260203_20WPM_023_aug00.wav,HER USIN,20wpm,260203_20WPM.mp3,2.9
+data\augmented\20wpm\260203_20WPM_023_aug01.wav,HER USIN,20wpm,260203_20WPM.mp3,0.8
+data\augmented\20wpm\260203_20WPM_024_aug00.wav,G A SYNT,20wpm,260203_20WPM.mp3,13.5
+data\augmented\20wpm\260203_20WPM_024_aug01.wav,G A SYNT,20wpm,260203_20WPM.mp3,4.7
+data\augmented\20wpm\260203_20WPM_025_aug00.wav,HESIZER.,20wpm,260203_20WPM.mp3,16.2
+data\augmented\20wpm\260203_20WPM_025_aug01.wav,HESIZER.,20wpm,260203_20WPM.mp3,4.2
+data\augmented\20wpm\260203_20WPM_026_aug00.wav,MDS TES,20wpm,260203_20WPM.mp3,1.9
+data\augmented\20wpm\260203_20WPM_026_aug01.wav,MDS TES,20wpm,260203_20WPM.mp3,16.9
+data\augmented\20wpm\260203_20WPM_027_aug00.wav,TING AT,20wpm,260203_20WPM.mp3,1.2
+data\augmented\20wpm\260203_20WPM_027_aug01.wav,TING AT,20wpm,260203_20WPM.mp3,6.6
+data\augmented\20wpm\260203_20WPM_028_aug00.wav,THE PICN,20wpm,260203_20WPM.mp3,12.9
+data\augmented\20wpm\260203_20WPM_028_aug01.wav,THE PICN,20wpm,260203_20WPM.mp3,-1.9
+data\augmented\20wpm\260203_20WPM_029_aug00.wav,IC AND,20wpm,260203_20WPM.mp3,8.1
+data\augmented\20wpm\260203_20WPM_029_aug01.wav,IC AND,20wpm,260203_20WPM.mp3,16.9
+data\augmented\20wpm\260203_20WPM_030_aug00.wav,SWITCHIN,20wpm,260203_20WPM.mp3,15.9
+data\augmented\20wpm\260203_20WPM_030_aug01.wav,SWITCHIN,20wpm,260203_20WPM.mp3,4.3
+data\augmented\20wpm\260203_20WPM_031_aug00.wav,G BACK A,20wpm,260203_20WPM.mp3,-1.9
+data\augmented\20wpm\260203_20WPM_031_aug01.wav,G BACK A,20wpm,260203_20WPM.mp3,13.0
+data\augmented\20wpm\260203_20WPM_032_aug00.wav,ND FORTH,20wpm,260203_20WPM.mp3,-1.0
+data\augmented\20wpm\260203_20WPM_032_aug01.wav,ND FORTH,20wpm,260203_20WPM.mp3,5.4
+data\augmented\20wpm\260203_20WPM_033_aug00.wav,SHOWED,20wpm,260203_20WPM.mp3,13.1
+data\augmented\20wpm\260203_20WPM_033_aug01.wav,SHOWED,20wpm,260203_20WPM.mp3,15.4
+data\augmented\20wpm\260203_20WPM_034_aug00.wav,THAT THE,20wpm,260203_20WPM.mp3,16.7
+data\augmented\20wpm\260203_20WPM_034_aug01.wav,THAT THE,20wpm,260203_20WPM.mp3,2.2
+data\augmented\20wpm\260203_20WPM_035_aug00.wav,MDS WIT,20wpm,260203_20WPM.mp3,7.9
+data\augmented\20wpm\260203_20WPM_035_aug01.wav,MDS WIT,20wpm,260203_20WPM.mp3,6.9
+data\augmented\20wpm\260203_20WPM_036_aug00.wav,H THE SY,20wpm,260203_20WPM.mp3,16.3
+data\augmented\20wpm\260203_20WPM_036_aug01.wav,H THE SY,20wpm,260203_20WPM.mp3,8.7
+data\augmented\20wpm\260203_20WPM_037_aug00.wav,NTHESIZ,20wpm,260203_20WPM.mp3,-0.5
+data\augmented\20wpm\260203_20WPM_037_aug01.wav,NTHESIZ,20wpm,260203_20WPM.mp3,9.8
+data\augmented\20wpm\260203_20WPM_038_aug00.wav,ER WAS 2,20wpm,260203_20WPM.mp3,17.7
+data\augmented\20wpm\260203_20WPM_038_aug01.wav,ER WAS 2,20wpm,260203_20WPM.mp3,16.3
+data\augmented\20wpm\260203_20WPM_039_aug00.wav,DB LESS,20wpm,260203_20WPM.mp3,-1.4
+data\augmented\20wpm\260203_20WPM_039_aug01.wav,DB LESS,20wpm,260203_20WPM.mp3,2.6
+data\augmented\20wpm\260203_20WPM_040_aug00.wav,SENSITI,20wpm,260203_20WPM.mp3,2.7
+data\augmented\20wpm\260203_20WPM_040_aug01.wav,SENSITI,20wpm,260203_20WPM.mp3,5.9
+data\augmented\20wpm\260203_20WPM_041_aug00.wav,VE THAN,20wpm,260203_20WPM.mp3,0.0
+data\augmented\20wpm\260203_20WPM_041_aug01.wav,VE THAN,20wpm,260203_20WPM.mp3,5.8
+data\augmented\20wpm\260203_20WPM_042_aug00.wav,WITH THE,20wpm,260203_20WPM.mp3,2.2
+data\augmented\20wpm\260203_20WPM_042_aug01.wav,WITH THE,20wpm,260203_20WPM.mp3,14.8
+data\augmented\20wpm\260203_20WPM_043_aug00.wav,CRYSTAL,20wpm,260203_20WPM.mp3,12.2
+data\augmented\20wpm\260203_20WPM_043_aug01.wav,CRYSTAL,20wpm,260203_20WPM.mp3,0.4
+data\augmented\20wpm\260203_20WPM_044_aug00.wav,OSCILLA,20wpm,260203_20WPM.mp3,19.0
+data\augmented\20wpm\260203_20WPM_044_aug01.wav,OSCILLA,20wpm,260203_20WPM.mp3,12.3
+data\augmented\20wpm\260203_20WPM_045_aug00.wav,TOR. LA,20wpm,260203_20WPM.mp3,0.5
+data\augmented\20wpm\260203_20WPM_045_aug01.wav,TOR. LA,20wpm,260203_20WPM.mp3,1.1
+data\augmented\20wpm\260203_20WPM_046_aug00.wav,"TER, I S",20wpm,260203_20WPM.mp3,12.6
+data\augmented\20wpm\260203_20WPM_046_aug01.wav,"TER, I S",20wpm,260203_20WPM.mp3,11.5
+data\augmented\20wpm\260203_20WPM_047_aug00.wav,ET UP A,20wpm,260203_20WPM.mp3,4.7
+data\augmented\20wpm\260203_20WPM_047_aug01.wav,ET UP A,20wpm,260203_20WPM.mp3,-1.3
+data\augmented\20wpm\260203_20WPM_048_aug00.wav,TEST RAN,20wpm,260203_20WPM.mp3,19.4
+data\augmented\20wpm\260203_20WPM_048_aug01.wav,TEST RAN,20wpm,260203_20WPM.mp3,16.0
+data\augmented\20wpm\260203_20WPM_049_aug00.wav,GE AT HO,20wpm,260203_20WPM.mp3,13.9
+data\augmented\20wpm\260203_20WPM_049_aug01.wav,GE AT HO,20wpm,260203_20WPM.mp3,1.3
+data\augmented\20wpm\260203_20WPM_050_aug00.wav,ME AND G,20wpm,260203_20WPM.mp3,8.0
+data\augmented\20wpm\260203_20WPM_050_aug01.wav,ME AND G,20wpm,260203_20WPM.mp3,1.4
+data\augmented\20wpm\260203_20WPM_051_aug00.wav,OT THE S,20wpm,260203_20WPM.mp3,4.3
+data\augmented\20wpm\260203_20WPM_051_aug01.wav,OT THE S,20wpm,260203_20WPM.mp3,10.5
+data\augmented\20wpm\260203_20WPM_052_aug00.wav,AME RESU,20wpm,260203_20WPM.mp3,5.4
+data\augmented\20wpm\260203_20WPM_052_aug01.wav,AME RESU,20wpm,260203_20WPM.mp3,16.4
+data\augmented\20wpm\260203_20WPM_053_aug00.wav,LT TO S,20wpm,260203_20WPM.mp3,15.4
+data\augmented\20wpm\260203_20WPM_053_aug01.wav,LT TO S,20wpm,260203_20WPM.mp3,-0.3
+data\augmented\20wpm\260203_20WPM_054_aug00.wav,HOW THAT,20wpm,260203_20WPM.mp3,-2.6
+data\augmented\20wpm\260203_20WPM_054_aug01.wav,HOW THAT,20wpm,260203_20WPM.mp3,-2.5
+data\augmented\20wpm\260203_20WPM_055_aug00.wav,THE EXP,20wpm,260203_20WPM.mp3,19.1
+data\augmented\20wpm\260203_20WPM_055_aug01.wav,THE EXP,20wpm,260203_20WPM.mp3,-2.5
+data\augmented\20wpm\260203_20WPM_056_aug00.wav,ERIMENT,20wpm,260203_20WPM.mp3,7.2
+data\augmented\20wpm\260203_20WPM_056_aug01.wav,ERIMENT,20wpm,260203_20WPM.mp3,12.8
+data\augmented\20wpm\260203_20WPM_057_aug00.wav,COULD BE,20wpm,260203_20WPM.mp3,15.7
+data\augmented\20wpm\260203_20WPM_057_aug01.wav,COULD BE,20wpm,260203_20WPM.mp3,4.2
+data\augmented\20wpm\260203_20WPM_058_aug00.wav,REPLICA,20wpm,260203_20WPM.mp3,15.8
+data\augmented\20wpm\260203_20WPM_058_aug01.wav,REPLICA,20wpm,260203_20WPM.mp3,1.2
+data\augmented\20wpm\260203_20WPM_059_aug00.wav,TED. SYN,20wpm,260203_20WPM.mp3,3.3
+data\augmented\20wpm\260203_20WPM_059_aug01.wav,TED. SYN,20wpm,260203_20WPM.mp3,1.8
+data\augmented\20wpm\260203_20WPM_060_aug00.wav,THESIZER,20wpm,260203_20WPM.mp3,13.4
+data\augmented\20wpm\260203_20WPM_060_aug01.wav,THESIZER,20wpm,260203_20WPM.mp3,4.2
+data\augmented\20wpm\260203_20WPM_061_aug00.wav,PHASE N,20wpm,260203_20WPM.mp3,19.8
+data\augmented\20wpm\260203_20WPM_061_aug01.wav,PHASE N,20wpm,260203_20WPM.mp3,-0.7
+data\augmented\20wpm\260203_20WPM_062_aug00.wav,OISE. T,20wpm,260203_20WPM.mp3,10.0
+data\augmented\20wpm\260203_20WPM_062_aug01.wav,OISE. T,20wpm,260203_20WPM.mp3,-2.7
+data\augmented\20wpm\260203_20WPM_063_aug00.wav,HE A32 F,20wpm,260203_20WPM.mp3,10.9
+data\augmented\20wpm\260203_20WPM_063_aug01.wav,HE A32 F,20wpm,260203_20WPM.mp3,4.0
+data\augmented\20wpm\260203_20WPM_064_aug00.wav,REQUENCY,20wpm,260203_20WPM.mp3,6.0
+data\augmented\20wpm\260203_20WPM_064_aug01.wav,REQUENCY,20wpm,260203_20WPM.mp3,1.3
+data\augmented\20wpm\260203_20WPM_065_aug00.wav,SYNTHES,20wpm,260203_20WPM.mp3,0.4
+data\augmented\20wpm\260203_20WPM_065_aug01.wav,SYNTHES,20wpm,260203_20WPM.mp3,19.5
+data\augmented\20wpm\260203_20WPM_066_aug00.wav,IZER LO,20wpm,260203_20WPM.mp3,6.2
+data\augmented\20wpm\260203_20WPM_066_aug01.wav,IZER LO,20wpm,260203_20WPM.mp3,6.8
+data\augmented\20wpm\260203_20WPM_067_aug00.wav,USED IN,20wpm,260203_20WPM.mp3,10.1
+data\augmented\20wpm\260203_20WPM_067_aug01.wav,USED IN,20wpm,260203_20WPM.mp3,10.1
+data\augmented\20wpm\260203_20WPM_068_aug00.wav,THE MDS,20wpm,260203_20WPM.mp3,7.6
+data\augmented\20wpm\260203_20WPM_068_aug01.wav,THE MDS,20wpm,260203_20WPM.mp3,9.6
+data\augmented\20wpm\260203_20WPM_069_aug00.wav,TESTS WA,20wpm,260203_20WPM.mp3,5.7
+data\augmented\20wpm\260203_20WPM_069_aug01.wav,TESTS WA,20wpm,260203_20WPM.mp3,13.0
+data\augmented\20wpm\260203_20WPM_070_aug00.wav,S ONE O,20wpm,260203_20WPM.mp3,10.8
+data\augmented\20wpm\260203_20WPM_070_aug01.wav,S ONE O,20wpm,260203_20WPM.mp3,13.1
+data\augmented\20wpm\260203_20WPM_071_aug00.wav,F THE FI,20wpm,260203_20WPM.mp3,4.5
+data\augmented\20wpm\260203_20WPM_071_aug01.wav,F THE FI,20wpm,260203_20WPM.mp3,-0.9
+data\augmented\20wpm\260203_20WPM_072_aug00.wav,RST MADE,20wpm,260203_20WPM.mp3,8.7
+data\augmented\20wpm\260203_20WPM_072_aug01.wav,RST MADE,20wpm,260203_20WPM.mp3,18.8
+data\augmented\20wpm\260203_20WPM_073_aug00.wav,SPECIFI,20wpm,260203_20WPM.mp3,17.4
+data\augmented\20wpm\260203_20WPM_073_aug01.wav,SPECIFI,20wpm,260203_20WPM.mp3,12.8
+data\augmented\20wpm\260203_20WPM_074_aug00.wav,CALLY FO,20wpm,260203_20WPM.mp3,14.3
+data\augmented\20wpm\260203_20WPM_074_aug01.wav,CALLY FO,20wpm,260203_20WPM.mp3,-1.7
+data\augmented\20wpm\260203_20WPM_075_aug00.wav,R HAMS.,20wpm,260203_20WPM.mp3,19.2
+data\augmented\20wpm\260203_20WPM_075_aug01.wav,R HAMS.,20wpm,260203_20WPM.mp3,16.3
+data\augmented\20wpm\260203_20WPM_076_aug00.wav,A FEW NE,20wpm,260203_20WPM.mp3,2.9
+data\augmented\20wpm\260203_20WPM_076_aug01.wav,A FEW NE,20wpm,260203_20WPM.mp3,8.4
+data\augmented\20wpm\260203_20WPM_077_aug00.wav,W TYPES,20wpm,260203_20WPM.mp3,18.4
+data\augmented\20wpm\260203_20WPM_077_aug01.wav,W TYPES,20wpm,260203_20WPM.mp3,15.7
+data\augmented\20wpm\260203_20WPM_078_aug00.wav,HAVE BE,20wpm,260203_20WPM.mp3,13.4
+data\augmented\20wpm\260203_20WPM_078_aug01.wav,HAVE BE,20wpm,260203_20WPM.mp3,0.1
+data\augmented\20wpm\260203_20WPM_079_aug00.wav,COME AVA,20wpm,260203_20WPM.mp3,13.9
+data\augmented\20wpm\260203_20WPM_079_aug01.wav,COME AVA,20wpm,260203_20WPM.mp3,6.7
+data\augmented\20wpm\260203_20WPM_080_aug00.wav,"ILABLE,",20wpm,260203_20WPM.mp3,11.0
+data\augmented\20wpm\260203_20WPM_080_aug01.wav,"ILABLE,",20wpm,260203_20WPM.mp3,12.1
+data\augmented\20wpm\260203_20WPM_081_aug00.wav,SOME SPE,20wpm,260203_20WPM.mp3,12.7
+data\augmented\20wpm\260203_20WPM_081_aug01.wav,SOME SPE,20wpm,260203_20WPM.mp3,0.5
+data\augmented\20wpm\260203_20WPM_082_aug00.wav,CIFICALL,20wpm,260203_20WPM.mp3,18.6
+data\augmented\20wpm\260203_20WPM_082_aug01.wav,CIFICALL,20wpm,260203_20WPM.mp3,3.5
+data\augmented\20wpm\260203_20WPM_083_aug00.wav,Y FOR LO,20wpm,260203_20WPM.mp3,18.9
+data\augmented\20wpm\260203_20WPM_083_aug01.wav,Y FOR LO,20wpm,260203_20WPM.mp3,-1.5
+data\augmented\20wpm\260203_20WPM_084_aug00.wav,"USE, OT",20wpm,260203_20WPM.mp3,12.0
+data\augmented\20wpm\260203_20WPM_084_aug01.wav,"USE, OT",20wpm,260203_20WPM.mp3,14.7
+data\augmented\20wpm\260203_20WPM_085_aug00.wav,HERS FOR,20wpm,260203_20WPM.mp3,5.3
+data\augmented\20wpm\260203_20WPM_085_aug01.wav,HERS FOR,20wpm,260203_20WPM.mp3,14.3
+data\augmented\20wpm\260203_20WPM_086_aug00.wav,GENERAL,20wpm,260203_20WPM.mp3,10.3
+data\augmented\20wpm\260203_20WPM_086_aug01.wav,GENERAL,20wpm,260203_20WPM.mp3,18.6
+data\augmented\20wpm\260203_20WPM_087_aug00.wav,PURPOS,20wpm,260203_20WPM.mp3,18.6
+data\augmented\20wpm\260203_20WPM_087_aug01.wav,PURPOS,20wpm,260203_20WPM.mp3,12.0
+data\augmented\20wpm\260203_20WPM_088_aug00.wav,ES WITH,20wpm,260203_20WPM.mp3,20.0
+data\augmented\20wpm\260203_20WPM_088_aug01.wav,ES WITH,20wpm,260203_20WPM.mp3,16.6
+data\augmented\20wpm\260203_20WPM_089_aug00.wav,PUSHBUTT,20wpm,260203_20WPM.mp3,15.0
+data\augmented\20wpm\260203_20WPM_089_aug01.wav,PUSHBUTT,20wpm,260203_20WPM.mp3,13.2
+data\augmented\20wpm\260203_20WPM_090_aug00.wav,ON OR CO,20wpm,260203_20WPM.mp3,7.3
+data\augmented\20wpm\260203_20WPM_090_aug01.wav,ON OR CO,20wpm,260203_20WPM.mp3,19.8
+data\augmented\20wpm\260203_20WPM_091_aug00.wav,MPUTER F,20wpm,260203_20WPM.mp3,9.5
+data\augmented\20wpm\260203_20WPM_091_aug01.wav,MPUTER F,20wpm,260203_20WPM.mp3,17.7
+data\augmented\20wpm\260203_20WPM_092_aug00.wav,REQUENCY,20wpm,260203_20WPM.mp3,4.5
+data\augmented\20wpm\260203_20WPM_092_aug01.wav,REQUENCY,20wpm,260203_20WPM.mp3,1.9
+data\augmented\20wpm\260203_20WPM_093_aug00.wav,SELECTI,20wpm,260203_20WPM.mp3,2.7
+data\augmented\20wpm\260203_20WPM_093_aug01.wav,SELECTI,20wpm,260203_20WPM.mp3,10.9
+data\augmented\20wpm\260203_20WPM_094_aug00.wav,ON. I ME,20wpm,260203_20WPM.mp3,6.9
+data\augmented\20wpm\260203_20WPM_094_aug01.wav,ON. I ME,20wpm,260203_20WPM.mp3,3.6
+data\augmented\20wpm\260203_20WPM_095_aug00.wav,ASURED,20wpm,260203_20WPM.mp3,15.1
+data\augmented\20wpm\260203_20WPM_095_aug01.wav,ASURED,20wpm,260203_20WPM.mp3,16.9
+data\augmented\20wpm\260203_20WPM_096_aug00.wav,PHASE NO,20wpm,260203_20WPM.mp3,14.7
+data\augmented\20wpm\260203_20WPM_096_aug01.wav,PHASE NO,20wpm,260203_20WPM.mp3,-2.9
+data\augmented\20wpm\260203_20WPM_097_aug00.wav,ISE CLOS,20wpm,260203_20WPM.mp3,7.5
+data\augmented\20wpm\260203_20WPM_097_aug01.wav,ISE CLOS,20wpm,260203_20WPM.mp3,14.6
+data\augmented\20wpm\260203_20WPM_098_aug00.wav,E TO THE,20wpm,260203_20WPM.mp3,7.6
+data\augmented\20wpm\260203_20WPM_098_aug01.wav,E TO THE,20wpm,260203_20WPM.mp3,13.2
+data\augmented\20wpm\260203_20WPM_099_aug00.wav,LO CARR,20wpm,260203_20WPM.mp3,-2.0
+data\augmented\20wpm\260203_20WPM_099_aug01.wav,LO CARR,20wpm,260203_20WPM.mp3,-1.1
+data\augmented\20wpm\260203_20WPM_100_aug00.wav,"IER, WHE",20wpm,260203_20WPM.mp3,-2.8
+data\augmented\20wpm\260203_20WPM_100_aug01.wav,"IER, WHE",20wpm,260203_20WPM.mp3,16.6
+data\augmented\20wpm\260203_20WPM_101_aug00.wav,RE IT HA,20wpm,260203_20WPM.mp3,8.2
+data\augmented\20wpm\260203_20WPM_101_aug01.wav,RE IT HA,20wpm,260203_20WPM.mp3,10.2
+data\augmented\20wpm\260203_20WPM_102_aug00.wav,S THE GR,20wpm,260203_20WPM.mp3,6.8
+data\augmented\20wpm\260203_20WPM_102_aug01.wav,S THE GR,20wpm,260203_20WPM.mp3,16.3
+data\augmented\20wpm\260203_20WPM_103_aug00.wav,EATEST,20wpm,260203_20WPM.mp3,14.8
+data\augmented\20wpm\260203_20WPM_103_aug01.wav,EATEST,20wpm,260203_20WPM.mp3,16.9
+data\augmented\20wpm\260203_20WPM_104_aug00.wav,EFFECT O,20wpm,260203_20WPM.mp3,8.2
+data\augmented\20wpm\260203_20WPM_104_aug01.wav,EFFECT O,20wpm,260203_20WPM.mp3,12.7
+data\augmented\20wpm\260203_20WPM_105_aug00.wav,N MDS US,20wpm,260203_20WPM.mp3,8.7
+data\augmented\20wpm\260203_20WPM_105_aug01.wav,N MDS US,20wpm,260203_20WPM.mp3,5.6
+data\augmented\20wpm\260203_20WPM_106_aug00.wav,ING SOPH,20wpm,260203_20WPM.mp3,-0.9
+data\augmented\20wpm\260203_20WPM_106_aug01.wav,ING SOPH,20wpm,260203_20WPM.mp3,15.5
+data\augmented\20wpm\260203_20WPM_107_aug00.wav,ISTICATE,20wpm,260203_20WPM.mp3,17.8
+data\augmented\20wpm\260203_20WPM_107_aug01.wav,ISTICATE,20wpm,260203_20WPM.mp3,14.2
+data\augmented\20wpm\260203_20WPM_108_aug00.wav,D = END,20wpm,260203_20WPM.mp3,16.3
+data\augmented\20wpm\260203_20WPM_108_aug01.wav,D = END,20wpm,260203_20WPM.mp3,13.9
+data\augmented\20wpm\260203_20WPM_109_aug00.wav,OF 20 WP,20wpm,260203_20WPM.mp3,-1.8
+data\augmented\20wpm\260203_20WPM_109_aug01.wav,OF 20 WP,20wpm,260203_20WPM.mp3,0.6
+data\augmented\20wpm\260203_20WPM_110_aug00.wav,M TEXT =,20wpm,260203_20WPM.mp3,3.7
+data\augmented\20wpm\260203_20WPM_110_aug01.wav,M TEXT =,20wpm,260203_20WPM.mp3,-1.6
+data\augmented\20wpm\260203_20WPM_111_aug00.wav,QST DE,20wpm,260203_20WPM.mp3,8.1
+data\augmented\20wpm\260203_20WPM_111_aug01.wav,QST DE,20wpm,260203_20WPM.mp3,12.1
+data\augmented\20wpm\260203_20WPM_112_aug00.wav,W1AW <,20wpm,260203_20WPM.mp3,1.9
+data\augmented\20wpm\260203_20WPM_112_aug01.wav,W1AW <,20wpm,260203_20WPM.mp3,2.4
+data\augmented\5wpm\260107_05WPM_000_aug00.wav,=,5wpm,260107_05WPM.mp3,5.8
+data\augmented\5wpm\260107_05WPM_000_aug01.wav,=,5wpm,260107_05WPM.mp3,2.1
+data\augmented\5wpm\260107_05WPM_001_aug00.wav,NO,5wpm,260107_05WPM.mp3,19.8
+data\augmented\5wpm\260107_05WPM_001_aug01.wav,NO,5wpm,260107_05WPM.mp3,14.1
+data\augmented\5wpm\260107_05WPM_002_aug00.wav,W,5wpm,260107_05WPM.mp3,5.8
+data\augmented\5wpm\260107_05WPM_002_aug01.wav,W,5wpm,260107_05WPM.mp3,3.3
+data\augmented\5wpm\260107_05WPM_003_aug00.wav,5,5wpm,260107_05WPM.mp3,6.8
+data\augmented\5wpm\260107_05WPM_003_aug01.wav,5,5wpm,260107_05WPM.mp3,3.0
+data\augmented\5wpm\260107_05WPM_004_aug00.wav,WP,5wpm,260107_05WPM.mp3,5.2
+data\augmented\5wpm\260107_05WPM_004_aug01.wav,WP,5wpm,260107_05WPM.mp3,4.2
+data\augmented\5wpm\260107_05WPM_005_aug00.wav,M,5wpm,260107_05WPM.mp3,18.8
+data\augmented\5wpm\260107_05WPM_005_aug01.wav,M,5wpm,260107_05WPM.mp3,7.6
+data\augmented\5wpm\260107_05WPM_006_aug00.wav,=,5wpm,260107_05WPM.mp3,2.2
+data\augmented\5wpm\260107_05WPM_006_aug01.wav,=,5wpm,260107_05WPM.mp3,18.7
+data\augmented\5wpm\260107_05WPM_007_aug00.wav,TE,5wpm,260107_05WPM.mp3,8.8
+data\augmented\5wpm\260107_05WPM_007_aug01.wav,TE,5wpm,260107_05WPM.mp3,5.9
+data\augmented\5wpm\260107_05WPM_008_aug00.wav,X,5wpm,260107_05WPM.mp3,10.8
+data\augmented\5wpm\260107_05WPM_008_aug01.wav,X,5wpm,260107_05WPM.mp3,19.0
+data\augmented\5wpm\260107_05WPM_009_aug00.wav,T,5wpm,260107_05WPM.mp3,-0.3
+data\augmented\5wpm\260107_05WPM_009_aug01.wav,T,5wpm,260107_05WPM.mp3,3.8
+data\augmented\5wpm\260107_05WPM_010_aug00.wav,IS,5wpm,260107_05WPM.mp3,18.2
+data\augmented\5wpm\260107_05WPM_010_aug01.wav,IS,5wpm,260107_05WPM.mp3,11.3
+data\augmented\5wpm\260107_05WPM_011_aug00.wav,F,5wpm,260107_05WPM.mp3,-1.2
+data\augmented\5wpm\260107_05WPM_011_aug01.wav,F,5wpm,260107_05WPM.mp3,3.3
+data\augmented\5wpm\260107_05WPM_012_aug00.wav,RO,5wpm,260107_05WPM.mp3,5.9
+data\augmented\5wpm\260107_05WPM_012_aug01.wav,RO,5wpm,260107_05WPM.mp3,-0.4
+data\augmented\5wpm\260107_05WPM_013_aug00.wav,M,5wpm,260107_05WPM.mp3,-0.4
+data\augmented\5wpm\260107_05WPM_013_aug01.wav,M,5wpm,260107_05WPM.mp3,1.8
+data\augmented\5wpm\260107_05WPM_014_aug00.wav,MA,5wpm,260107_05WPM.mp3,11.3
+data\augmented\5wpm\260107_05WPM_014_aug01.wav,MA,5wpm,260107_05WPM.mp3,9.7
+data\augmented\5wpm\260107_05WPM_015_aug00.wav,RC,5wpm,260107_05WPM.mp3,0.1
+data\augmented\5wpm\260107_05WPM_015_aug01.wav,RC,5wpm,260107_05WPM.mp3,3.4
+data\augmented\5wpm\260107_05WPM_016_aug00.wav,H,5wpm,260107_05WPM.mp3,8.7
+data\augmented\5wpm\260107_05WPM_016_aug01.wav,H,5wpm,260107_05WPM.mp3,8.6
+data\augmented\5wpm\260107_05WPM_017_aug00.wav,20,5wpm,260107_05WPM.mp3,14.0
+data\augmented\5wpm\260107_05WPM_017_aug01.wav,20,5wpm,260107_05WPM.mp3,5.8
+data\augmented\5wpm\260107_05WPM_018_aug00.wav,24,5wpm,260107_05WPM.mp3,1.5
+data\augmented\5wpm\260107_05WPM_018_aug01.wav,24,5wpm,260107_05WPM.mp3,1.6
+data\augmented\5wpm\260107_05WPM_019_aug00.wav,Q,5wpm,260107_05WPM.mp3,20.0
+data\augmented\5wpm\260107_05WPM_019_aug01.wav,Q,5wpm,260107_05WPM.mp3,17.4
+data\augmented\5wpm\260107_05WPM_020_aug00.wav,ST,5wpm,260107_05WPM.mp3,7.4
+data\augmented\5wpm\260107_05WPM_020_aug01.wav,ST,5wpm,260107_05WPM.mp3,2.1
+data\augmented\5wpm\260107_05WPM_021_aug00.wav,P,5wpm,260107_05WPM.mp3,0.7
+data\augmented\5wpm\260107_05WPM_021_aug01.wav,P,5wpm,260107_05WPM.mp3,-0.9
+data\augmented\5wpm\260107_05WPM_022_aug00.wav,AG,5wpm,260107_05WPM.mp3,-1.5
+data\augmented\5wpm\260107_05WPM_022_aug01.wav,AG,5wpm,260107_05WPM.mp3,17.7
+data\augmented\5wpm\260107_05WPM_023_aug00.wav,E,5wpm,260107_05WPM.mp3,1.2
+data\augmented\5wpm\260107_05WPM_023_aug01.wav,E,5wpm,260107_05WPM.mp3,3.5
+data\augmented\5wpm\260107_05WPM_024_aug00.wav,51,5wpm,260107_05WPM.mp3,13.5
+data\augmented\5wpm\260107_05WPM_024_aug01.wav,51,5wpm,260107_05WPM.mp3,1.5
+data\augmented\5wpm\260107_05WPM_025_aug00.wav,=,5wpm,260107_05WPM.mp3,17.6
+data\augmented\5wpm\260107_05WPM_025_aug01.wav,=,5wpm,260107_05WPM.mp3,-0.1
+data\augmented\5wpm\260107_05WPM_026_aug00.wav,I,5wpm,260107_05WPM.mp3,18.2
+data\augmented\5wpm\260107_05WPM_026_aug01.wav,I,5wpm,260107_05WPM.mp3,9.6
+data\augmented\5wpm\260107_05WPM_027_aug00.wav,HA,5wpm,260107_05WPM.mp3,4.7
+data\augmented\5wpm\260107_05WPM_027_aug01.wav,HA,5wpm,260107_05WPM.mp3,12.7
+data\augmented\5wpm\260107_05WPM_028_aug00.wav,VE,5wpm,260107_05WPM.mp3,15.2
+data\augmented\5wpm\260107_05WPM_028_aug01.wav,VE,5wpm,260107_05WPM.mp3,14.9
+data\augmented\5wpm\260107_05WPM_029_aug00.wav,B,5wpm,260107_05WPM.mp3,11.8
+data\augmented\5wpm\260107_05WPM_029_aug01.wav,B,5wpm,260107_05WPM.mp3,9.7
+data\augmented\5wpm\260107_05WPM_030_aug00.wav,EE,5wpm,260107_05WPM.mp3,13.8
+data\augmented\5wpm\260107_05WPM_030_aug01.wav,EE,5wpm,260107_05WPM.mp3,3.1
+data\augmented\5wpm\260107_05WPM_031_aug00.wav,N,5wpm,260107_05WPM.mp3,10.9
+data\augmented\5wpm\260107_05WPM_031_aug01.wav,N,5wpm,260107_05WPM.mp3,7.6
+data\augmented\5wpm\260107_05WPM_032_aug00.wav,SE,5wpm,260107_05WPM.mp3,4.4
+data\augmented\5wpm\260107_05WPM_032_aug01.wav,SE,5wpm,260107_05WPM.mp3,16.7
+data\augmented\5wpm\260107_05WPM_033_aug00.wav,AR,5wpm,260107_05WPM.mp3,-2.5
+data\augmented\5wpm\260107_05WPM_033_aug01.wav,AR,5wpm,260107_05WPM.mp3,14.3
+data\augmented\5wpm\260107_05WPM_034_aug00.wav,CH,5wpm,260107_05WPM.mp3,1.8
+data\augmented\5wpm\260107_05WPM_034_aug01.wav,CH,5wpm,260107_05WPM.mp3,0.8
+data\augmented\5wpm\260107_05WPM_035_aug00.wav,IN,5wpm,260107_05WPM.mp3,16.2
+data\augmented\5wpm\260107_05WPM_035_aug01.wav,IN,5wpm,260107_05WPM.mp3,2.0
+data\augmented\5wpm\260107_05WPM_036_aug00.wav,G,5wpm,260107_05WPM.mp3,7.5
+data\augmented\5wpm\260107_05WPM_036_aug01.wav,G,5wpm,260107_05WPM.mp3,-1.9
+data\augmented\5wpm\260107_05WPM_037_aug00.wav,FO,5wpm,260107_05WPM.mp3,7.9
+data\augmented\5wpm\260107_05WPM_037_aug01.wav,FO,5wpm,260107_05WPM.mp3,17.4
+data\augmented\5wpm\260107_05WPM_038_aug00.wav,R,5wpm,260107_05WPM.mp3,16.7
+data\augmented\5wpm\260107_05WPM_038_aug01.wav,R,5wpm,260107_05WPM.mp3,19.1
+data\augmented\5wpm\260107_05WPM_039_aug00.wav,A,5wpm,260107_05WPM.mp3,12.1
+data\augmented\5wpm\260107_05WPM_039_aug01.wav,A,5wpm,260107_05WPM.mp3,-0.6
+data\augmented\5wpm\260107_05WPM_040_aug00.wav,LI,5wpm,260107_05WPM.mp3,8.4
+data\augmented\5wpm\260107_05WPM_040_aug01.wav,LI,5wpm,260107_05WPM.mp3,6.9
+data\augmented\5wpm\260107_05WPM_041_aug00.wav,GH,5wpm,260107_05WPM.mp3,0.8
+data\augmented\5wpm\260107_05WPM_041_aug01.wav,GH,5wpm,260107_05WPM.mp3,14.7
+data\augmented\5wpm\260107_05WPM_042_aug00.wav,TW,5wpm,260107_05WPM.mp3,13.6
+data\augmented\5wpm\260107_05WPM_042_aug01.wav,TW,5wpm,260107_05WPM.mp3,-0.2
+data\augmented\5wpm\260107_05WPM_043_aug00.wav,E,5wpm,260107_05WPM.mp3,11.9
+data\augmented\5wpm\260107_05WPM_043_aug01.wav,E,5wpm,260107_05WPM.mp3,11.7
+data\augmented\5wpm\260107_05WPM_044_aug00.wav,IG,5wpm,260107_05WPM.mp3,-0.3
+data\augmented\5wpm\260107_05WPM_044_aug01.wav,IG,5wpm,260107_05WPM.mp3,15.8
+data\augmented\5wpm\260107_05WPM_045_aug00.wav,HT,5wpm,260107_05WPM.mp3,19.6
+data\augmented\5wpm\260107_05WPM_045_aug01.wav,HT,5wpm,260107_05WPM.mp3,6.2
+data\augmented\5wpm\260107_05WPM_046_aug00.wav,H,5wpm,260107_05WPM.mp3,18.2
+data\augmented\5wpm\260107_05WPM_046_aug01.wav,H,5wpm,260107_05WPM.mp3,2.4
+data\augmented\5wpm\260107_05WPM_047_aug00.wav,F,5wpm,260107_05WPM.mp3,18.9
+data\augmented\5wpm\260107_05WPM_047_aug01.wav,F,5wpm,260107_05WPM.mp3,-0.4
+data\augmented\5wpm\260107_05WPM_048_aug00.wav,MU,5wpm,260107_05WPM.mp3,5.8
+data\augmented\5wpm\260107_05WPM_048_aug01.wav,MU,5wpm,260107_05WPM.mp3,9.7
+data\augmented\5wpm\260107_05WPM_049_aug00.wav,LT,5wpm,260107_05WPM.mp3,19.4
+data\augmented\5wpm\260107_05WPM_049_aug01.wav,LT,5wpm,260107_05WPM.mp3,12.1
+data\augmented\5wpm\260107_05WPM_050_aug00.wav,IB,5wpm,260107_05WPM.mp3,5.6
+data\augmented\5wpm\260107_05WPM_050_aug01.wav,IB,5wpm,260107_05WPM.mp3,17.6
+data\augmented\5wpm\260107_05WPM_051_aug00.wav,AN,5wpm,260107_05WPM.mp3,8.1
+data\augmented\5wpm\260107_05WPM_051_aug01.wav,AN,5wpm,260107_05WPM.mp3,16.1
+data\augmented\5wpm\260107_05WPM_052_aug00.wav,D,5wpm,260107_05WPM.mp3,12.6
+data\augmented\5wpm\260107_05WPM_052_aug01.wav,D,5wpm,260107_05WPM.mp3,1.4
+data\augmented\5wpm\260107_05WPM_053_aug00.wav,AN,5wpm,260107_05WPM.mp3,11.5
+data\augmented\5wpm\260107_05WPM_053_aug01.wav,AN,5wpm,260107_05WPM.mp3,-0.4
+data\augmented\5wpm\260107_05WPM_054_aug00.wav,TE,5wpm,260107_05WPM.mp3,-0.5
+data\augmented\5wpm\260107_05WPM_054_aug01.wav,TE,5wpm,260107_05WPM.mp3,11.7
+data\augmented\5wpm\260107_05WPM_055_aug00.wav,NN,5wpm,260107_05WPM.mp3,11.5
+data\augmented\5wpm\260107_05WPM_055_aug01.wav,NN,5wpm,260107_05WPM.mp3,-1.5
+data\augmented\5wpm\260107_05WPM_056_aug00.wav,A,5wpm,260107_05WPM.mp3,2.4
+data\augmented\5wpm\260107_05WPM_056_aug01.wav,A,5wpm,260107_05WPM.mp3,12.7
+data\augmented\5wpm\260107_05WPM_057_aug00.wav,TH,5wpm,260107_05WPM.mp3,0.4
+data\augmented\5wpm\260107_05WPM_057_aug01.wav,TH,5wpm,260107_05WPM.mp3,11.1
+data\augmented\5wpm\260107_05WPM_058_aug00.wav,AT,5wpm,260107_05WPM.mp3,16.8
+data\augmented\5wpm\260107_05WPM_058_aug01.wav,AT,5wpm,260107_05WPM.mp3,18.5
+data\augmented\5wpm\260107_05WPM_059_aug00.wav,I,5wpm,260107_05WPM.mp3,17.6
+data\augmented\5wpm\260107_05WPM_059_aug01.wav,I,5wpm,260107_05WPM.mp3,2.8
+data\augmented\5wpm\260107_05WPM_060_aug00.wav,C,5wpm,260107_05WPM.mp3,12.0
+data\augmented\5wpm\260107_05WPM_060_aug01.wav,C,5wpm,260107_05WPM.mp3,0.6
+data\augmented\5wpm\260107_05WPM_061_aug00.wav,A,5wpm,260107_05WPM.mp3,16.7
+data\augmented\5wpm\260107_05WPM_061_aug01.wav,A,5wpm,260107_05WPM.mp3,19.4
+data\augmented\5wpm\260107_05WPM_062_aug00.wav,N,5wpm,260107_05WPM.mp3,5.2
+data\augmented\5wpm\260107_05WPM_062_aug01.wav,N,5wpm,260107_05WPM.mp3,19.2
+data\augmented\5wpm\260107_05WPM_063_aug00.wav,EA,5wpm,260107_05WPM.mp3,18.0
+data\augmented\5wpm\260107_05WPM_063_aug01.wav,EA,5wpm,260107_05WPM.mp3,19.3
+data\augmented\5wpm\260107_05WPM_064_aug00.wav,SI,5wpm,260107_05WPM.mp3,11.1
+data\augmented\5wpm\260107_05WPM_064_aug01.wav,SI,5wpm,260107_05WPM.mp3,13.2
+data\augmented\5wpm\260107_05WPM_065_aug00.wav,LY,5wpm,260107_05WPM.mp3,15.6
+data\augmented\5wpm\260107_05WPM_065_aug01.wav,LY,5wpm,260107_05WPM.mp3,-2.1
+data\augmented\5wpm\260107_05WPM_066_aug00.wav,C,5wpm,260107_05WPM.mp3,13.9
+data\augmented\5wpm\260107_05WPM_066_aug01.wav,C,5wpm,260107_05WPM.mp3,18.5
+data\augmented\5wpm\260107_05WPM_067_aug00.wav,AR,5wpm,260107_05WPM.mp3,16.1
+data\augmented\5wpm\260107_05WPM_067_aug01.wav,AR,5wpm,260107_05WPM.mp3,-1.0
+data\augmented\5wpm\260107_05WPM_068_aug00.wav,RY,5wpm,260107_05WPM.mp3,0.5
+data\augmented\5wpm\260107_05WPM_068_aug01.wav,RY,5wpm,260107_05WPM.mp3,7.0
+data\augmented\5wpm\260107_05WPM_069_aug00.wav,D,5wpm,260107_05WPM.mp3,13.1
+data\augmented\5wpm\260107_05WPM_069_aug01.wav,D,5wpm,260107_05WPM.mp3,10.6
+data\augmented\5wpm\260107_05WPM_070_aug00.wav,UR,5wpm,260107_05WPM.mp3,10.0
+data\augmented\5wpm\260107_05WPM_070_aug01.wav,UR,5wpm,260107_05WPM.mp3,9.0
+data\augmented\5wpm\260107_05WPM_071_aug00.wav,IN,5wpm,260107_05WPM.mp3,4.0
+data\augmented\5wpm\260107_05WPM_071_aug01.wav,IN,5wpm,260107_05WPM.mp3,0.7
+data\augmented\5wpm\260107_05WPM_072_aug00.wav,G,5wpm,260107_05WPM.mp3,8.8
+data\augmented\5wpm\260107_05WPM_072_aug01.wav,G,5wpm,260107_05WPM.mp3,7.5
+data\augmented\5wpm\260107_05WPM_073_aug00.wav,AI,5wpm,260107_05WPM.mp3,7.5
+data\augmented\5wpm\260107_05WPM_073_aug01.wav,AI,5wpm,260107_05WPM.mp3,11.5
+data\augmented\5wpm\260107_05WPM_074_aug00.wav,R,5wpm,260107_05WPM.mp3,0.5
+data\augmented\5wpm\260107_05WPM_074_aug01.wav,R,5wpm,260107_05WPM.mp3,17.0
+data\augmented\5wpm\260107_05WPM_075_aug00.wav,TR,5wpm,260107_05WPM.mp3,8.3
+data\augmented\5wpm\260107_05WPM_075_aug01.wav,TR,5wpm,260107_05WPM.mp3,-2.9
+data\augmented\5wpm\260107_05WPM_076_aug00.wav,AV,5wpm,260107_05WPM.mp3,9.5
+data\augmented\5wpm\260107_05WPM_076_aug01.wav,AV,5wpm,260107_05WPM.mp3,3.1
+data\augmented\5wpm\260107_05WPM_077_aug00.wav,EL,5wpm,260107_05WPM.mp3,8.8
+data\augmented\5wpm\260107_05WPM_077_aug01.wav,EL,5wpm,260107_05WPM.mp3,9.3
+data\augmented\5wpm\260107_05WPM_078_aug00.wav,A,5wpm,260107_05WPM.mp3,-0.5
+data\augmented\5wpm\260107_05WPM_078_aug01.wav,A,5wpm,260107_05WPM.mp3,15.8
+data\augmented\5wpm\260107_05WPM_079_aug00.wav,N,5wpm,260107_05WPM.mp3,13.0
+data\augmented\5wpm\260107_05WPM_079_aug01.wav,N,5wpm,260107_05WPM.mp3,10.9
+data\augmented\5wpm\260107_05WPM_080_aug00.wav,D,5wpm,260107_05WPM.mp3,12.8
+data\augmented\5wpm\260107_05WPM_080_aug01.wav,D,5wpm,260107_05WPM.mp3,8.1
+data\augmented\5wpm\260107_05WPM_081_aug00.wav,FI,5wpm,260107_05WPM.mp3,5.3
+data\augmented\5wpm\260107_05WPM_081_aug01.wav,FI,5wpm,260107_05WPM.mp3,19.5
+data\augmented\5wpm\260107_05WPM_082_aug00.wav,T,5wpm,260107_05WPM.mp3,17.2
+data\augmented\5wpm\260107_05WPM_082_aug01.wav,T,5wpm,260107_05WPM.mp3,17.0
+data\augmented\5wpm\260107_05WPM_083_aug00.wav,IN,5wpm,260107_05WPM.mp3,12.8
+data\augmented\5wpm\260107_05WPM_083_aug01.wav,IN,5wpm,260107_05WPM.mp3,11.0
+data\augmented\5wpm\260107_05WPM_084_aug00.wav,TO,5wpm,260107_05WPM.mp3,2.8
+data\augmented\5wpm\260107_05WPM_084_aug01.wav,TO,5wpm,260107_05WPM.mp3,3.6
+data\augmented\5wpm\260107_05WPM_085_aug00.wav,T,5wpm,260107_05WPM.mp3,4.5
+data\augmented\5wpm\260107_05WPM_085_aug01.wav,T,5wpm,260107_05WPM.mp3,-2.2
+data\augmented\5wpm\260107_05WPM_086_aug00.wav,HE,5wpm,260107_05WPM.mp3,17.3
+data\augmented\5wpm\260107_05WPM_086_aug01.wav,HE,5wpm,260107_05WPM.mp3,9.2
+data\augmented\5wpm\260107_05WPM_087_aug00.wav,S,5wpm,260107_05WPM.mp3,1.9
+data\augmented\5wpm\260107_05WPM_087_aug01.wav,S,5wpm,260107_05WPM.mp3,0.7
+data\augmented\5wpm\260107_05WPM_088_aug00.wav,ID,5wpm,260107_05WPM.mp3,5.5
+data\augmented\5wpm\260107_05WPM_088_aug01.wav,ID,5wpm,260107_05WPM.mp3,11.5
+data\augmented\5wpm\260107_05WPM_089_aug00.wav,E,5wpm,260107_05WPM.mp3,5.9
+data\augmented\5wpm\260107_05WPM_089_aug01.wav,E,5wpm,260107_05WPM.mp3,7.1
+data\augmented\5wpm\260107_05WPM_090_aug00.wav,PO,5wpm,260107_05WPM.mp3,19.7
+data\augmented\5wpm\260107_05WPM_090_aug01.wav,PO,5wpm,260107_05WPM.mp3,5.0
+data\augmented\5wpm\260107_05WPM_091_aug00.wav,CK,5wpm,260107_05WPM.mp3,12.8
+data\augmented\5wpm\260107_05WPM_091_aug01.wav,CK,5wpm,260107_05WPM.mp3,-1.7
+data\augmented\5wpm\260107_05WPM_092_aug00.wav,ET,5wpm,260107_05WPM.mp3,10.7
+data\augmented\5wpm\260107_05WPM_092_aug01.wav,ET,5wpm,260107_05WPM.mp3,12.9
+data\augmented\5wpm\260107_05WPM_093_aug00.wav,O,5wpm,260107_05WPM.mp3,10.3
+data\augmented\5wpm\260107_05WPM_093_aug01.wav,O,5wpm,260107_05WPM.mp3,5.4
+data\augmented\5wpm\260107_05WPM_094_aug00.wav,F,5wpm,260107_05WPM.mp3,13.9
+data\augmented\5wpm\260107_05WPM_094_aug01.wav,F,5wpm,260107_05WPM.mp3,8.5
+data\augmented\5wpm\260107_05WPM_095_aug00.wav,MY,5wpm,260107_05WPM.mp3,0.0
+data\augmented\5wpm\260107_05WPM_095_aug01.wav,MY,5wpm,260107_05WPM.mp3,1.6
+data\augmented\5wpm\260107_05WPM_096_aug00.wav,B,5wpm,260107_05WPM.mp3,16.8
+data\augmented\5wpm\260107_05WPM_096_aug01.wav,B,5wpm,260107_05WPM.mp3,1.5
+data\augmented\5wpm\260107_05WPM_097_aug00.wav,A,5wpm,260107_05WPM.mp3,1.9
+data\augmented\5wpm\260107_05WPM_097_aug01.wav,A,5wpm,260107_05WPM.mp3,9.9
+data\augmented\5wpm\260107_05WPM_098_aug00.wav,CK,5wpm,260107_05WPM.mp3,6.6
+data\augmented\5wpm\260107_05WPM_098_aug01.wav,CK,5wpm,260107_05WPM.mp3,10.9
+data\augmented\5wpm\260107_05WPM_099_aug00.wav,PA,5wpm,260107_05WPM.mp3,4.7
+data\augmented\5wpm\260107_05WPM_099_aug01.wav,PA,5wpm,260107_05WPM.mp3,7.0
+data\augmented\5wpm\260107_05WPM_100_aug00.wav,CK,5wpm,260107_05WPM.mp3,17.6
+data\augmented\5wpm\260107_05WPM_100_aug01.wav,CK,5wpm,260107_05WPM.mp3,15.9
+data\augmented\5wpm\260107_05WPM_101_aug00.wav,F,5wpm,260107_05WPM.mp3,1.7
+data\augmented\5wpm\260107_05WPM_101_aug01.wav,F,5wpm,260107_05WPM.mp3,19.3
+data\augmented\5wpm\260107_05WPM_102_aug00.wav,OR,5wpm,260107_05WPM.mp3,5.5
+data\augmented\5wpm\260107_05WPM_102_aug01.wav,OR,5wpm,260107_05WPM.mp3,7.2
+data\augmented\5wpm\260107_05WPM_103_aug00.wav,P,5wpm,260107_05WPM.mp3,11.2
+data\augmented\5wpm\260107_05WPM_103_aug01.wav,P,5wpm,260107_05WPM.mp3,-2.1
+data\augmented\5wpm\260107_05WPM_104_aug00.wav,OR,5wpm,260107_05WPM.mp3,16.7
+data\augmented\5wpm\260107_05WPM_104_aug01.wav,OR,5wpm,260107_05WPM.mp3,10.5
+data\augmented\5wpm\260107_05WPM_105_aug00.wav,TA,5wpm,260107_05WPM.mp3,1.4
+data\augmented\5wpm\260107_05WPM_105_aug01.wav,TA,5wpm,260107_05WPM.mp3,8.3
+data\augmented\5wpm\260107_05WPM_106_aug00.wav,BL,5wpm,260107_05WPM.mp3,4.5
+data\augmented\5wpm\260107_05WPM_106_aug01.wav,BL,5wpm,260107_05WPM.mp3,11.1
+data\augmented\5wpm\260107_05WPM_107_aug00.wav,E,5wpm,260107_05WPM.mp3,8.5
+data\augmented\5wpm\260107_05WPM_107_aug01.wav,E,5wpm,260107_05WPM.mp3,11.0
+data\augmented\5wpm\260107_05WPM_108_aug00.wav,US,5wpm,260107_05WPM.mp3,4.4
+data\augmented\5wpm\260107_05WPM_108_aug01.wav,US,5wpm,260107_05WPM.mp3,15.1
+data\augmented\5wpm\260107_05WPM_109_aug00.wav,E.,5wpm,260107_05WPM.mp3,1.1
+data\augmented\5wpm\260107_05WPM_109_aug01.wav,E.,5wpm,260107_05WPM.mp3,-1.7
+data\augmented\5wpm\260107_05WPM_110_aug00.wav,A,5wpm,260107_05WPM.mp3,15.8
+data\augmented\5wpm\260107_05WPM_110_aug01.wav,A,5wpm,260107_05WPM.mp3,5.5
+data\augmented\5wpm\260107_05WPM_111_aug00.wav,FT,5wpm,260107_05WPM.mp3,7.3
+data\augmented\5wpm\260107_05WPM_111_aug01.wav,FT,5wpm,260107_05WPM.mp3,1.3
+data\augmented\5wpm\260107_05WPM_112_aug00.wav,ER,5wpm,260107_05WPM.mp3,12.1
+data\augmented\5wpm\260107_05WPM_112_aug01.wav,ER,5wpm,260107_05WPM.mp3,3.2
+data\augmented\5wpm\260107_05WPM_113_aug00.wav,C,5wpm,260107_05WPM.mp3,12.5
+data\augmented\5wpm\260107_05WPM_113_aug01.wav,C,5wpm,260107_05WPM.mp3,15.3
+data\augmented\5wpm\260107_05WPM_114_aug00.wav,ON,5wpm,260107_05WPM.mp3,10.5
+data\augmented\5wpm\260107_05WPM_114_aug01.wav,ON,5wpm,260107_05WPM.mp3,2.3
+data\augmented\5wpm\260107_05WPM_115_aug00.wav,D,5wpm,260107_05WPM.mp3,8.6
+data\augmented\5wpm\260107_05WPM_115_aug01.wav,D,5wpm,260107_05WPM.mp3,3.0
+data\augmented\5wpm\260107_05WPM_116_aug00.wav,UC,5wpm,260107_05WPM.mp3,3.0
+data\augmented\5wpm\260107_05WPM_116_aug01.wav,UC,5wpm,260107_05WPM.mp3,13.1
+data\augmented\5wpm\260107_05WPM_117_aug00.wav,TI,5wpm,260107_05WPM.mp3,19.4
+data\augmented\5wpm\260107_05WPM_117_aug01.wav,TI,5wpm,260107_05WPM.mp3,18.6
+data\augmented\5wpm\260107_05WPM_118_aug00.wav,NG,5wpm,260107_05WPM.mp3,16.9
+data\augmented\5wpm\260107_05WPM_118_aug01.wav,NG,5wpm,260107_05WPM.mp3,0.0
+data\augmented\5wpm\260107_05WPM_119_aug00.wav,S,5wpm,260107_05WPM.mp3,11.1
+data\augmented\5wpm\260107_05WPM_119_aug01.wav,S,5wpm,260107_05WPM.mp3,0.8
+data\augmented\5wpm\260107_05WPM_120_aug00.wav,OM,5wpm,260107_05WPM.mp3,5.2
+data\augmented\5wpm\260107_05WPM_120_aug01.wav,OM,5wpm,260107_05WPM.mp3,-1.8
+data\augmented\5wpm\260107_05WPM_121_aug00.wav,E,5wpm,260107_05WPM.mp3,17.9
+data\augmented\5wpm\260107_05WPM_121_aug01.wav,E,5wpm,260107_05WPM.mp3,17.1
+data\augmented\5wpm\260107_05WPM_122_aug00.wav,RE,5wpm,260107_05WPM.mp3,19.8
+data\augmented\5wpm\260107_05WPM_122_aug01.wav,RE,5wpm,260107_05WPM.mp3,3.9
+data\augmented\5wpm\260107_05WPM_123_aug00.wav,SE,5wpm,260107_05WPM.mp3,10.3
+data\augmented\5wpm\260107_05WPM_123_aug01.wav,SE,5wpm,260107_05WPM.mp3,12.9
+data\augmented\5wpm\260107_05WPM_124_aug00.wav,AR,5wpm,260107_05WPM.mp3,1.5
+data\augmented\5wpm\260107_05WPM_124_aug01.wav,AR,5wpm,260107_05WPM.mp3,-1.5
+data\augmented\5wpm\260107_05WPM_125_aug00.wav,CH,5wpm,260107_05WPM.mp3,14.8
+data\augmented\5wpm\260107_05WPM_125_aug01.wav,CH,5wpm,260107_05WPM.mp3,17.8
+data\augmented\5wpm\260107_05WPM_126_aug00.wav,",",5wpm,260107_05WPM.mp3,10.4
+data\augmented\5wpm\260107_05WPM_126_aug01.wav,",",5wpm,260107_05WPM.mp3,15.4
+data\augmented\5wpm\260107_05WPM_127_aug00.wav,I,5wpm,260107_05WPM.mp3,2.3
+data\augmented\5wpm\260107_05WPM_127_aug01.wav,I,5wpm,260107_05WPM.mp3,15.3
+data\augmented\5wpm\260107_05WPM_128_aug00.wav,CA,5wpm,260107_05WPM.mp3,12.7
+data\augmented\5wpm\260107_05WPM_128_aug01.wav,CA,5wpm,260107_05WPM.mp3,10.4
+data\augmented\5wpm\260107_05WPM_129_aug00.wav,ME,5wpm,260107_05WPM.mp3,4.4
+data\augmented\5wpm\260107_05WPM_129_aug01.wav,ME,5wpm,260107_05WPM.mp3,11.2
+data\augmented\5wpm\260107_05WPM_130_aug00.wav,A,5wpm,260107_05WPM.mp3,6.4
+data\augmented\5wpm\260107_05WPM_130_aug01.wav,A,5wpm,260107_05WPM.mp3,19.6
+data\augmented\5wpm\260107_05WPM_131_aug00.wav,CR,5wpm,260107_05WPM.mp3,13.6
+data\augmented\5wpm\260107_05WPM_131_aug01.wav,CR,5wpm,260107_05WPM.mp3,10.3
+data\augmented\5wpm\260107_05WPM_132_aug00.wav,OS,5wpm,260107_05WPM.mp3,-2.0
+data\augmented\5wpm\260107_05WPM_132_aug01.wav,OS,5wpm,260107_05WPM.mp3,19.0
+data\augmented\5wpm\260107_05WPM_133_aug00.wav,S,5wpm,260107_05WPM.mp3,19.9
+data\augmented\5wpm\260107_05WPM_133_aug01.wav,S,5wpm,260107_05WPM.mp3,-2.8
+data\augmented\5wpm\260107_05WPM_134_aug00.wav,T,5wpm,260107_05WPM.mp3,3.0
+data\augmented\5wpm\260107_05WPM_134_aug01.wav,T,5wpm,260107_05WPM.mp3,8.5
+data\augmented\5wpm\260107_05WPM_135_aug00.wav,HE,5wpm,260107_05WPM.mp3,3.4
+data\augmented\5wpm\260107_05WPM_135_aug01.wav,HE,5wpm,260107_05WPM.mp3,8.6
+data\augmented\5wpm\260107_05WPM_136_aug00.wav,<,5wpm,260107_05WPM.mp3,18.6
+data\augmented\5wpm\260107_05WPM_136_aug01.wav,<,5wpm,260107_05WPM.mp3,-0.2
+data\augmented\5wpm\260107_05WPM_137_aug00.wav,Q,5wpm,260107_05WPM.mp3,3.3
+data\augmented\5wpm\260107_05WPM_137_aug01.wav,Q,5wpm,260107_05WPM.mp3,11.2
+data\augmented\5wpm\260107_05WPM_138_aug00.wav,ST,5wpm,260107_05WPM.mp3,9.3
+data\augmented\5wpm\260107_05WPM_138_aug01.wav,ST,5wpm,260107_05WPM.mp3,1.5
+data\augmented\5wpm\260107_05WPM_139_aug00.wav,D,5wpm,260107_05WPM.mp3,10.2
+data\augmented\5wpm\260107_05WPM_139_aug01.wav,D,5wpm,260107_05WPM.mp3,-2.0
+data\augmented\5wpm\260107_05WPM_140_aug00.wav,E,5wpm,260107_05WPM.mp3,9.9
+data\augmented\5wpm\260107_05WPM_140_aug01.wav,E,5wpm,260107_05WPM.mp3,9.7
+data\augmented\5wpm\260107_05WPM_141_aug00.wav,W1,5wpm,260107_05WPM.mp3,-1.7
+data\augmented\5wpm\260107_05WPM_141_aug01.wav,W1,5wpm,260107_05WPM.mp3,19.5
+data\augmented\5wpm\260107_05WPM_142_aug00.wav,AW,5wpm,260107_05WPM.mp3,11.5
+data\augmented\5wpm\260107_05WPM_142_aug01.wav,AW,5wpm,260107_05WPM.mp3,13.4
+data\augmented\5wpm\260107_05WPM_143_aug00.wav,=,5wpm,260107_05WPM.mp3,18.9
+data\augmented\5wpm\260107_05WPM_143_aug01.wav,=,5wpm,260107_05WPM.mp3,18.6
+data\augmented\5wpm\260107_05WPM_144_aug00.wav,J,5wpm,260107_05WPM.mp3,-1.4
+data\augmented\5wpm\260107_05WPM_144_aug01.wav,J,5wpm,260107_05WPM.mp3,11.5
+data\augmented\5wpm\260107_05WPM_145_aug00.wav,NC,5wpm,260107_05WPM.mp3,-2.4
+data\augmented\5wpm\260107_05WPM_145_aug01.wav,NC,5wpm,260107_05WPM.mp3,1.4
+data\augmented\5wpm\260107_05WPM_146_aug00.wav,RA,5wpm,260107_05WPM.mp3,14.7
+data\augmented\5wpm\260107_05WPM_146_aug01.wav,RA,5wpm,260107_05WPM.mp3,9.1
+data\augmented\5wpm\260107_05WPM_147_aug00.wav,DI,5wpm,260107_05WPM.mp3,0.6
+data\augmented\5wpm\260107_05WPM_147_aug01.wav,DI,5wpm,260107_05WPM.mp3,13.3
+data\augmented\5wpm\260107_05WPM_148_aug00.wav,O,5wpm,260107_05WPM.mp3,17.3
+data\augmented\5wpm\260107_05WPM_148_aug01.wav,O,5wpm,260107_05WPM.mp3,-3.0
+data\augmented\5wpm\260107_05WPM_149_aug00.wav,M1,5wpm,260107_05WPM.mp3,0.5
+data\augmented\5wpm\260107_05WPM_149_aug01.wav,M1,5wpm,260107_05WPM.mp3,13.3
+data\augmented\5wpm\260107_05WPM_150_aug00.wav,04,5wpm,260107_05WPM.mp3,8.5
+data\augmented\5wpm\260107_05WPM_150_aug01.wav,04,5wpm,260107_05WPM.mp3,6.1
+data\augmented\5wpm\260107_05WPM_151_aug00.wav,MU,5wpm,260107_05WPM.mp3,6.1
+data\augmented\5wpm\260107_05WPM_151_aug01.wav,MU,5wpm,260107_05WPM.mp3,6.8
+data\augmented\5wpm\260107_05WPM_152_aug00.wav,LT,5wpm,260107_05WPM.mp3,12.8
+data\augmented\5wpm\260107_05WPM_152_aug01.wav,LT,5wpm,260107_05WPM.mp3,10.4
+data\augmented\5wpm\260107_05WPM_153_aug00.wav,IB,5wpm,260107_05WPM.mp3,16.8
+data\augmented\5wpm\260107_05WPM_153_aug01.wav,IB,5wpm,260107_05WPM.mp3,-2.6
+data\augmented\5wpm\260107_05WPM_154_aug00.wav,AN,5wpm,260107_05WPM.mp3,7.1
+data\augmented\5wpm\260107_05WPM_154_aug01.wav,AN,5wpm,260107_05WPM.mp3,6.2
+data\augmented\5wpm\260107_05WPM_155_aug00.wav,D,5wpm,260107_05WPM.mp3,-1.4
+data\augmented\5wpm\260107_05WPM_155_aug01.wav,D,5wpm,260107_05WPM.mp3,12.6
+data\augmented\5wpm\260107_05WPM_156_aug00.wav,AN,5wpm,260107_05WPM.mp3,-0.9
+data\augmented\5wpm\260107_05WPM_156_aug01.wav,AN,5wpm,260107_05WPM.mp3,-0.1
+data\augmented\5wpm\260107_05WPM_157_aug00.wav,TE,5wpm,260107_05WPM.mp3,1.9
+data\augmented\5wpm\260107_05WPM_157_aug01.wav,TE,5wpm,260107_05WPM.mp3,0.9
+data\augmented\5wpm\260107_05WPM_158_aug00.wav,NN,5wpm,260107_05WPM.mp3,3.7
+data\augmented\5wpm\260107_05WPM_158_aug01.wav,NN,5wpm,260107_05WPM.mp3,6.2
+data\augmented\5wpm\260107_05WPM_159_aug00.wav,A,5wpm,260107_05WPM.mp3,0.4
+data\augmented\5wpm\260107_05WPM_159_aug01.wav,A,5wpm,260107_05WPM.mp3,17.5
+data\augmented\5wpm\260107_05WPM_160_aug00.wav,KI,5wpm,260107_05WPM.mp3,11.3
+data\augmented\5wpm\260107_05WPM_160_aug01.wav,KI,5wpm,260107_05WPM.mp3,9.1
+data\augmented\5wpm\260107_05WPM_161_aug00.wav,T.,5wpm,260107_05WPM.mp3,1.8
+data\augmented\5wpm\260107_05WPM_161_aug01.wav,T.,5wpm,260107_05WPM.mp3,6.5
+data\augmented\5wpm\260107_05WPM_162_aug00.wav,I,5wpm,260107_05WPM.mp3,18.9
+data\augmented\5wpm\260107_05WPM_162_aug01.wav,I,5wpm,260107_05WPM.mp3,18.6
+data\augmented\5wpm\260107_05WPM_163_aug00.wav,T,5wpm,260107_05WPM.mp3,-0.6
+data\augmented\5wpm\260107_05WPM_163_aug01.wav,T,5wpm,260107_05WPM.mp3,16.6
+data\augmented\5wpm\260107_05WPM_164_aug00.wav,CO,5wpm,260107_05WPM.mp3,13.1
+data\augmented\5wpm\260107_05WPM_164_aug01.wav,CO,5wpm,260107_05WPM.mp3,4.8
+data\augmented\5wpm\260107_05WPM_165_aug00.wav,NS,5wpm,260107_05WPM.mp3,13.4
+data\augmented\5wpm\260107_05WPM_165_aug01.wav,NS,5wpm,260107_05WPM.mp3,13.7
+data\augmented\5wpm\260107_05WPM_166_aug00.wav,IS,5wpm,260107_05WPM.mp3,1.8
+data\augmented\5wpm\260107_05WPM_166_aug01.wav,IS,5wpm,260107_05WPM.mp3,0.0
+data\augmented\5wpm\260107_05WPM_167_aug00.wav,T,5wpm,260107_05WPM.mp3,8.1
+data\augmented\5wpm\260107_05WPM_167_aug01.wav,T,5wpm,260107_05WPM.mp3,19.1
+data\augmented\5wpm\260107_05WPM_168_aug00.wav,S,5wpm,260107_05WPM.mp3,15.4
+data\augmented\5wpm\260107_05WPM_168_aug01.wav,S,5wpm,260107_05WPM.mp3,0.8
+data\augmented\5wpm\260107_05WPM_169_aug00.wav,OF,5wpm,260107_05WPM.mp3,6.5
+data\augmented\5wpm\260107_05WPM_169_aug01.wav,OF,5wpm,260107_05WPM.mp3,14.2
+data\augmented\5wpm\260107_05WPM_170_aug00.wav,A,5wpm,260107_05WPM.mp3,18.0
+data\augmented\5wpm\260107_05WPM_170_aug01.wav,A,5wpm,260107_05WPM.mp3,14.0
+data\augmented\5wpm\260107_05WPM_171_aug00.wav,B,5wpm,260107_05WPM.mp3,-1.6
+data\augmented\5wpm\260107_05WPM_171_aug01.wav,B,5wpm,260107_05WPM.mp3,-0.2
+data\augmented\5wpm\260107_05WPM_172_aug00.wav,AS,5wpm,260107_05WPM.mp3,5.1
+data\augmented\5wpm\260107_05WPM_172_aug01.wav,AS,5wpm,260107_05WPM.mp3,10.3
+data\augmented\5wpm\260107_05WPM_173_aug00.wav,EL,5wpm,260107_05WPM.mp3,-2.3
+data\augmented\5wpm\260107_05WPM_173_aug01.wav,EL,5wpm,260107_05WPM.mp3,15.0
+data\augmented\5wpm\260107_05WPM_174_aug00.wav,OA,5wpm,260107_05WPM.mp3,15.1
+data\augmented\5wpm\260107_05WPM_174_aug01.wav,OA,5wpm,260107_05WPM.mp3,3.6
+data\augmented\5wpm\260107_05WPM_175_aug00.wav,DE,5wpm,260107_05WPM.mp3,17.2
+data\augmented\5wpm\260107_05WPM_175_aug01.wav,DE,5wpm,260107_05WPM.mp3,11.1
+data\augmented\5wpm\260107_05WPM_176_aug00.wav,D,5wpm,260107_05WPM.mp3,9.8
+data\augmented\5wpm\260107_05WPM_176_aug01.wav,D,5wpm,260107_05WPM.mp3,-2.8
+data\augmented\5wpm\260107_05WPM_177_aug00.wav,VE,5wpm,260107_05WPM.mp3,12.0
+data\augmented\5wpm\260107_05WPM_177_aug01.wav,VE,5wpm,260107_05WPM.mp3,7.4
+data\augmented\5wpm\260107_05WPM_178_aug00.wav,RT,5wpm,260107_05WPM.mp3,-2.2
+data\augmented\5wpm\260107_05WPM_178_aug01.wav,RT,5wpm,260107_05WPM.mp3,10.5
+data\augmented\5wpm\260107_05WPM_179_aug00.wav,IC,5wpm,260107_05WPM.mp3,10.5
+data\augmented\5wpm\260107_05WPM_179_aug01.wav,IC,5wpm,260107_05WPM.mp3,18.3
+data\augmented\5wpm\260107_05WPM_180_aug00.wav,AL,5wpm,260107_05WPM.mp3,17.9
+data\augmented\5wpm\260107_05WPM_180_aug01.wav,AL,5wpm,260107_05WPM.mp3,20.0
+data\augmented\5wpm\260107_05WPM_181_aug00.wav,A,5wpm,260107_05WPM.mp3,12.4
+data\augmented\5wpm\260107_05WPM_181_aug01.wav,A,5wpm,260107_05WPM.mp3,2.6
+data\augmented\5wpm\260107_05WPM_182_aug00.wav,NT,5wpm,260107_05WPM.mp3,19.4
+data\augmented\5wpm\260107_05WPM_182_aug01.wav,NT,5wpm,260107_05WPM.mp3,12.3
+data\augmented\5wpm\260107_05WPM_183_aug00.wav,EN,5wpm,260107_05WPM.mp3,15.0
+data\augmented\5wpm\260107_05WPM_183_aug01.wav,EN,5wpm,260107_05WPM.mp3,11.1
+data\augmented\5wpm\260107_05WPM_184_aug00.wav,NA,5wpm,260107_05WPM.mp3,15.5
+data\augmented\5wpm\260107_05WPM_184_aug01.wav,NA,5wpm,260107_05WPM.mp3,5.1
+data\augmented\5wpm\260107_05WPM_185_aug00.wav,WI,5wpm,260107_05WPM.mp3,8.4
+data\augmented\5wpm\260107_05WPM_185_aug01.wav,WI,5wpm,260107_05WPM.mp3,2.5
+data\augmented\5wpm\260107_05WPM_186_aug00.wav,TH,5wpm,260107_05WPM.mp3,15.1
+data\augmented\5wpm\260107_05WPM_186_aug01.wav,TH,5wpm,260107_05WPM.mp3,16.0
+data\augmented\5wpm\260107_05WPM_187_aug00.wav,B,5wpm,260107_05WPM.mp3,17.0
+data\augmented\5wpm\260107_05WPM_187_aug01.wav,B,5wpm,260107_05WPM.mp3,12.4
+data\augmented\5wpm\260107_05WPM_188_aug00.wav,AN,5wpm,260107_05WPM.mp3,-0.9
+data\augmented\5wpm\260107_05WPM_188_aug01.wav,AN,5wpm,260107_05WPM.mp3,-2.3
+data\augmented\5wpm\260107_05WPM_189_aug00.wav,D,5wpm,260107_05WPM.mp3,10.1
+data\augmented\5wpm\260107_05WPM_189_aug01.wav,D,5wpm,260107_05WPM.mp3,13.2
+data\augmented\5wpm\260107_05WPM_190_aug00.wav,CO,5wpm,260107_05WPM.mp3,4.4
+data\augmented\5wpm\260107_05WPM_190_aug01.wav,CO,5wpm,260107_05WPM.mp3,13.2
+data\augmented\5wpm\260107_05WPM_191_aug00.wav,IL,5wpm,260107_05WPM.mp3,-0.3
+data\augmented\5wpm\260107_05WPM_191_aug01.wav,IL,5wpm,260107_05WPM.mp3,4.7
+data\augmented\5wpm\260107_05WPM_192_aug00.wav,S,5wpm,260107_05WPM.mp3,5.4
+data\augmented\5wpm\260107_05WPM_192_aug01.wav,S,5wpm,260107_05WPM.mp3,18.2
+data\augmented\5wpm\260107_05WPM_193_aug00.wav,FO,5wpm,260107_05WPM.mp3,1.1
+data\augmented\5wpm\260107_05WPM_193_aug01.wav,FO,5wpm,260107_05WPM.mp3,-1.0
+data\augmented\5wpm\260107_05WPM_194_aug00.wav,R,5wpm,260107_05WPM.mp3,14.5
+data\augmented\5wpm\260107_05WPM_194_aug01.wav,R,5wpm,260107_05WPM.mp3,17.3
+data\augmented\5wpm\260107_05WPM_195_aug00.wav,40,5wpm,260107_05WPM.mp3,10.5
+data\augmented\5wpm\260107_05WPM_195_aug01.wav,40,5wpm,260107_05WPM.mp3,11.0
+data\augmented\5wpm\260107_05WPM_196_aug00.wav,",",5wpm,260107_05WPM.mp3,12.7
+data\augmented\5wpm\260107_05WPM_196_aug01.wav,",",5wpm,260107_05WPM.mp3,17.4
+data\augmented\5wpm\260107_05WPM_197_aug00.wav,20,5wpm,260107_05WPM.mp3,-1.8
+data\augmented\5wpm\260107_05WPM_197_aug01.wav,20,5wpm,260107_05WPM.mp3,13.3
+data\augmented\5wpm\260107_05WPM_198_aug00.wav,",",5wpm,260107_05WPM.mp3,15.8
+data\augmented\5wpm\260107_05WPM_198_aug01.wav,",",5wpm,260107_05WPM.mp3,11.5
+data\augmented\5wpm\260107_05WPM_199_aug00.wav,15,5wpm,260107_05WPM.mp3,3.1
+data\augmented\5wpm\260107_05WPM_199_aug01.wav,15,5wpm,260107_05WPM.mp3,16.4
+data\augmented\5wpm\260107_05WPM_200_aug00.wav,",",5wpm,260107_05WPM.mp3,18.0
+data\augmented\5wpm\260107_05WPM_200_aug01.wav,",",5wpm,260107_05WPM.mp3,12.7
+data\augmented\5wpm\260107_05WPM_201_aug00.wav,AN,5wpm,260107_05WPM.mp3,-2.9
+data\augmented\5wpm\260107_05WPM_201_aug01.wav,AN,5wpm,260107_05WPM.mp3,-2.2
+data\augmented\5wpm\260107_05WPM_202_aug00.wav,D,5wpm,260107_05WPM.mp3,10.1
+data\augmented\5wpm\260107_05WPM_202_aug01.wav,D,5wpm,260107_05WPM.mp3,4.2
+data\augmented\5wpm\260107_05WPM_203_aug00.wav,1,5wpm,260107_05WPM.mp3,12.9
+data\augmented\5wpm\260107_05WPM_203_aug01.wav,1,5wpm,260107_05WPM.mp3,19.9
+data\augmented\5wpm\260107_05WPM_204_aug00.wav,0,5wpm,260107_05WPM.mp3,0.7
+data\augmented\5wpm\260107_05WPM_204_aug01.wav,0,5wpm,260107_05WPM.mp3,14.0
+data\augmented\5wpm\260107_05WPM_205_aug00.wav,ME,5wpm,260107_05WPM.mp3,16.5
+data\augmented\5wpm\260107_05WPM_205_aug01.wav,ME,5wpm,260107_05WPM.mp3,6.7
+data\augmented\5wpm\260107_05WPM_206_aug00.wav,TE,5wpm,260107_05WPM.mp3,18.7
+data\augmented\5wpm\260107_05WPM_206_aug01.wav,TE,5wpm,260107_05WPM.mp3,15.7
+data\augmented\5wpm\260107_05WPM_207_aug00.wav,RS,5wpm,260107_05WPM.mp3,-2.7
+data\augmented\5wpm\260107_05WPM_207_aug01.wav,RS,5wpm,260107_05WPM.mp3,5.4
+data\augmented\5wpm\260107_05WPM_208_aug00.wav,",",5wpm,260107_05WPM.mp3,-0.7
+data\augmented\5wpm\260107_05WPM_208_aug01.wav,",",5wpm,260107_05WPM.mp3,18.3
+data\augmented\5wpm\260107_05WPM_209_aug00.wav,A,5wpm,260107_05WPM.mp3,7.4
+data\augmented\5wpm\260107_05WPM_209_aug01.wav,A,5wpm,260107_05WPM.mp3,13.8
+data\augmented\5wpm\260107_05WPM_210_aug00.wav,BA,5wpm,260107_05WPM.mp3,11.0
+data\augmented\5wpm\260107_05WPM_210_aug01.wav,BA,5wpm,260107_05WPM.mp3,17.1
+data\augmented\5wpm\260107_05WPM_211_aug00.wav,SE,5wpm,260107_05WPM.mp3,16.2
+data\augmented\5wpm\260107_05WPM_211_aug01.wav,SE,5wpm,260107_05WPM.mp3,15.8
+data\augmented\5wpm\260107_05WPM_212_aug00.wav,U,5wpm,260107_05WPM.mp3,10.7
+data\augmented\5wpm\260107_05WPM_212_aug01.wav,U,5wpm,260107_05WPM.mp3,19.9
+data\augmented\5wpm\260107_05WPM_213_aug00.wav,NI,5wpm,260107_05WPM.mp3,11.5
+data\augmented\5wpm\260107_05WPM_213_aug01.wav,NI,5wpm,260107_05WPM.mp3,5.5
+data\augmented\5wpm\260107_05WPM_214_aug00.wav,T,5wpm,260107_05WPM.mp3,12.5
+data\augmented\5wpm\260107_05WPM_214_aug01.wav,T,5wpm,260107_05WPM.mp3,5.5
+data\augmented\5wpm\260107_05WPM_215_aug00.wav,US,5wpm,260107_05WPM.mp3,-1.6
+data\augmented\5wpm\260107_05WPM_215_aug01.wav,US,5wpm,260107_05WPM.mp3,19.0
+data\augmented\5wpm\260107_05WPM_216_aug00.wav,IN,5wpm,260107_05WPM.mp3,0.5
+data\augmented\5wpm\260107_05WPM_216_aug01.wav,IN,5wpm,260107_05WPM.mp3,0.7
+data\augmented\5wpm\260107_05WPM_217_aug00.wav,G,5wpm,260107_05WPM.mp3,18.9
+data\augmented\5wpm\260107_05WPM_217_aug01.wav,G,5wpm,260107_05WPM.mp3,10.5
+data\augmented\5wpm\260107_05WPM_218_aug00.wav,TH,5wpm,260107_05WPM.mp3,15.8
+data\augmented\5wpm\260107_05WPM_218_aug01.wav,TH,5wpm,260107_05WPM.mp3,17.7
+data\augmented\5wpm\260107_05WPM_219_aug00.wav,E,5wpm,260107_05WPM.mp3,13.1
+data\augmented\5wpm\260107_05WPM_219_aug01.wav,E,5wpm,260107_05WPM.mp3,19.5
+data\augmented\5wpm\260107_05WPM_220_aug00.wav,=,5wpm,260107_05WPM.mp3,7.6
+data\augmented\5wpm\260107_05WPM_220_aug01.wav,=,5wpm,260107_05WPM.mp3,-2.3
+data\augmented\5wpm\260107_05WPM_221_aug00.wav,E,5wpm,260107_05WPM.mp3,15.1
+data\augmented\5wpm\260107_05WPM_221_aug01.wav,E,5wpm,260107_05WPM.mp3,12.5
+data\augmented\5wpm\260107_05WPM_222_aug00.wav,ND,5wpm,260107_05WPM.mp3,14.6
+data\augmented\5wpm\260107_05WPM_222_aug01.wav,ND,5wpm,260107_05WPM.mp3,2.5
+data\augmented\5wpm\260107_05WPM_223_aug00.wav,O,5wpm,260107_05WPM.mp3,13.0
+data\augmented\5wpm\260107_05WPM_223_aug01.wav,O,5wpm,260107_05WPM.mp3,19.2
+data\augmented\5wpm\260107_05WPM_224_aug00.wav,F,5wpm,260107_05WPM.mp3,7.8
+data\augmented\5wpm\260107_05WPM_224_aug01.wav,F,5wpm,260107_05WPM.mp3,3.8
+data\augmented\5wpm\260107_05WPM_225_aug00.wav,5,5wpm,260107_05WPM.mp3,3.3
+data\augmented\5wpm\260107_05WPM_225_aug01.wav,5,5wpm,260107_05WPM.mp3,-1.4
+data\augmented\5wpm\260107_05WPM_226_aug00.wav,WP,5wpm,260107_05WPM.mp3,4.0
+data\augmented\5wpm\260107_05WPM_226_aug01.wav,WP,5wpm,260107_05WPM.mp3,6.2
+data\augmented\5wpm\260107_05WPM_227_aug00.wav,M,5wpm,260107_05WPM.mp3,15.8
+data\augmented\5wpm\260107_05WPM_227_aug01.wav,M,5wpm,260107_05WPM.mp3,5.5
+data\augmented\5wpm\260107_05WPM_228_aug00.wav,TE,5wpm,260107_05WPM.mp3,11.2
+data\augmented\5wpm\260107_05WPM_228_aug01.wav,TE,5wpm,260107_05WPM.mp3,13.6
+data\augmented\5wpm\260107_05WPM_229_aug00.wav,XT,5wpm,260107_05WPM.mp3,4.4
+data\augmented\5wpm\260107_05WPM_229_aug01.wav,XT,5wpm,260107_05WPM.mp3,-0.9
+data\augmented\5wpm\260107_05WPM_230_aug00.wav,=,5wpm,260107_05WPM.mp3,14.8
+data\augmented\5wpm\260107_05WPM_230_aug01.wav,=,5wpm,260107_05WPM.mp3,14.0
+data\augmented\5wpm\260107_05WPM_231_aug00.wav,Q,5wpm,260107_05WPM.mp3,-2.4
+data\augmented\5wpm\260107_05WPM_231_aug01.wav,Q,5wpm,260107_05WPM.mp3,12.7
+data\augmented\5wpm\260107_05WPM_232_aug00.wav,ST,5wpm,260107_05WPM.mp3,19.8
+data\augmented\5wpm\260107_05WPM_232_aug01.wav,ST,5wpm,260107_05WPM.mp3,11.5
+data\augmented\5wpm\260107_05WPM_233_aug00.wav,D,5wpm,260107_05WPM.mp3,1.5
+data\augmented\5wpm\260107_05WPM_233_aug01.wav,D,5wpm,260107_05WPM.mp3,1.8
+data\augmented\5wpm\260107_05WPM_234_aug00.wav,E,5wpm,260107_05WPM.mp3,14.2
+data\augmented\5wpm\260107_05WPM_234_aug01.wav,E,5wpm,260107_05WPM.mp3,0.2
+data\augmented\5wpm\260107_05WPM_235_aug00.wav,W1,5wpm,260107_05WPM.mp3,19.6
+data\augmented\5wpm\260107_05WPM_235_aug01.wav,W1,5wpm,260107_05WPM.mp3,6.7
+data\augmented\5wpm\260107_05WPM_236_aug00.wav,AW,5wpm,260107_05WPM.mp3,16.6
+data\augmented\5wpm\260107_05WPM_236_aug01.wav,AW,5wpm,260107_05WPM.mp3,3.6
+data\augmented\5wpm\260107_05WPM_237_aug00.wav,<,5wpm,260107_05WPM.mp3,4.4
+data\augmented\5wpm\260107_05WPM_237_aug01.wav,<,5wpm,260107_05WPM.mp3,8.9
+data\augmented\5wpm\260204_05WPM_000_aug00.wav,=,5wpm,260204_05WPM.mp3,14.1
+data\augmented\5wpm\260204_05WPM_000_aug01.wav,=,5wpm,260204_05WPM.mp3,13.9
+data\augmented\5wpm\260204_05WPM_001_aug00.wav,NO,5wpm,260204_05WPM.mp3,13.0
+data\augmented\5wpm\260204_05WPM_001_aug01.wav,NO,5wpm,260204_05WPM.mp3,3.7
+data\augmented\5wpm\260204_05WPM_002_aug00.wav,W,5wpm,260204_05WPM.mp3,18.7
+data\augmented\5wpm\260204_05WPM_002_aug01.wav,W,5wpm,260204_05WPM.mp3,8.7
+data\augmented\5wpm\260204_05WPM_003_aug00.wav,5,5wpm,260204_05WPM.mp3,-0.9
+data\augmented\5wpm\260204_05WPM_003_aug01.wav,5,5wpm,260204_05WPM.mp3,-3.0
+data\augmented\5wpm\260204_05WPM_004_aug00.wav,WP,5wpm,260204_05WPM.mp3,12.6
+data\augmented\5wpm\260204_05WPM_004_aug01.wav,WP,5wpm,260204_05WPM.mp3,17.2
+data\augmented\5wpm\260204_05WPM_005_aug00.wav,M,5wpm,260204_05WPM.mp3,-1.5
+data\augmented\5wpm\260204_05WPM_005_aug01.wav,M,5wpm,260204_05WPM.mp3,4.0
+data\augmented\5wpm\260204_05WPM_006_aug00.wav,=,5wpm,260204_05WPM.mp3,14.6
+data\augmented\5wpm\260204_05WPM_006_aug01.wav,=,5wpm,260204_05WPM.mp3,9.4
+data\augmented\5wpm\260204_05WPM_007_aug00.wav,T,5wpm,260204_05WPM.mp3,19.4
+data\augmented\5wpm\260204_05WPM_007_aug01.wav,T,5wpm,260204_05WPM.mp3,3.3
+data\augmented\5wpm\260204_05WPM_008_aug00.wav,EX,5wpm,260204_05WPM.mp3,8.7
+data\augmented\5wpm\260204_05WPM_008_aug01.wav,EX,5wpm,260204_05WPM.mp3,19.6
+data\augmented\5wpm\260204_05WPM_009_aug00.wav,T,5wpm,260204_05WPM.mp3,16.6
+data\augmented\5wpm\260204_05WPM_009_aug01.wav,T,5wpm,260204_05WPM.mp3,16.9
+data\augmented\5wpm\260204_05WPM_010_aug00.wav,IS,5wpm,260204_05WPM.mp3,5.4
+data\augmented\5wpm\260204_05WPM_010_aug01.wav,IS,5wpm,260204_05WPM.mp3,9.5
+data\augmented\5wpm\260204_05WPM_011_aug00.wav,F,5wpm,260204_05WPM.mp3,7.7
+data\augmented\5wpm\260204_05WPM_011_aug01.wav,F,5wpm,260204_05WPM.mp3,16.6
+data\augmented\5wpm\260204_05WPM_012_aug00.wav,RO,5wpm,260204_05WPM.mp3,3.6
+data\augmented\5wpm\260204_05WPM_012_aug01.wav,RO,5wpm,260204_05WPM.mp3,-2.9
+data\augmented\5wpm\260204_05WPM_013_aug00.wav,M,5wpm,260204_05WPM.mp3,12.2
+data\augmented\5wpm\260204_05WPM_013_aug01.wav,M,5wpm,260204_05WPM.mp3,15.5
+data\augmented\5wpm\260204_05WPM_014_aug00.wav,AP,5wpm,260204_05WPM.mp3,19.9
+data\augmented\5wpm\260204_05WPM_014_aug01.wav,AP,5wpm,260204_05WPM.mp3,5.0
+data\augmented\5wpm\260204_05WPM_015_aug00.wav,RI,5wpm,260204_05WPM.mp3,17.5
+data\augmented\5wpm\260204_05WPM_015_aug01.wav,RI,5wpm,260204_05WPM.mp3,5.5
+data\augmented\5wpm\260204_05WPM_016_aug00.wav,L,5wpm,260204_05WPM.mp3,-0.8
+data\augmented\5wpm\260204_05WPM_016_aug01.wav,L,5wpm,260204_05WPM.mp3,1.3
+data\augmented\5wpm\260204_05WPM_017_aug00.wav,20,5wpm,260204_05WPM.mp3,6.0
+data\augmented\5wpm\260204_05WPM_017_aug01.wav,20,5wpm,260204_05WPM.mp3,12.0
+data\augmented\5wpm\260204_05WPM_018_aug00.wav,24,5wpm,260204_05WPM.mp3,13.2
+data\augmented\5wpm\260204_05WPM_018_aug01.wav,24,5wpm,260204_05WPM.mp3,12.6
+data\augmented\5wpm\260204_05WPM_019_aug00.wav,Q,5wpm,260204_05WPM.mp3,11.8
+data\augmented\5wpm\260204_05WPM_019_aug01.wav,Q,5wpm,260204_05WPM.mp3,2.6
+data\augmented\5wpm\260204_05WPM_020_aug00.wav,ST,5wpm,260204_05WPM.mp3,-0.5
+data\augmented\5wpm\260204_05WPM_020_aug01.wav,ST,5wpm,260204_05WPM.mp3,10.0
+data\augmented\5wpm\260204_05WPM_021_aug00.wav,P,5wpm,260204_05WPM.mp3,6.6
+data\augmented\5wpm\260204_05WPM_021_aug01.wav,P,5wpm,260204_05WPM.mp3,5.5
+data\augmented\5wpm\260204_05WPM_022_aug00.wav,AG,5wpm,260204_05WPM.mp3,7.7
+data\augmented\5wpm\260204_05WPM_022_aug01.wav,AG,5wpm,260204_05WPM.mp3,13.7
+data\augmented\5wpm\260204_05WPM_023_aug00.wav,E,5wpm,260204_05WPM.mp3,9.8
+data\augmented\5wpm\260204_05WPM_023_aug01.wav,E,5wpm,260204_05WPM.mp3,10.3
+data\augmented\5wpm\260204_05WPM_024_aug00.wav,3,5wpm,260204_05WPM.mp3,5.7
+data\augmented\5wpm\260204_05WPM_024_aug01.wav,3,5wpm,260204_05WPM.mp3,4.4
+data\augmented\5wpm\260204_05WPM_025_aug00.wav,3,5wpm,260204_05WPM.mp3,12.9
+data\augmented\5wpm\260204_05WPM_025_aug01.wav,3,5wpm,260204_05WPM.mp3,-2.4
+data\augmented\5wpm\260204_05WPM_026_aug00.wav,=,5wpm,260204_05WPM.mp3,-0.8
+data\augmented\5wpm\260204_05WPM_026_aug01.wav,=,5wpm,260204_05WPM.mp3,1.0
+data\augmented\5wpm\260204_05WPM_027_aug00.wav,WH,5wpm,260204_05WPM.mp3,1.1
+data\augmented\5wpm\260204_05WPM_027_aug01.wav,WH,5wpm,260204_05WPM.mp3,-0.6
+data\augmented\5wpm\260204_05WPM_028_aug00.wav,IL,5wpm,260204_05WPM.mp3,19.6
+data\augmented\5wpm\260204_05WPM_028_aug01.wav,IL,5wpm,260204_05WPM.mp3,-2.9
+data\augmented\5wpm\260204_05WPM_029_aug00.wav,E,5wpm,260204_05WPM.mp3,3.8
+data\augmented\5wpm\260204_05WPM_029_aug01.wav,E,5wpm,260204_05WPM.mp3,-1.9
+data\augmented\5wpm\260204_05WPM_030_aug00.wav,TH,5wpm,260204_05WPM.mp3,18.3
+data\augmented\5wpm\260204_05WPM_030_aug01.wav,TH,5wpm,260204_05WPM.mp3,17.4
+data\augmented\5wpm\260204_05WPM_031_aug00.wav,E,5wpm,260204_05WPM.mp3,-3.0
+data\augmented\5wpm\260204_05WPM_031_aug01.wav,E,5wpm,260204_05WPM.mp3,12.6
+data\augmented\5wpm\260204_05WPM_032_aug00.wav,CH,5wpm,260204_05WPM.mp3,-1.1
+data\augmented\5wpm\260204_05WPM_032_aug01.wav,CH,5wpm,260204_05WPM.mp3,13.8
+data\augmented\5wpm\260204_05WPM_033_aug00.wav,AN,5wpm,260204_05WPM.mp3,16.1
+data\augmented\5wpm\260204_05WPM_033_aug01.wav,AN,5wpm,260204_05WPM.mp3,6.3
+data\augmented\5wpm\260204_05WPM_034_aug00.wav,NE,5wpm,260204_05WPM.mp3,15.8
+data\augmented\5wpm\260204_05WPM_034_aug01.wav,NE,5wpm,260204_05WPM.mp3,14.1
+data\augmented\5wpm\260204_05WPM_035_aug00.wav,L,5wpm,260204_05WPM.mp3,4.6
+data\augmented\5wpm\260204_05WPM_035_aug01.wav,L,5wpm,260204_05WPM.mp3,16.3
+data\augmented\5wpm\260204_05WPM_036_aug00.wav,NU,5wpm,260204_05WPM.mp3,18.8
+data\augmented\5wpm\260204_05WPM_036_aug01.wav,NU,5wpm,260204_05WPM.mp3,-2.5
+data\augmented\5wpm\260204_05WPM_037_aug00.wav,MB,5wpm,260204_05WPM.mp3,5.7
+data\augmented\5wpm\260204_05WPM_037_aug01.wav,MB,5wpm,260204_05WPM.mp3,6.0
+data\augmented\5wpm\260204_05WPM_038_aug00.wav,ER,5wpm,260204_05WPM.mp3,0.3
+data\augmented\5wpm\260204_05WPM_038_aug01.wav,ER,5wpm,260204_05WPM.mp3,19.3
+data\augmented\5wpm\260204_05WPM_039_aug00.wav,S,5wpm,260204_05WPM.mp3,10.5
+data\augmented\5wpm\260204_05WPM_039_aug01.wav,S,5wpm,260204_05WPM.mp3,2.4
+data\augmented\5wpm\260204_05WPM_040_aug00.wav,A,5wpm,260204_05WPM.mp3,16.6
+data\augmented\5wpm\260204_05WPM_040_aug01.wav,A,5wpm,260204_05WPM.mp3,-0.3
+data\augmented\5wpm\260204_05WPM_041_aug00.wav,RE,5wpm,260204_05WPM.mp3,1.3
+data\augmented\5wpm\260204_05WPM_041_aug01.wav,RE,5wpm,260204_05WPM.mp3,4.1
+data\augmented\5wpm\260204_05WPM_042_aug00.wav,S,5wpm,260204_05WPM.mp3,8.1
+data\augmented\5wpm\260204_05WPM_042_aug01.wav,S,5wpm,260204_05WPM.mp3,6.2
+data\augmented\5wpm\260204_05WPM_043_aug00.wav,IM,5wpm,260204_05WPM.mp3,2.3
+data\augmented\5wpm\260204_05WPM_043_aug01.wav,IM,5wpm,260204_05WPM.mp3,4.7
+data\augmented\5wpm\260204_05WPM_044_aug00.wav,IL,5wpm,260204_05WPM.mp3,0.6
+data\augmented\5wpm\260204_05WPM_044_aug01.wav,IL,5wpm,260204_05WPM.mp3,-1.3
+data\augmented\5wpm\260204_05WPM_045_aug00.wav,AR,5wpm,260204_05WPM.mp3,13.2
+data\augmented\5wpm\260204_05WPM_045_aug01.wav,AR,5wpm,260204_05WPM.mp3,8.1
+data\augmented\5wpm\260204_05WPM_046_aug00.wav,T,5wpm,260204_05WPM.mp3,18.5
+data\augmented\5wpm\260204_05WPM_046_aug01.wav,T,5wpm,260204_05WPM.mp3,5.6
+data\augmented\5wpm\260204_05WPM_047_aug00.wav,O,5wpm,260204_05WPM.mp3,19.4
+data\augmented\5wpm\260204_05WPM_047_aug01.wav,O,5wpm,260204_05WPM.mp3,7.2
+data\augmented\5wpm\260204_05WPM_048_aug00.wav,TH,5wpm,260204_05WPM.mp3,4.4
+data\augmented\5wpm\260204_05WPM_048_aug01.wav,TH,5wpm,260204_05WPM.mp3,8.7
+data\augmented\5wpm\260204_05WPM_049_aug00.wav,E,5wpm,260204_05WPM.mp3,9.0
+data\augmented\5wpm\260204_05WPM_049_aug01.wav,E,5wpm,260204_05WPM.mp3,-1.6
+data\augmented\5wpm\260204_05WPM_050_aug00.wav,OR,5wpm,260204_05WPM.mp3,19.1
+data\augmented\5wpm\260204_05WPM_050_aug01.wav,OR,5wpm,260204_05WPM.mp3,12.3
+data\augmented\5wpm\260204_05WPM_051_aug00.wav,IG,5wpm,260204_05WPM.mp3,18.7
+data\augmented\5wpm\260204_05WPM_051_aug01.wav,IG,5wpm,260204_05WPM.mp3,0.1
+data\augmented\5wpm\260204_05WPM_052_aug00.wav,IN,5wpm,260204_05WPM.mp3,7.8
+data\augmented\5wpm\260204_05WPM_052_aug01.wav,IN,5wpm,260204_05WPM.mp3,-1.8
+data\augmented\5wpm\260204_05WPM_053_aug00.wav,AL,5wpm,260204_05WPM.mp3,9.7
+data\augmented\5wpm\260204_05WPM_053_aug01.wav,AL,5wpm,260204_05WPM.mp3,7.5
+data\augmented\5wpm\260204_05WPM_054_aug00.wav,A,5wpm,260204_05WPM.mp3,15.0
+data\augmented\5wpm\260204_05WPM_054_aug01.wav,A,5wpm,260204_05WPM.mp3,2.8
+data\augmented\5wpm\260204_05WPM_055_aug00.wav,N,5wpm,260204_05WPM.mp3,14.3
+data\augmented\5wpm\260204_05WPM_055_aug01.wav,N,5wpm,260204_05WPM.mp3,4.5
+data\augmented\5wpm\260204_05WPM_056_aug00.wav,AL,5wpm,260204_05WPM.mp3,3.2
+data\augmented\5wpm\260204_05WPM_056_aug01.wav,AL,5wpm,260204_05WPM.mp3,1.8
+data\augmented\5wpm\260204_05WPM_057_aug00.wav,OG,5wpm,260204_05WPM.mp3,7.5
+data\augmented\5wpm\260204_05WPM_057_aug01.wav,OG,5wpm,260204_05WPM.mp3,19.7
+data\augmented\5wpm\260204_05WPM_058_aug00.wav,T,5wpm,260204_05WPM.mp3,10.8
+data\augmented\5wpm\260204_05WPM_058_aug01.wav,T,5wpm,260204_05WPM.mp3,20.0
+data\augmented\5wpm\260204_05WPM_059_aug00.wav,V,5wpm,260204_05WPM.mp3,6.6
+data\augmented\5wpm\260204_05WPM_059_aug01.wav,V,5wpm,260204_05WPM.mp3,12.7
+data\augmented\5wpm\260204_05WPM_060_aug00.wav,CH,5wpm,260204_05WPM.mp3,-1.0
+data\augmented\5wpm\260204_05WPM_060_aug01.wav,CH,5wpm,260204_05WPM.mp3,-0.9
+data\augmented\5wpm\260204_05WPM_061_aug00.wav,AN,5wpm,260204_05WPM.mp3,7.6
+data\augmented\5wpm\260204_05WPM_061_aug01.wav,AN,5wpm,260204_05WPM.mp3,7.4
+data\augmented\5wpm\260204_05WPM_062_aug00.wav,NE,5wpm,260204_05WPM.mp3,5.6
+data\augmented\5wpm\260204_05WPM_062_aug01.wav,NE,5wpm,260204_05WPM.mp3,17.7
+data\augmented\5wpm\260204_05WPM_063_aug00.wav,L,5wpm,260204_05WPM.mp3,5.2
+data\augmented\5wpm\260204_05WPM_063_aug01.wav,L,5wpm,260204_05WPM.mp3,12.9
+data\augmented\5wpm\260204_05WPM_064_aug00.wav,NU,5wpm,260204_05WPM.mp3,5.0
+data\augmented\5wpm\260204_05WPM_064_aug01.wav,NU,5wpm,260204_05WPM.mp3,6.5
+data\augmented\5wpm\260204_05WPM_065_aug00.wav,MB,5wpm,260204_05WPM.mp3,12.9
+data\augmented\5wpm\260204_05WPM_065_aug01.wav,MB,5wpm,260204_05WPM.mp3,15.1
+data\augmented\5wpm\260204_05WPM_066_aug00.wav,ER,5wpm,260204_05WPM.mp3,1.1
+data\augmented\5wpm\260204_05WPM_066_aug01.wav,ER,5wpm,260204_05WPM.mp3,2.0
+data\augmented\5wpm\260204_05WPM_067_aug00.wav,"S,",5wpm,260204_05WPM.mp3,6.8
+data\augmented\5wpm\260204_05WPM_067_aug01.wav,"S,",5wpm,260204_05WPM.mp3,18.8
+data\augmented\5wpm\260204_05WPM_068_aug00.wav,I,5wpm,260204_05WPM.mp3,3.3
+data\augmented\5wpm\260204_05WPM_068_aug01.wav,I,5wpm,260204_05WPM.mp3,8.0
+data\augmented\5wpm\260204_05WPM_069_aug00.wav,N,5wpm,260204_05WPM.mp3,18.8
+data\augmented\5wpm\260204_05WPM_069_aug01.wav,N,5wpm,260204_05WPM.mp3,6.3
+data\augmented\5wpm\260204_05WPM_070_aug00.wav,MO,5wpm,260204_05WPM.mp3,11.7
+data\augmented\5wpm\260204_05WPM_070_aug01.wav,MO,5wpm,260204_05WPM.mp3,14.0
+data\augmented\5wpm\260204_05WPM_071_aug00.wav,S,5wpm,260204_05WPM.mp3,4.2
+data\augmented\5wpm\260204_05WPM_071_aug01.wav,S,5wpm,260204_05WPM.mp3,4.8
+data\augmented\5wpm\260204_05WPM_072_aug00.wav,T,5wpm,260204_05WPM.mp3,14.3
+data\augmented\5wpm\260204_05WPM_072_aug01.wav,T,5wpm,260204_05WPM.mp3,-1.8
+data\augmented\5wpm\260204_05WPM_073_aug00.wav,CA,5wpm,260204_05WPM.mp3,20.0
+data\augmented\5wpm\260204_05WPM_073_aug01.wav,CA,5wpm,260204_05WPM.mp3,4.1
+data\augmented\5wpm\260204_05WPM_074_aug00.wav,SE,5wpm,260204_05WPM.mp3,17.6
+data\augmented\5wpm\260204_05WPM_074_aug01.wav,SE,5wpm,260204_05WPM.mp3,2.9
+data\augmented\5wpm\260204_05WPM_075_aug00.wav,"S,",5wpm,260204_05WPM.mp3,19.0
+data\augmented\5wpm\260204_05WPM_075_aug01.wav,"S,",5wpm,260204_05WPM.mp3,9.1
+data\augmented\5wpm\260204_05WPM_076_aug00.wav,T,5wpm,260204_05WPM.mp3,0.4
+data\augmented\5wpm\260204_05WPM_076_aug01.wav,T,5wpm,260204_05WPM.mp3,7.4
+data\augmented\5wpm\260204_05WPM_077_aug00.wav,HE,5wpm,260204_05WPM.mp3,5.5
+data\augmented\5wpm\260204_05WPM_077_aug01.wav,HE,5wpm,260204_05WPM.mp3,8.7
+data\augmented\5wpm\260204_05WPM_078_aug00.wav,F,5wpm,260204_05WPM.mp3,18.0
+data\augmented\5wpm\260204_05WPM_078_aug01.wav,F,5wpm,260204_05WPM.mp3,13.8
+data\augmented\5wpm\260204_05WPM_079_aug00.wav,RE,5wpm,260204_05WPM.mp3,-1.0
+data\augmented\5wpm\260204_05WPM_079_aug01.wav,RE,5wpm,260204_05WPM.mp3,-0.7
+data\augmented\5wpm\260204_05WPM_080_aug00.wav,QU,5wpm,260204_05WPM.mp3,13.0
+data\augmented\5wpm\260204_05WPM_080_aug01.wav,QU,5wpm,260204_05WPM.mp3,12.4
+data\augmented\5wpm\260204_05WPM_081_aug00.wav,EN,5wpm,260204_05WPM.mp3,-2.3
+data\augmented\5wpm\260204_05WPM_081_aug01.wav,EN,5wpm,260204_05WPM.mp3,18.4
+data\augmented\5wpm\260204_05WPM_082_aug00.wav,CI,5wpm,260204_05WPM.mp3,-0.4
+data\augmented\5wpm\260204_05WPM_082_aug01.wav,CI,5wpm,260204_05WPM.mp3,15.8
+data\augmented\5wpm\260204_05WPM_083_aug00.wav,ES,5wpm,260204_05WPM.mp3,16.8
+data\augmented\5wpm\260204_05WPM_083_aug01.wav,ES,5wpm,260204_05WPM.mp3,19.8
+data\augmented\5wpm\260204_05WPM_084_aug00.wav,H,5wpm,260204_05WPM.mp3,11.1
+data\augmented\5wpm\260204_05WPM_084_aug01.wav,H,5wpm,260204_05WPM.mp3,13.1
+data\augmented\5wpm\260204_05WPM_085_aug00.wav,AV,5wpm,260204_05WPM.mp3,-2.8
+data\augmented\5wpm\260204_05WPM_085_aug01.wav,AV,5wpm,260204_05WPM.mp3,10.7
+data\augmented\5wpm\260204_05WPM_086_aug00.wav,E,5wpm,260204_05WPM.mp3,10.6
+data\augmented\5wpm\260204_05WPM_086_aug01.wav,E,5wpm,260204_05WPM.mp3,6.6
+data\augmented\5wpm\260204_05WPM_087_aug00.wav,B,5wpm,260204_05WPM.mp3,3.0
+data\augmented\5wpm\260204_05WPM_087_aug01.wav,B,5wpm,260204_05WPM.mp3,4.7
+data\augmented\5wpm\260204_05WPM_088_aug00.wav,EE,5wpm,260204_05WPM.mp3,0.4
+data\augmented\5wpm\260204_05WPM_088_aug01.wav,EE,5wpm,260204_05WPM.mp3,19.0
+data\augmented\5wpm\260204_05WPM_089_aug00.wav,N,5wpm,260204_05WPM.mp3,16.7
+data\augmented\5wpm\260204_05WPM_089_aug01.wav,N,5wpm,260204_05WPM.mp3,-0.9
+data\augmented\5wpm\260204_05WPM_090_aug00.wav,CH,5wpm,260204_05WPM.mp3,13.6
+data\augmented\5wpm\260204_05WPM_090_aug01.wav,CH,5wpm,260204_05WPM.mp3,0.7
+data\augmented\5wpm\260204_05WPM_091_aug00.wav,AN,5wpm,260204_05WPM.mp3,4.0
+data\augmented\5wpm\260204_05WPM_091_aug01.wav,AN,5wpm,260204_05WPM.mp3,12.0
+data\augmented\5wpm\260204_05WPM_092_aug00.wav,GE,5wpm,260204_05WPM.mp3,18.1
+data\augmented\5wpm\260204_05WPM_092_aug01.wav,GE,5wpm,260204_05WPM.mp3,2.2
+data\augmented\5wpm\260204_05WPM_093_aug00.wav,D.,5wpm,260204_05WPM.mp3,6.0
+data\augmented\5wpm\260204_05WPM_093_aug01.wav,D.,5wpm,260204_05WPM.mp3,9.9
+data\augmented\5wpm\260204_05WPM_094_aug00.wav,F,5wpm,260204_05WPM.mp3,2.0
+data\augmented\5wpm\260204_05WPM_094_aug01.wav,F,5wpm,260204_05WPM.mp3,15.3
+data\augmented\5wpm\260204_05WPM_095_aug00.wav,OR,5wpm,260204_05WPM.mp3,0.9
+data\augmented\5wpm\260204_05WPM_095_aug01.wav,OR,5wpm,260204_05WPM.mp3,13.4
+data\augmented\5wpm\260204_05WPM_096_aug00.wav,E,5wpm,260204_05WPM.mp3,15.9
+data\augmented\5wpm\260204_05WPM_096_aug01.wav,E,5wpm,260204_05WPM.mp3,-2.9
+data\augmented\5wpm\260204_05WPM_097_aug00.wav,XA,5wpm,260204_05WPM.mp3,0.6
+data\augmented\5wpm\260204_05WPM_097_aug01.wav,XA,5wpm,260204_05WPM.mp3,5.7
+data\augmented\5wpm\260204_05WPM_098_aug00.wav,MP,5wpm,260204_05WPM.mp3,11.3
+data\augmented\5wpm\260204_05WPM_098_aug01.wav,MP,5wpm,260204_05WPM.mp3,9.2
+data\augmented\5wpm\260204_05WPM_099_aug00.wav,LE,5wpm,260204_05WPM.mp3,17.7
+data\augmented\5wpm\260204_05WPM_099_aug01.wav,LE,5wpm,260204_05WPM.mp3,9.3
+data\augmented\5wpm\260204_05WPM_100_aug00.wav,",",5wpm,260204_05WPM.mp3,3.6
+data\augmented\5wpm\260204_05WPM_100_aug01.wav,",",5wpm,260204_05WPM.mp3,14.4
+data\augmented\5wpm\260204_05WPM_101_aug00.wav,TH,5wpm,260204_05WPM.mp3,13.6
+data\augmented\5wpm\260204_05WPM_101_aug01.wav,TH,5wpm,260204_05WPM.mp3,7.5
+data\augmented\5wpm\260204_05WPM_102_aug00.wav,E,5wpm,260204_05WPM.mp3,-2.2
+data\augmented\5wpm\260204_05WPM_102_aug01.wav,E,5wpm,260204_05WPM.mp3,10.8
+data\augmented\5wpm\260204_05WPM_103_aug00.wav,O,5wpm,260204_05WPM.mp3,6.1
+data\augmented\5wpm\260204_05WPM_103_aug01.wav,O,5wpm,260204_05WPM.mp3,18.1
+data\augmented\5wpm\260204_05WPM_104_aug00.wav,LD,5wpm,260204_05WPM.mp3,9.1
+data\augmented\5wpm\260204_05WPM_104_aug01.wav,LD,5wpm,260204_05WPM.mp3,-2.5
+data\augmented\5wpm\260204_05WPM_105_aug00.wav,A,5wpm,260204_05WPM.mp3,10.7
+data\augmented\5wpm\260204_05WPM_105_aug01.wav,A,5wpm,260204_05WPM.mp3,13.0
+data\augmented\5wpm\260204_05WPM_106_aug00.wav,NA,5wpm,260204_05WPM.mp3,13.4
+data\augmented\5wpm\260204_05WPM_106_aug01.wav,NA,5wpm,260204_05WPM.mp3,4.0
+data\augmented\5wpm\260204_05WPM_107_aug00.wav,LO,5wpm,260204_05WPM.mp3,11.2
+data\augmented\5wpm\260204_05WPM_107_aug01.wav,LO,5wpm,260204_05WPM.mp3,3.2
+data\augmented\5wpm\260204_05WPM_108_aug00.wav,G,5wpm,260204_05WPM.mp3,-2.2
+data\augmented\5wpm\260204_05WPM_108_aug01.wav,G,5wpm,260204_05WPM.mp3,11.7
+data\augmented\5wpm\260204_05WPM_109_aug00.wav,FO,5wpm,260204_05WPM.mp3,-1.5
+data\augmented\5wpm\260204_05WPM_109_aug01.wav,FO,5wpm,260204_05WPM.mp3,15.7
+data\augmented\5wpm\260204_05WPM_110_aug00.wav,X,5wpm,260204_05WPM.mp3,15.7
+data\augmented\5wpm\260204_05WPM_110_aug01.wav,X,5wpm,260204_05WPM.mp3,-2.1
+data\augmented\5wpm\260204_05WPM_111_aug00.wav,4,5wpm,260204_05WPM.mp3,5.3
+data\augmented\5wpm\260204_05WPM_111_aug01.wav,4,5wpm,260204_05WPM.mp3,16.7
+data\augmented\5wpm\260204_05WPM_112_aug00.wav,KD,5wpm,260204_05WPM.mp3,9.6
+data\augmented\5wpm\260204_05WPM_112_aug01.wav,KD,5wpm,260204_05WPM.mp3,8.8
+data\augmented\5wpm\260204_05WPM_113_aug00.wav,FW,5wpm,260204_05WPM.mp3,3.7
+data\augmented\5wpm\260204_05WPM_113_aug01.wav,FW,5wpm,260204_05WPM.mp3,15.7
+data\augmented\5wpm\260204_05WPM_114_aug00.wav,T,5wpm,260204_05WPM.mp3,1.1
+data\augmented\5wpm\260204_05WPM_114_aug01.wav,T,5wpm,260204_05WPM.mp3,8.3
+data\augmented\5wpm\260204_05WPM_115_aug00.wav,V,5wpm,260204_05WPM.mp3,14.0
+data\augmented\5wpm\260204_05WPM_115_aug01.wav,V,5wpm,260204_05WPM.mp3,19.7
+data\augmented\5wpm\260204_05WPM_116_aug00.wav,CH,5wpm,260204_05WPM.mp3,0.7
+data\augmented\5wpm\260204_05WPM_116_aug01.wav,CH,5wpm,260204_05WPM.mp3,12.6
+data\augmented\5wpm\260204_05WPM_117_aug00.wav,AN,5wpm,260204_05WPM.mp3,16.6
+data\augmented\5wpm\260204_05WPM_117_aug01.wav,AN,5wpm,260204_05WPM.mp3,2.9
+data\augmented\5wpm\260204_05WPM_118_aug00.wav,N,5wpm,260204_05WPM.mp3,19.5
+data\augmented\5wpm\260204_05WPM_118_aug01.wav,N,5wpm,260204_05WPM.mp3,5.4
+data\augmented\5wpm\260204_05WPM_119_aug00.wav,EL,5wpm,260204_05WPM.mp3,11.4
+data\augmented\5wpm\260204_05WPM_119_aug01.wav,EL,5wpm,260204_05WPM.mp3,1.3
+data\augmented\5wpm\260204_05WPM_120_aug00.wav,W,5wpm,260204_05WPM.mp3,0.7
+data\augmented\5wpm\260204_05WPM_120_aug01.wav,W,5wpm,260204_05WPM.mp3,6.2
+data\augmented\5wpm\260204_05WPM_121_aug00.wav,AS,5wpm,260204_05WPM.mp3,10.0
+data\augmented\5wpm\260204_05WPM_121_aug01.wav,AS,5wpm,260204_05WPM.mp3,4.0
+data\augmented\5wpm\260204_05WPM_122_aug00.wav,I,5wpm,260204_05WPM.mp3,11.7
+data\augmented\5wpm\260204_05WPM_122_aug01.wav,I,5wpm,260204_05WPM.mp3,4.9
+data\augmented\5wpm\260204_05WPM_123_aug00.wav,N,5wpm,260204_05WPM.mp3,11.5
+data\augmented\5wpm\260204_05WPM_123_aug01.wav,N,5wpm,260204_05WPM.mp3,12.7
+data\augmented\5wpm\260204_05WPM_124_aug00.wav,TH,5wpm,260204_05WPM.mp3,-0.2
+data\augmented\5wpm\260204_05WPM_124_aug01.wav,TH,5wpm,260204_05WPM.mp3,6.6
+data\augmented\5wpm\260204_05WPM_125_aug00.wav,E,5wpm,260204_05WPM.mp3,17.7
+data\augmented\5wpm\260204_05WPM_125_aug01.wav,E,5wpm,260204_05WPM.mp3,18.1
+data\augmented\5wpm\260204_05WPM_126_aug00.wav,RA,5wpm,260204_05WPM.mp3,9.4
+data\augmented\5wpm\260204_05WPM_126_aug01.wav,RA,5wpm,260204_05WPM.mp3,18.8
+data\augmented\5wpm\260204_05WPM_127_aug00.wav,NG,5wpm,260204_05WPM.mp3,18.8
+data\augmented\5wpm\260204_05WPM_127_aug01.wav,NG,5wpm,260204_05WPM.mp3,6.1
+data\augmented\5wpm\260204_05WPM_128_aug00.wav,E,5wpm,260204_05WPM.mp3,13.5
+data\augmented\5wpm\260204_05WPM_128_aug01.wav,E,5wpm,260204_05WPM.mp3,-2.0
+data\augmented\5wpm\260204_05WPM_129_aug00.wav,OF,5wpm,260204_05WPM.mp3,9.0
+data\augmented\5wpm\260204_05WPM_129_aug01.wav,OF,5wpm,260204_05WPM.mp3,0.5
+data\augmented\5wpm\260204_05WPM_130_aug00.wav,6,5wpm,260204_05WPM.mp3,14.4
+data\augmented\5wpm\260204_05WPM_130_aug01.wav,6,5wpm,260204_05WPM.mp3,5.8
+data\augmented\5wpm\260204_05WPM_131_aug00.wav,6,5wpm,260204_05WPM.mp3,3.2
+data\augmented\5wpm\260204_05WPM_131_aug01.wav,6,5wpm,260204_05WPM.mp3,6.6
+data\augmented\5wpm\260204_05WPM_132_aug00.wav,TO,5wpm,260204_05WPM.mp3,3.4
+data\augmented\5wpm\260204_05WPM_132_aug01.wav,TO,5wpm,260204_05WPM.mp3,8.5
+data\augmented\5wpm\260204_05WPM_133_aug00.wav,7,5wpm,260204_05WPM.mp3,13.3
+data\augmented\5wpm\260204_05WPM_133_aug01.wav,7,5wpm,260204_05WPM.mp3,1.0
+data\augmented\5wpm\260204_05WPM_134_aug00.wav,2,5wpm,260204_05WPM.mp3,12.6
+data\augmented\5wpm\260204_05WPM_134_aug01.wav,2,5wpm,260204_05WPM.mp3,-2.4
+data\augmented\5wpm\260204_05WPM_135_aug00.wav,M,5wpm,260204_05WPM.mp3,7.7
+data\augmented\5wpm\260204_05WPM_135_aug01.wav,M,5wpm,260204_05WPM.mp3,11.9
+data\augmented\5wpm\260204_05WPM_136_aug00.wav,EG,5wpm,260204_05WPM.mp3,1.9
+data\augmented\5wpm\260204_05WPM_136_aug01.wav,EG,5wpm,260204_05WPM.mp3,1.8
+data\augmented\5wpm\260204_05WPM_137_aug00.wav,AH,5wpm,260204_05WPM.mp3,5.7
+data\augmented\5wpm\260204_05WPM_137_aug01.wav,AH,5wpm,260204_05WPM.mp3,10.1
+data\augmented\5wpm\260204_05WPM_138_aug00.wav,ER,5wpm,260204_05WPM.mp3,15.6
+data\augmented\5wpm\260204_05WPM_138_aug01.wav,ER,5wpm,260204_05WPM.mp3,0.1
+data\augmented\5wpm\260204_05WPM_139_aug00.wav,TZ,5wpm,260204_05WPM.mp3,14.9
+data\augmented\5wpm\260204_05WPM_139_aug01.wav,TZ,5wpm,260204_05WPM.mp3,7.8
+data\augmented\5wpm\260204_05WPM_140_aug00.wav,.,5wpm,260204_05WPM.mp3,19.0
+data\augmented\5wpm\260204_05WPM_140_aug01.wav,.,5wpm,260204_05WPM.mp3,5.5
+data\augmented\5wpm\260204_05WPM_141_aug00.wav,<,5wpm,260204_05WPM.mp3,8.6
+data\augmented\5wpm\260204_05WPM_141_aug01.wav,<,5wpm,260204_05WPM.mp3,-2.0
+data\augmented\5wpm\260204_05WPM_142_aug00.wav,QS,5wpm,260204_05WPM.mp3,9.8
+data\augmented\5wpm\260204_05WPM_142_aug01.wav,QS,5wpm,260204_05WPM.mp3,20.0
+data\augmented\5wpm\260204_05WPM_143_aug00.wav,T,5wpm,260204_05WPM.mp3,14.5
+data\augmented\5wpm\260204_05WPM_143_aug01.wav,T,5wpm,260204_05WPM.mp3,18.7
+data\augmented\5wpm\260204_05WPM_144_aug00.wav,DE,5wpm,260204_05WPM.mp3,15.4
+data\augmented\5wpm\260204_05WPM_144_aug01.wav,DE,5wpm,260204_05WPM.mp3,12.7
+data\augmented\5wpm\260204_05WPM_145_aug00.wav,W,5wpm,260204_05WPM.mp3,5.7
+data\augmented\5wpm\260204_05WPM_145_aug01.wav,W,5wpm,260204_05WPM.mp3,8.1
+data\augmented\5wpm\260204_05WPM_146_aug00.wav,1A,5wpm,260204_05WPM.mp3,-2.2
+data\augmented\5wpm\260204_05WPM_146_aug01.wav,1A,5wpm,260204_05WPM.mp3,0.4
+data\augmented\5wpm\260204_05WPM_147_aug00.wav,W,5wpm,260204_05WPM.mp3,4.4
+data\augmented\5wpm\260204_05WPM_147_aug01.wav,W,5wpm,260204_05WPM.mp3,14.1
+data\augmented\5wpm\260204_05WPM_148_aug00.wav,=,5wpm,260204_05WPM.mp3,1.4
+data\augmented\5wpm\260204_05WPM_148_aug01.wav,=,5wpm,260204_05WPM.mp3,12.4
+data\augmented\5wpm\260204_05WPM_149_aug00.wav,HO,5wpm,260204_05WPM.mp3,17.5
+data\augmented\5wpm\260204_05WPM_149_aug01.wav,HO,5wpm,260204_05WPM.mp3,9.2
+data\augmented\5wpm\260204_05WPM_150_aug00.wav,W,5wpm,260204_05WPM.mp3,-0.9
+data\augmented\5wpm\260204_05WPM_150_aug01.wav,W,5wpm,260204_05WPM.mp3,2.3
+data\augmented\5wpm\260204_05WPM_151_aug00.wav,EV,5wpm,260204_05WPM.mp3,5.5
+data\augmented\5wpm\260204_05WPM_151_aug01.wav,EV,5wpm,260204_05WPM.mp3,7.4
+data\augmented\5wpm\260204_05WPM_152_aug00.wav,ER,5wpm,260204_05WPM.mp3,12.6
+data\augmented\5wpm\260204_05WPM_152_aug01.wav,ER,5wpm,260204_05WPM.mp3,4.6
+data\augmented\5wpm\260204_05WPM_153_aug00.wav,",",5wpm,260204_05WPM.mp3,4.4
+data\augmented\5wpm\260204_05WPM_153_aug01.wav,",",5wpm,260204_05WPM.mp3,5.1
+data\augmented\5wpm\260204_05WPM_154_aug00.wav,WH,5wpm,260204_05WPM.mp3,-0.8
+data\augmented\5wpm\260204_05WPM_154_aug01.wav,WH,5wpm,260204_05WPM.mp3,0.5
+data\augmented\5wpm\260204_05WPM_155_aug00.wav,IL,5wpm,260204_05WPM.mp3,-1.7
+data\augmented\5wpm\260204_05WPM_155_aug01.wav,IL,5wpm,260204_05WPM.mp3,9.8
+data\augmented\5wpm\260204_05WPM_156_aug00.wav,E,5wpm,260204_05WPM.mp3,8.3
+data\augmented\5wpm\260204_05WPM_156_aug01.wav,E,5wpm,260204_05WPM.mp3,10.7
+data\augmented\5wpm\260204_05WPM_157_aug00.wav,IT,5wpm,260204_05WPM.mp3,-0.6
+data\augmented\5wpm\260204_05WPM_157_aug01.wav,IT,5wpm,260204_05WPM.mp3,17.5
+data\augmented\5wpm\260204_05WPM_158_aug00.wav,I,5wpm,260204_05WPM.mp3,14.5
+data\augmented\5wpm\260204_05WPM_158_aug01.wav,I,5wpm,260204_05WPM.mp3,16.2
+data\augmented\5wpm\260204_05WPM_159_aug00.wav,S,5wpm,260204_05WPM.mp3,2.5
+data\augmented\5wpm\260204_05WPM_159_aug01.wav,S,5wpm,260204_05WPM.mp3,0.6
+data\augmented\5wpm\260204_05WPM_160_aug00.wav,ST,5wpm,260204_05WPM.mp3,16.4
+data\augmented\5wpm\260204_05WPM_160_aug01.wav,ST,5wpm,260204_05WPM.mp3,2.6
+data\augmented\5wpm\260204_05WPM_161_aug00.wav,IL,5wpm,260204_05WPM.mp3,18.5
+data\augmented\5wpm\260204_05WPM_161_aug01.wav,IL,5wpm,260204_05WPM.mp3,5.8
+data\augmented\5wpm\260204_05WPM_162_aug00.wav,L,5wpm,260204_05WPM.mp3,1.9
+data\augmented\5wpm\260204_05WPM_162_aug01.wav,L,5wpm,260204_05WPM.mp3,15.5
+data\augmented\5wpm\260204_05WPM_163_aug00.wav,CH,5wpm,260204_05WPM.mp3,12.7
+data\augmented\5wpm\260204_05WPM_163_aug01.wav,CH,5wpm,260204_05WPM.mp3,-0.8
+data\augmented\5wpm\260204_05WPM_164_aug00.wav,AN,5wpm,260204_05WPM.mp3,12.3
+data\augmented\5wpm\260204_05WPM_164_aug01.wav,AN,5wpm,260204_05WPM.mp3,5.9
+data\augmented\5wpm\260204_05WPM_165_aug00.wav,NE,5wpm,260204_05WPM.mp3,2.9
+data\augmented\5wpm\260204_05WPM_165_aug01.wav,NE,5wpm,260204_05WPM.mp3,4.7
+data\augmented\5wpm\260204_05WPM_166_aug00.wav,L,5wpm,260204_05WPM.mp3,16.6
+data\augmented\5wpm\260204_05WPM_166_aug01.wav,L,5wpm,260204_05WPM.mp3,10.6
+data\augmented\5wpm\260204_05WPM_167_aug00.wav,4,5wpm,260204_05WPM.mp3,2.6
+data\augmented\5wpm\260204_05WPM_167_aug01.wav,4,5wpm,260204_05WPM.mp3,18.9
+data\augmented\5wpm\260204_05WPM_168_aug00.wav,",",5wpm,260204_05WPM.mp3,0.9
+data\augmented\5wpm\260204_05WPM_168_aug01.wav,",",5wpm,260204_05WPM.mp3,-0.0
+data\augmented\5wpm\260204_05WPM_169_aug00.wav,TH,5wpm,260204_05WPM.mp3,6.2
+data\augmented\5wpm\260204_05WPM_169_aug01.wav,TH,5wpm,260204_05WPM.mp3,19.2
+data\augmented\5wpm\260204_05WPM_170_aug00.wav,E,5wpm,260204_05WPM.mp3,7.6
+data\augmented\5wpm\260204_05WPM_170_aug01.wav,E,5wpm,260204_05WPM.mp3,1.3
+data\augmented\5wpm\260204_05WPM_171_aug00.wav,NE,5wpm,260204_05WPM.mp3,18.5
+data\augmented\5wpm\260204_05WPM_171_aug01.wav,NE,5wpm,260204_05WPM.mp3,-1.1
+data\augmented\5wpm\260204_05WPM_172_aug00.wav,W,5wpm,260204_05WPM.mp3,18.3
+data\augmented\5wpm\260204_05WPM_172_aug01.wav,W,5wpm,260204_05WPM.mp3,11.0
+data\augmented\5wpm\260204_05WPM_173_aug00.wav,DI,5wpm,260204_05WPM.mp3,5.7
+data\augmented\5wpm\260204_05WPM_173_aug01.wav,DI,5wpm,260204_05WPM.mp3,6.2
+data\augmented\5wpm\260204_05WPM_174_aug00.wav,GI,5wpm,260204_05WPM.mp3,12.7
+data\augmented\5wpm\260204_05WPM_174_aug01.wav,GI,5wpm,260204_05WPM.mp3,13.4
+data\augmented\5wpm\260204_05WPM_175_aug00.wav,TA,5wpm,260204_05WPM.mp3,0.7
+data\augmented\5wpm\260204_05WPM_175_aug01.wav,TA,5wpm,260204_05WPM.mp3,8.8
+data\augmented\5wpm\260204_05WPM_176_aug00.wav,L,5wpm,260204_05WPM.mp3,16.6
+data\augmented\5wpm\260204_05WPM_176_aug01.wav,L,5wpm,260204_05WPM.mp3,13.6
+data\augmented\5wpm\260204_05WPM_177_aug00.wav,FO,5wpm,260204_05WPM.mp3,7.9
+data\augmented\5wpm\260204_05WPM_177_aug01.wav,FO,5wpm,260204_05WPM.mp3,-0.2
+data\augmented\5wpm\260204_05WPM_178_aug00.wav,X,5wpm,260204_05WPM.mp3,12.3
+data\augmented\5wpm\260204_05WPM_178_aug01.wav,X,5wpm,260204_05WPM.mp3,15.5
+data\augmented\5wpm\260204_05WPM_179_aug00.wav,4,5wpm,260204_05WPM.mp3,-0.5
+data\augmented\5wpm\260204_05WPM_179_aug01.wav,4,5wpm,260204_05WPM.mp3,7.0
+data\augmented\5wpm\260204_05WPM_180_aug00.wav,KD,5wpm,260204_05WPM.mp3,-2.3
+data\augmented\5wpm\260204_05WPM_180_aug01.wav,KD,5wpm,260204_05WPM.mp3,2.2
+data\augmented\5wpm\260204_05WPM_181_aug00.wav,FW,5wpm,260204_05WPM.mp3,18.2
+data\augmented\5wpm\260204_05WPM_181_aug01.wav,FW,5wpm,260204_05WPM.mp3,14.6
+data\augmented\5wpm\260204_05WPM_182_aug00.wav,TV,5wpm,260204_05WPM.mp3,10.5
+data\augmented\5wpm\260204_05WPM_182_aug01.wav,TV,5wpm,260204_05WPM.mp3,15.5
+data\augmented\5wpm\260204_05WPM_183_aug00.wav,C,5wpm,260204_05WPM.mp3,7.3
+data\augmented\5wpm\260204_05WPM_183_aug01.wav,C,5wpm,260204_05WPM.mp3,5.5
+data\augmented\5wpm\260204_05WPM_184_aug00.wav,HA,5wpm,260204_05WPM.mp3,-0.3
+data\augmented\5wpm\260204_05WPM_184_aug01.wav,HA,5wpm,260204_05WPM.mp3,7.7
+data\augmented\5wpm\260204_05WPM_185_aug00.wav,NN,5wpm,260204_05WPM.mp3,15.0
+data\augmented\5wpm\260204_05WPM_185_aug01.wav,NN,5wpm,260204_05WPM.mp3,1.3
+data\augmented\5wpm\260204_05WPM_186_aug00.wav,EL,5wpm,260204_05WPM.mp3,0.5
+data\augmented\5wpm\260204_05WPM_186_aug01.wav,EL,5wpm,260204_05WPM.mp3,-0.8
+data\augmented\5wpm\260204_05WPM_187_aug00.wav,"S,",5wpm,260204_05WPM.mp3,7.4
+data\augmented\5wpm\260204_05WPM_187_aug01.wav,"S,",5wpm,260204_05WPM.mp3,-2.6
+data\augmented\5wpm\260204_05WPM_188_aug00.wav,4,5wpm,260204_05WPM.mp3,1.5
+data\augmented\5wpm\260204_05WPM_188_aug01.wav,4,5wpm,260204_05WPM.mp3,8.9
+data\augmented\5wpm\260204_05WPM_189_aug00.wav,R1,5wpm,260204_05WPM.mp3,3.6
+data\augmented\5wpm\260204_05WPM_189_aug01.wav,R1,5wpm,260204_05WPM.mp3,17.7
+data\augmented\5wpm\260204_05WPM_190_aug00.wav,T,5wpm,260204_05WPM.mp3,13.8
+data\augmented\5wpm\260204_05WPM_190_aug01.wav,T,5wpm,260204_05WPM.mp3,13.3
+data\augmented\5wpm\260204_05WPM_191_aug00.wav,O,5wpm,260204_05WPM.mp3,7.4
+data\augmented\5wpm\260204_05WPM_191_aug01.wav,O,5wpm,260204_05WPM.mp3,-0.9
+data\augmented\5wpm\260204_05WPM_192_aug00.wav,4R,5wpm,260204_05WPM.mp3,-1.6
+data\augmented\5wpm\260204_05WPM_192_aug01.wav,4R,5wpm,260204_05WPM.mp3,19.4
+data\augmented\5wpm\260204_05WPM_193_aug00.wav,"4,",5wpm,260204_05WPM.mp3,16.0
+data\augmented\5wpm\260204_05WPM_193_aug01.wav,"4,",5wpm,260204_05WPM.mp3,9.6
+data\augmented\5wpm\260204_05WPM_194_aug00.wav,H,5wpm,260204_05WPM.mp3,18.2
+data\augmented\5wpm\260204_05WPM_194_aug01.wav,H,5wpm,260204_05WPM.mp3,2.0
+data\augmented\5wpm\260204_05WPM_195_aug00.wav,AV,5wpm,260204_05WPM.mp3,14.2
+data\augmented\5wpm\260204_05WPM_195_aug01.wav,AV,5wpm,260204_05WPM.mp3,9.8
+data\augmented\5wpm\260204_05WPM_196_aug00.wav,E,5wpm,260204_05WPM.mp3,18.2
+data\augmented\5wpm\260204_05WPM_196_aug01.wav,E,5wpm,260204_05WPM.mp3,13.3
+data\augmented\5wpm\260204_05WPM_197_aug00.wav,B,5wpm,260204_05WPM.mp3,9.9
+data\augmented\5wpm\260204_05WPM_197_aug01.wav,B,5wpm,260204_05WPM.mp3,-2.0
+data\augmented\5wpm\260204_05WPM_198_aug00.wav,EE,5wpm,260204_05WPM.mp3,13.6
+data\augmented\5wpm\260204_05WPM_198_aug01.wav,EE,5wpm,260204_05WPM.mp3,9.7
+data\augmented\5wpm\260204_05WPM_199_aug00.wav,N,5wpm,260204_05WPM.mp3,0.4
+data\augmented\5wpm\260204_05WPM_199_aug01.wav,N,5wpm,260204_05WPM.mp3,9.4
+data\augmented\5wpm\260204_05WPM_200_aug00.wav,MO,5wpm,260204_05WPM.mp3,-1.6
+data\augmented\5wpm\260204_05WPM_200_aug01.wav,MO,5wpm,260204_05WPM.mp3,18.3
+data\augmented\5wpm\260204_05WPM_201_aug00.wav,VE,5wpm,260204_05WPM.mp3,6.0
+data\augmented\5wpm\260204_05WPM_201_aug01.wav,VE,5wpm,260204_05WPM.mp3,2.7
+data\augmented\5wpm\260204_05WPM_202_aug00.wav,D,5wpm,260204_05WPM.mp3,8.4
+data\augmented\5wpm\260204_05WPM_202_aug01.wav,D,5wpm,260204_05WPM.mp3,3.3
+data\augmented\5wpm\260204_05WPM_203_aug00.wav,TO,5wpm,260204_05WPM.mp3,15.9
+data\augmented\5wpm\260204_05WPM_203_aug01.wav,TO,5wpm,260204_05WPM.mp3,9.9
+data\augmented\5wpm\260204_05WPM_204_aug00.wav,5,5wpm,260204_05WPM.mp3,2.1
+data\augmented\5wpm\260204_05WPM_204_aug01.wav,5,5wpm,260204_05WPM.mp3,13.5
+data\augmented\5wpm\260204_05WPM_205_aug00.wav,96,5wpm,260204_05WPM.mp3,19.2
+data\augmented\5wpm\260204_05WPM_205_aug01.wav,96,5wpm,260204_05WPM.mp3,7.0
+data\augmented\5wpm\260204_05WPM_206_aug00.wav,T,5wpm,260204_05WPM.mp3,13.8
+data\augmented\5wpm\260204_05WPM_206_aug01.wav,T,5wpm,260204_05WPM.mp3,-1.8
+data\augmented\5wpm\260204_05WPM_207_aug00.wav,O,5wpm,260204_05WPM.mp3,13.3
+data\augmented\5wpm\260204_05WPM_207_aug01.wav,O,5wpm,260204_05WPM.mp3,7.0
+data\augmented\5wpm\260204_05WPM_208_aug00.wav,60,5wpm,260204_05WPM.mp3,-2.6
+data\augmented\5wpm\260204_05WPM_208_aug01.wav,60,5wpm,260204_05WPM.mp3,1.0
+data\augmented\5wpm\260204_05WPM_209_aug00.wav,2,5wpm,260204_05WPM.mp3,3.7
+data\augmented\5wpm\260204_05WPM_209_aug01.wav,2,5wpm,260204_05WPM.mp3,12.7
+data\augmented\5wpm\260204_05WPM_210_aug00.wav,ME,5wpm,260204_05WPM.mp3,6.2
+data\augmented\5wpm\260204_05WPM_210_aug01.wav,ME,5wpm,260204_05WPM.mp3,5.9
+data\augmented\5wpm\260204_05WPM_211_aug00.wav,GA,5wpm,260204_05WPM.mp3,12.8
+data\augmented\5wpm\260204_05WPM_211_aug01.wav,GA,5wpm,260204_05WPM.mp3,14.3
+data\augmented\5wpm\260204_05WPM_212_aug00.wav,HE,5wpm,260204_05WPM.mp3,14.5
+data\augmented\5wpm\260204_05WPM_212_aug01.wav,HE,5wpm,260204_05WPM.mp3,18.6
+data\augmented\5wpm\260204_05WPM_213_aug00.wav,R,5wpm,260204_05WPM.mp3,9.6
+data\augmented\5wpm\260204_05WPM_213_aug01.wav,R,5wpm,260204_05WPM.mp3,11.2
+data\augmented\5wpm\260204_05WPM_214_aug00.wav,TZ,5wpm,260204_05WPM.mp3,14.5
+data\augmented\5wpm\260204_05WPM_214_aug01.wav,TZ,5wpm,260204_05WPM.mp3,9.7
+data\augmented\5wpm\260204_05WPM_215_aug00.wav,D,5wpm,260204_05WPM.mp3,5.4
+data\augmented\5wpm\260204_05WPM_215_aug01.wav,D,5wpm,260204_05WPM.mp3,17.2
+data\augmented\5wpm\260204_05WPM_216_aug00.wav,IG,5wpm,260204_05WPM.mp3,0.7
+data\augmented\5wpm\260204_05WPM_216_aug01.wav,IG,5wpm,260204_05WPM.mp3,6.7
+data\augmented\5wpm\260204_05WPM_217_aug00.wav,IT,5wpm,260204_05WPM.mp3,12.4
+data\augmented\5wpm\260204_05WPM_217_aug01.wav,IT,5wpm,260204_05WPM.mp3,4.7
+data\augmented\5wpm\260204_05WPM_218_aug00.wav,AL,5wpm,260204_05WPM.mp3,1.4
+data\augmented\5wpm\260204_05WPM_218_aug01.wav,AL,5wpm,260204_05WPM.mp3,5.8
+data\augmented\5wpm\260204_05WPM_219_aug00.wav,=,5wpm,260204_05WPM.mp3,2.7
+data\augmented\5wpm\260204_05WPM_219_aug01.wav,=,5wpm,260204_05WPM.mp3,13.5
+data\augmented\5wpm\260204_05WPM_220_aug00.wav,E,5wpm,260204_05WPM.mp3,8.1
+data\augmented\5wpm\260204_05WPM_220_aug01.wav,E,5wpm,260204_05WPM.mp3,10.8
+data\augmented\5wpm\260204_05WPM_221_aug00.wav,ND,5wpm,260204_05WPM.mp3,-2.3
+data\augmented\5wpm\260204_05WPM_221_aug01.wav,ND,5wpm,260204_05WPM.mp3,9.2
+data\augmented\5wpm\260204_05WPM_222_aug00.wav,O,5wpm,260204_05WPM.mp3,-0.2
+data\augmented\5wpm\260204_05WPM_222_aug01.wav,O,5wpm,260204_05WPM.mp3,18.3
+data\augmented\5wpm\260204_05WPM_223_aug00.wav,F,5wpm,260204_05WPM.mp3,-2.1
+data\augmented\5wpm\260204_05WPM_223_aug01.wav,F,5wpm,260204_05WPM.mp3,-0.7
+data\augmented\5wpm\260204_05WPM_224_aug00.wav,5,5wpm,260204_05WPM.mp3,1.4
+data\augmented\5wpm\260204_05WPM_224_aug01.wav,5,5wpm,260204_05WPM.mp3,16.1
+data\augmented\5wpm\260204_05WPM_225_aug00.wav,WP,5wpm,260204_05WPM.mp3,17.9
+data\augmented\5wpm\260204_05WPM_225_aug01.wav,WP,5wpm,260204_05WPM.mp3,15.4
+data\augmented\5wpm\260204_05WPM_226_aug00.wav,M,5wpm,260204_05WPM.mp3,16.7
+data\augmented\5wpm\260204_05WPM_226_aug01.wav,M,5wpm,260204_05WPM.mp3,-2.3
+data\augmented\5wpm\260204_05WPM_227_aug00.wav,TE,5wpm,260204_05WPM.mp3,18.0
+data\augmented\5wpm\260204_05WPM_227_aug01.wav,TE,5wpm,260204_05WPM.mp3,14.6
+data\augmented\5wpm\260204_05WPM_228_aug00.wav,X,5wpm,260204_05WPM.mp3,12.7
+data\augmented\5wpm\260204_05WPM_228_aug01.wav,X,5wpm,260204_05WPM.mp3,0.5
+data\augmented\5wpm\260204_05WPM_229_aug00.wav,T,5wpm,260204_05WPM.mp3,11.6
+data\augmented\5wpm\260204_05WPM_229_aug01.wav,T,5wpm,260204_05WPM.mp3,13.0
+data\augmented\5wpm\260204_05WPM_230_aug00.wav,=,5wpm,260204_05WPM.mp3,4.0
+data\augmented\5wpm\260204_05WPM_230_aug01.wav,=,5wpm,260204_05WPM.mp3,10.9
+data\augmented\5wpm\260204_05WPM_231_aug00.wav,QS,5wpm,260204_05WPM.mp3,2.6
+data\augmented\5wpm\260204_05WPM_231_aug01.wav,QS,5wpm,260204_05WPM.mp3,19.8
+data\augmented\5wpm\260204_05WPM_232_aug00.wav,T,5wpm,260204_05WPM.mp3,6.7
+data\augmented\5wpm\260204_05WPM_232_aug01.wav,T,5wpm,260204_05WPM.mp3,-2.0
+data\augmented\5wpm\260204_05WPM_233_aug00.wav,DE,5wpm,260204_05WPM.mp3,-2.3
+data\augmented\5wpm\260204_05WPM_233_aug01.wav,DE,5wpm,260204_05WPM.mp3,19.6
+data\augmented\5wpm\260204_05WPM_234_aug00.wav,W,5wpm,260204_05WPM.mp3,7.8
+data\augmented\5wpm\260204_05WPM_234_aug01.wav,W,5wpm,260204_05WPM.mp3,9.7
+data\augmented\5wpm\260204_05WPM_235_aug00.wav,1A,5wpm,260204_05WPM.mp3,0.1
+data\augmented\5wpm\260204_05WPM_235_aug01.wav,1A,5wpm,260204_05WPM.mp3,3.2
+data\augmented\5wpm\260204_05WPM_236_aug00.wav,W,5wpm,260204_05WPM.mp3,2.2
+data\augmented\5wpm\260204_05WPM_236_aug01.wav,W,5wpm,260204_05WPM.mp3,17.5
+data\augmented\5wpm\260204_05WPM_237_aug00.wav,<,5wpm,260204_05WPM.mp3,8.6
+data\augmented\5wpm\260204_05WPM_237_aug01.wav,<,5wpm,260204_05WPM.mp3,5.6

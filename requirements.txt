@@ -1,0 +1,10 @@
+requests
+numpy
+scipy
+soundfile
+tqdm
+
+# torch is intentionally not pinned here - install separately per machine:
+#   ARM64 laptop (CPU only):  pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   RTX 3080 box (CUDA):      pip install torch --index-url https://download.pytorch.org/whl/cu124
+# (check https://pytorch.org/get-started/locally/ for the current CUDA index tag)
