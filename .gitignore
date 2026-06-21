@@ -5,6 +5,7 @@ data/raw/
 data/augmented/
 data/processed/
 data/manifests/
+data/text_corpus/
 *.wav
 *.mp3
 *.pt
