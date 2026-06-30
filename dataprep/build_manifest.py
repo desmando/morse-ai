@@ -23,15 +23,50 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from paths import DATA_ROOT
 
 
+# Older W1AW transcripts wrap the actual practice text in a spoken announcer
+# preamble/postamble ("NOW 10 WPM TEXT IS FROM JANUARY 2017 QST PAGE 56 ...
+# END OF 10 WPM TEXT QST DE W1AW"). That boilerplate is real keyed content (it
+# gets sent too), but it's near-identical across hundreds of files and sits at
+# a fixed position - at low WPM a 4s clip only spans a few characters, so the
+# *first* clip of nearly every old file ends up labeled "NOW " and nothing
+# else, drowning out real content in training. Strip it before slicing so the
+# chars/sec estimate and clip boundaries are computed from the body text only.
+#
+# This isn't one fixed template - confirmed variants in the actual data:
+#   "NOW 10 WPM TEXT IS FROM JANUARY 2017 QST PAGE 56 <body>"            (no dividers)
+#   "= NOW 15 WPM = TEXT IS FROM OCTOBER 2022 QST PAGE 36 = <body>"      (= dividers)
+#   "= NOW 18 WPM transition file follows = <body>"                     (no citation)
+#   "NOW 40 WPM <body>"                                                 (no citation, no divider)
+# and footers:
+#   "<body> END OF 25 WPM TEXT QST DE W1AW"
+#   "<body> = END OF 5 WPM TEXT = QST DE W1AW <"
+#   "<body> = END OF 18 WPM transition file <"
+_WPM_NUM = r"[\d/ ]+?"  # almost always integer, but at least one file says "7 1/2"
+HEADER_RE = re.compile(
+    rf"^=?\s*NOW {_WPM_NUM} WPM\s*(?:=\s*)?"
+    r"(?:(?:TEXT IS FROM .*?QST(?: PAGE \d+)?|transition file follows)\s*(?:=\s*)?)?"
+)
+FOOTER_RE = re.compile(
+    rf"\s*(?:=\s*)?END OF {_WPM_NUM} WPM\s+"
+    r"(?:TEXT(?:\s*=?\s*QST DE W1AW)?|transition file)"
+    r"\s*[<>]?\.?\s*$"
+)
+
+
 def clean_transcript(raw: str) -> str:
     # strip control chars (e.g. trailing 0x1A DOS EOF markers some of these old
-    # files end with) before collapsing whitespace
-    text = re.sub(r"[\x00-\x08\x0b-\x1f\x7f]", "", raw)
+    # files end with), plus the C1 range (0x80-0x9F) some older ARRL transcripts
+    # use as decorative bullets around "NOW xx WPM"/"QST DE W1AW" announcements,
+    # and U+FFFD (produced by decoding those same stray bytes as UTF-8) - none of
+    # this is actually keyed, so it shouldn't end up in the label vocab.
+    text = re.sub(r"[\x00-\x08\x0b-\x1f\x7f-\x9f�]", "", raw)
     text = re.sub(r"\s+", " ", text).strip()
-    return text
+    text = HEADER_RE.sub("", text, count=1)
+    text = FOOTER_RE.sub("", text, count=1)
+    return text.strip()
 
 
-def slice_clips(audio, sr: int, text: str, clip_seconds: float):
+def slice_clips(audio, sr: int, text: str, clip_seconds: float, min_label_chars: int = 5):
     n_samples = len(audio)
     duration = n_samples / sr
     if duration <= 0 or not text:
@@ -46,7 +81,10 @@ def slice_clips(audio, sr: int, text: str, clip_seconds: float):
         c0 = round(t0 * chars_per_second)
         c1 = round(t1 * chars_per_second)
         label = text[c0:c1].strip()
-        if label:
+        # short labels are where proportional-alignment rounding error hurts
+        # most (relative to label length) and where CTC has the cheapest
+        # incentive to learn "predict blank" instead of real structure.
+        if len(label) >= min_label_chars:
             yield audio[start_sample:end_sample], label
         start_sample = end_sample
 
@@ -58,6 +96,8 @@ def main():
     parser.add_argument("--manifest-out", default=str(DATA_ROOT / "manifests" / "clips_manifest.csv"))
     parser.add_argument("--vocab-out", default=str(DATA_ROOT / "manifests" / "vocab.txt"))
     parser.add_argument("--clip-seconds", type=float, default=4.0)
+    parser.add_argument("--min-label-chars", type=int, default=5,
+                         help="drop clips whose sliced label is shorter than this")
     args = parser.parse_args()
 
     raw_dir = Path(args.raw_dir)
@@ -71,8 +111,15 @@ def main():
 
     for mp3_path in sorted(raw_dir.rglob("*.mp3")):
         speed_dir = mp3_path.parent.name
-        txt_path = re.sub(r"_(\d+)WPM\.mp3$", r"_\1.txt", str(mp3_path), flags=re.IGNORECASE)
-        txt_path = Path(txt_path)
+        txt_path_str, n_subs = re.subn(r"_(\d+)WPM\.mp3$", r"_\1.txt", str(mp3_path), flags=re.IGNORECASE)
+        if n_subs == 0:
+            # filename doesn't match the "..._NNWPM.mp3" convention at all (e.g.
+            # leftover staging files) - re.sub would silently return the mp3 path
+            # unchanged, which then "exists" as itself and gets read as binary
+            # audio mis-decoded as text. Skip instead of risking that.
+            print(f"  unrecognized filename pattern, skipping: {mp3_path.name}")
+            continue
+        txt_path = Path(txt_path_str)
         if not txt_path.exists():
             print(f"  no transcript for {mp3_path.name}, skipping")
             continue
@@ -80,17 +127,18 @@ def main():
         audio, sr = sf.read(mp3_path)
         if audio.ndim > 1:
             audio = audio.mean(axis=1)
-        text = clean_transcript(txt_path.read_text(errors="replace"))
+        text = clean_transcript(txt_path.read_text(encoding="utf-8", errors="replace"))
 
         out_dir = clips_dir / speed_dir
         out_dir.mkdir(parents=True, exist_ok=True)
 
-        for i, (clip_audio, label) in enumerate(slice_clips(audio, sr, text, args.clip_seconds)):
+        for i, (clip_audio, label) in enumerate(
+                slice_clips(audio, sr, text, args.clip_seconds, args.min_label_chars)):
             clip_name = f"{mp3_path.stem}_{i:03d}.wav"
             clip_path = out_dir / clip_name
             sf.write(clip_path, clip_audio, sr)
             rows.append({
-                "clip_path": str(clip_path.relative_to(DATA_ROOT)),
+                "clip_path": clip_path.relative_to(DATA_ROOT).as_posix(),
                 "label": label,
                 "wpm": speed_dir,
                 "source": mp3_path.name,

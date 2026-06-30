@@ -43,12 +43,16 @@ ARRL_SECTIONS = ["ENY", "WNY", "NLI", "NNJ", "SNJ", "EMA", "WMA", "CT", "RI",
                  "WWA", "OR", "SF", "EB", "LAX", "SDG", "SV", "AL", "GA", "SC",
                  "NC", "VA", "WV", "OH", "MI", "WI", "MN", "ND", "SD", "IA"]
 
+# Common Q-codes actually heard even in terse contest/Field Day traffic -
+# "who's calling", "confirm", "interference", "fading", "QSY", "low power" etc.
+QCODES = ["QRZ", "QSL", "QRM", "QSB", "QSY", "QRT", "QRV", "QRP", "QRU", "QRX"]
+
 SS_PRECEDENCE = ["Q", "A", "B", "M"]
 FD_CLASSES = ["A", "B", "C", "D", "E", "F"]
 ANTENNAS = ["VERTICAL", "DIPOLE", "YAGI", "LOOP", "INV V", "END FED", "MAGLOOP", "HEXBEAM"]
 POWERS = ["5W", "QRP", "100W", "500W", "1KW"]
 PARK_FLAVOR = ["IN THE PARK", "AT THE LAKE", "ON A HILLTOP", "PORTABLE OP", "AT THE SUMMIT"]
-PROSIGNS_SIGNOFF = ["TU 73 GL", "TNX QSO 73", "GL IN THE TEST", "73 ES GL"]
+PROSIGNS_SIGNOFF = ["TU 73 GL", "TNX QSO 73", "GL IN THE TEST", "73 ES GL", "QSL TU 73", "QSL 73 GL"]
 
 
 def random_callsign(rng: random.Random) -> str:
@@ -109,6 +113,10 @@ def station_chatter(rng: random.Random) -> str:
         parts.append(f"PWR {rng.choice(POWERS)}")
     if rng.random() < 0.3:
         parts.append(rng.choice(PARK_FLAVOR))
+    if rng.random() < 0.25:
+        parts.append(f"QTH {rng.choice(US_STATES)}")
+    if rng.random() < 0.15:
+        parts.append(rng.choice(["QRM HR", "QSB HR", "QRM QRM", "QSB QSB"]))
     return " ".join(parts) if parts else "FB SIGNAL"
 
 
@@ -160,6 +168,9 @@ def generate_band(rng: random.Random, n_qsos: int) -> str:
         cq_word = "TEST" if scenario != "pota" else "POTA"
         lines.append(f"CQ {cq_word} DE {call} {call} {call} K")
         lines.append(generate_qso(rng, scenario))
+        if rng.random() < 0.2:
+            # working a pileup - inviting the next caller without a fresh CQ
+            lines.append(f"{call} QRZ?" if rng.random() < 0.5 else "QRZ?")
     return "\n".join(lines)
 
 

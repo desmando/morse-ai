@@ -49,9 +49,23 @@ def find_clip_pairs(archive_html: str, page_url: str) -> list[tuple[str, str]]:
 def download(url: str, dest: Path, delay: float) -> bool:
     if dest.exists():
         return False
-    resp = requests.get(url, headers=HEADERS, timeout=30)
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=30)
+    except requests.RequestException as exc:
+        # ARRL's own archive pages occasionally contain malformed hrefs (e.g. a
+        # botched dead-link rewrite to "web.archive.orghttps//...") that don't
+        # resolve at all - skip rather than letting one bad link kill the run.
+        print(f"  skip (request failed: {exc}): {url}")
+        return False
     if resp.status_code != 200:
         print(f"  skip (HTTP {resp.status_code}): {url}")
+        return False
+    # ARRL serves a 200 + missing.png placeholder for dead links instead of a
+    # 404, so a status check alone isn't enough - reject anything that isn't
+    # actually audio/text (e.g. content-type image/* or a GIF89a magic header).
+    content_type = resp.headers.get("Content-Type", "")
+    if "image" in content_type or resp.content[:6] in (b"GIF87a", b"GIF89a"):
+        print(f"  skip (broken link, got {content_type or 'placeholder image'}): {url}")
         return False
     dest.write_bytes(resp.content)
     time.sleep(delay)

@@ -1,14 +1,15 @@
 # morse-ai
 
 ML pipeline to decode CW (Morse) audio off an HF radio into readable text, with
-contextual correction, deployed for real-time inference on a Windows ARM64 NPU laptop.
+contextual correction, deployed for real-time inference on a Windows ARM64 laptop (CPU -
+the laptop's NPU was tried and dropped, see `export/README.md`).
 
 ## Machines involved
 
 | Machine | Role |
 |---|---|
-| This laptop (Windows ARM64, Snapdragon NPU) | Data prep, code authoring, final inference deployment |
-| Windows x64 desktop, RTX 3080 / 64GB RAM / 2TB SSD | Model training (CUDA), and later ONNX quantization (Qualcomm recommends quantizing on x64 before deploying the quantized model to ARM64) |
+| This laptop (Windows ARM64) | Data prep, code authoring, final inference deployment (CPU) |
+| Windows x64 desktop, RTX 3080 / 64GB RAM / 2TB SSD | Model training (CUDA) |
 | Other CPU-only / high-RAM/storage machines | Bulk data prep & augmentation (CPU-bound, storage-heavy) before shipping the finished dataset to the 3080 box |
 
 There is no shared git remote yet — this repo itself lives under OneDrive so the
@@ -46,11 +47,13 @@ it between machines would be wasted bandwidth/storage. Each machine just re-runs
    contests, POTA) rather than casual ragchew, since that's what this will mostly
    see in the field. The actual correction model is still a stub — built once
    there's a trained acoustic model to evaluate it against.
-4. **`export/`** — PyTorch -> ONNX export, then quantization (run on an x64 machine).
-   *(stub)*
-5. **`inference/`** — real-time app: capture radio audio -> front end -> ONNX model via
-   `onnxruntime` + `onnxruntime-qnn` (Hexagon NPU) -> correction stage -> text.
-   *(stub)*
+4. **`export/`** — PyTorch -> ONNX export for CPU inference via plain `onnxruntime`.
+   NPU/QNN HTP inference was tried and measured 2-2.5x *slower* than CPU EP on this
+   model size, plus needing quantization/fixed-shapes/a slow first-load compile - not
+   worth it when CPU alone gives 150-200x real-time throughput. See its README.
+5. **`inference/`** — real-time app: capture radio audio -> front end -> PyTorch/ONNX
+   model (CPU) -> correction stage -> text, plus a full TUI operating console with CAT
+   radio control, ADIF logging, and contest-assist tooling. See its README for details.
 
 ## Note on data sources
 
@@ -58,6 +61,10 @@ it between machines would be wasted bandwidth/storage. Each machine just re-runs
   arrays, not audio) — not used as training audio. Kept only as a possible later
   sanity-check for symbol/timing logic, not wired into the real pipeline.
 - ARRL W1AW practice files are real audio+transcript and are the actual training data.
+- ON6ZQ's CW practice page (on6zq.be) has 45 more clips (9 passages x 5 speeds:
+  12/16/20/24/28 WPM) but its `robots.txt` explicitly disallows AI-agent user
+  agents site-wide, so these are **not** auto-fetched. See
+  `dataprep/import_on6zq.py` for the manual-download + reshape process.
 
 ## Setup
 

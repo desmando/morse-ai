@@ -150,7 +150,7 @@ def main():
             aug_path = speed_dir / aug_name
             sf.write(aug_path, aug_audio, sr)
             rows.append({
-                "clip_path": str(aug_path.relative_to(DATA_ROOT)),
+                "clip_path": aug_path.relative_to(DATA_ROOT).as_posix(),
                 "label": row["label"],
                 "wpm": row["wpm"],
                 "source": row["source"],

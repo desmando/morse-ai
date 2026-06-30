@@ -2,6 +2,9 @@ requests
 numpy
 scipy
 soundfile
+sounddevice
+prompt_toolkit
+pyserial
 tqdm
 
 # torch is intentionally not pinned here - install separately per machine:

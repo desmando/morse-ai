@@ -9,7 +9,16 @@ import numpy as np
 from scipy.signal import spectrogram
 
 NFFT = 256
-NOVERLAP = 200
+# Hop = NFFT - NOVERLAP = 112 samples (~14ms @ 8kHz). Frame count scales
+# directly with clip duration regardless of how much real content is in it,
+# while label length is capped by line/word boundaries - so longer clips
+# alone make the frames-per-character ratio *worse*, not better (567 frames
+# for ~7.5 chars at 4s; ~1139 frames for ~11 chars at 8s with the old hop of
+# 56). Doubling the hop halves T at any clip length without losing audio
+# data, directly improving that ratio. Still ~2 frames/dot at the fastest
+# WPM we support (40 WPM dot = 30ms), enough resolution to resolve timing.
+NOVERLAP = 144
+HOP_SAMPLES = NFFT - NOVERLAP  # frame stride in samples, regardless of sr
 N_FREQ_BINS = 32
 TONE_FMIN_HZ = 300.0
 TONE_FMAX_HZ = 1500.0

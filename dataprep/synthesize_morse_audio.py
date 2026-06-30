@@ -55,10 +55,23 @@ def char_elements(ch: str, dot_s: float, dash_s: float, gap_s: float):
     return elements
 
 
+def _jitter(duration: float, rng, amount: float) -> float:
+    """Real keying isn't metronome-exact - nudge each element's duration by a
+    small random factor (clamped so nothing collapses to ~0 or doubles)."""
+    if amount <= 0:
+        return duration
+    factor = max(0.5, min(1.5, rng.gauss(1.0, amount)))
+    return duration * factor
+
+
 def synthesize_line(text: str, wpm: float, tone_hz: float, sr: int = SAMPLE_RATE,
-                     farnsworth_wpm: float = None, ramp_s: float = 0.004):
+                     farnsworth_wpm: float = None, ramp_s: float = 0.004,
+                     timing_jitter: float = 0.0, rng=None):
     """Returns (audio, char_spans) where char_spans is [(char, start_s, end_s), ...]
-    for every transmitted (non-space, mapped) character - exact, not approximate."""
+    for every transmitted (non-space, mapped) character - exact, not approximate,
+    even with timing_jitter applied (each element's randomized duration is what
+    actually gets rendered, so spans always match the audio precisely)."""
+    rng = rng or random.Random()
     char_wpm = farnsworth_wpm if farnsworth_wpm else wpm
     dot_s = 1.2 / char_wpm
     dash_s = 3 * dot_s
@@ -78,15 +91,24 @@ def synthesize_line(text: str, wpm: float, tone_hz: float, sr: int = SAMPLE_RATE
         for ci, ch in enumerate(chars_in_word):
             start = t
             for d, is_tone in char_elements(ch, dot_s, dash_s, intra_gap_s):
+                d = _jitter(d, rng, timing_jitter)
                 elements.append((d, is_tone))
                 t += d
             char_spans.append((ch, start, t))
             if ci < len(chars_in_word) - 1:
-                elements.append((inter_char_gap_s, False))
-                t += inter_char_gap_s
+                d = _jitter(inter_char_gap_s, rng, timing_jitter)
+                elements.append((d, False))
+                t += d
         if wi < len(words) - 1 and chars_in_word:
-            elements.append((inter_word_gap_s, False))
-            t += inter_word_gap_s
+            start = t
+            d = _jitter(inter_word_gap_s, rng, timing_jitter)
+            elements.append((d, False))
+            t += d
+            # label the word gap itself as a " " character span - otherwise
+            # the model never sees a space as a training target at all (no
+            # other code path produces one) and can never learn to predict
+            # one, making every decode one run-on word with no boundaries
+            char_spans.append((" ", start, t))
 
     total_samples = int(t * sr) + 1
     audio = np.zeros(total_samples, dtype=np.float64)
@@ -110,15 +132,36 @@ def synthesize_line(text: str, wpm: float, tone_hz: float, sr: int = SAMPLE_RATE
 
 
 def slice_into_clips(audio, char_spans, sr: int, clip_seconds: float):
+    """Cuts each clip exactly at a character's end boundary - never mid
+    dot/dash/gap - so the label always matches the audio exactly, with no
+    bleed in either direction. Previously this cut audio at a fixed clock
+    tick while assigning labels by character *start* time only: a character
+    straddling the cut got counted in full in the label whose audio actually
+    only contained its first fragment, and the next clip got that same
+    character's leftover audio with no label credit at all. Every clip
+    boundary in every phase of training had a chance to hit this. Clips now
+    vary in length around clip_seconds (snapped to the nearest character
+    end) instead of landing on a fixed tick - CTC handles variable length
+    fine, exact alignment matters far more than uniform duration."""
     n_samples = len(audio)
-    clip_samples = int(clip_seconds * sr)
+    n_spans = len(char_spans)
     start_sample = 0
-    while start_sample < n_samples:
-        end_sample = min(start_sample + clip_samples, n_samples)
-        t0, t1 = start_sample / sr, end_sample / sr
-        label = "".join(ch for ch, s, _e in char_spans if t0 <= s < t1)
-        if label:
-            yield audio[start_sample:end_sample], label
+    span_idx = 0
+    while span_idx < n_spans:
+        label_chars = []
+        end_sample = start_sample
+        while span_idx < n_spans:
+            ch, _s, e = char_spans[span_idx]
+            candidate_end = min(int(round(e * sr)), n_samples)
+            # always take at least one character, even if it alone exceeds
+            # clip_seconds - a window can't be shorter than one character
+            if label_chars and (candidate_end - start_sample) > clip_seconds * sr:
+                break
+            label_chars.append(ch)
+            end_sample = candidate_end
+            span_idx += 1
+        if label_chars:
+            yield audio[start_sample:end_sample], "".join(label_chars)
         start_sample = end_sample
 
 
@@ -131,6 +174,9 @@ def main():
     parser.add_argument("--tone-hz-range", default="400,900")
     parser.add_argument("--clip-seconds", type=float, default=4.0)
     parser.add_argument("--max-lines", type=int, default=0, help="0 = all lines in the text file")
+    parser.add_argument("--timing-jitter", type=float, default=0.0,
+                         help="relative std-dev of random per-element timing variation (e.g. 0.08 = ~8%%), "
+                              "0 = perfectly metronomic. Real human keying isn't perfectly even.")
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
 
@@ -152,7 +198,7 @@ def main():
         tone_hz = rng.uniform(hz_lo, hz_hi)
         amp = rng.uniform(0.6, 1.0)
 
-        audio, char_spans = synthesize_line(line, wpm, tone_hz)
+        audio, char_spans = synthesize_line(line, wpm, tone_hz, timing_jitter=args.timing_jitter, rng=rng)
         audio = audio * amp
 
         for j, (clip_audio, label) in enumerate(slice_into_clips(audio, char_spans, SAMPLE_RATE, args.clip_seconds)):
@@ -160,10 +206,14 @@ def main():
             clip_path = out_dir / clip_name
             sf.write(clip_path, clip_audio, SAMPLE_RATE)
             rows.append({
-                "clip_path": str(clip_path.relative_to(DATA_ROOT)),
+                "clip_path": clip_path.relative_to(DATA_ROOT).as_posix(),
                 "label": label,
                 "wpm": f"{wpm:.0f}",
-                "source": "synthetic_qso",
+                # one "source" per synthesized line, not one constant value for
+                # everything - split_rows_by_source holds out whole sources, so
+                # a single shared source value makes synthetic-only training
+                # put 100% of the data in either train or val, never both.
+                "source": f"synth_line_{i:05d}",
             })
 
         if i % 200 == 0:
