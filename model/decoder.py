@@ -6,6 +6,7 @@ dot/dash/space patterns in the time-frequency image, a BiLSTM models the
 sequence, and CTC loss avoids needing exact per-character alignment.
 """
 import csv
+import math
 import random
 from pathlib import Path
 
@@ -113,6 +114,90 @@ class CWDecoder(nn.Module):
         return logits.log_softmax(dim=-1)
 
 
+def _log_sum_exp(a: float, b: float) -> float:
+    if a == float("-inf"):
+        return b
+    if b == float("-inf"):
+        return a
+    if a > b:
+        return a + math.log1p(math.exp(b - a))
+    return b + math.log1p(math.exp(a - b))
+
+
+def ctc_beam_decode(log_probs: torch.Tensor, vocab: Vocab, lm=None,
+                    lm_weight: float = 0.3, beam_width: int = 20) -> str:
+    """CTC prefix beam search with optional ham-domain character LM scoring.
+
+    Keeps beam_width candidate prefix sequences alive across all T frames,
+    scoring each with acoustic probability + (lm_weight * LM log-probability).
+    Handles CTC's same-consecutive-character semantics exactly: emitting the
+    same character twice in the output requires a blank between them in the
+    CTC path, so extending a prefix with its own last character only advances
+    the prefix via a blank path, while a non-blank path just continues keying
+    the same character without adding it to the output again.
+
+    log_probs: (T, vocab_size) for ONE sequence (not batched).
+    lm: CharNgramLM instance, or None to run as pure acoustic beam search.
+    Returns the best-scoring decoded string."""
+    import math as _math
+    NEG_INF = float("-inf")
+    lp = log_probs.float().cpu()
+    T = lp.shape[0]
+
+    # beams: {prefix_str: [log_Pb, log_Pnb]}
+    # Pb  = log-prob of all CTC paths producing prefix AND ending with blank
+    # Pnb = log-prob of all CTC paths producing prefix AND ending with non-blank
+    beams: dict[str, list[float]] = {"": [0.0, NEG_INF]}
+
+    for t in range(T):
+        lp_t = lp[t]
+        new_beams: dict[str, list[float]] = {}
+
+        def _ensure(prefix):
+            if prefix not in new_beams:
+                new_beams[prefix] = [NEG_INF, NEG_INF]
+
+        for prefix, (log_Pb, log_Pnb) in beams.items():
+            log_P = _log_sum_exp(log_Pb, log_Pnb)
+            last = prefix[-1] if prefix else None
+
+            # extend with blank — prefix stays the same
+            _ensure(prefix)
+            new_beams[prefix][0] = _log_sum_exp(
+                new_beams[prefix][0], log_P + float(lp_t[0]))
+
+            # extend with each non-blank character
+            for c in range(1, lp_t.shape[0]):
+                char = vocab.idx_to_char.get(c)
+                if not char:
+                    continue
+                lp_char = float(lp_t[c])
+                lm_score = lm.log_prob(prefix, char) * lm_weight if lm is not None else 0.0
+
+                if char == last:
+                    # same char: non-blank path stays at current prefix (CTC collapse)
+                    _ensure(prefix)
+                    new_beams[prefix][1] = _log_sum_exp(
+                        new_beams[prefix][1], log_Pnb + lp_char)
+                    # blank path does extend the prefix (blank separated the repeat)
+                    ext = prefix + char
+                    _ensure(ext)
+                    new_beams[ext][1] = _log_sum_exp(
+                        new_beams[ext][1], log_Pb + lp_char + lm_score)
+                else:
+                    ext = prefix + char
+                    _ensure(ext)
+                    new_beams[ext][1] = _log_sum_exp(
+                        new_beams[ext][1], log_P + lp_char + lm_score)
+
+        # prune to beam_width
+        beams = dict(sorted(new_beams.items(),
+                            key=lambda kv: -_log_sum_exp(kv[1][0], kv[1][1]))[:beam_width])
+
+    best = max(beams.items(), key=lambda kv: _log_sum_exp(kv[1][0], kv[1][1]))
+    return best[0]
+
+
 def ctc_greedy_decode(log_probs: torch.Tensor, vocab: Vocab) -> list[str]:
     """log_probs: (batch, T, vocab_size) -> collapse repeats + drop blanks."""
     pred_ids = log_probs.argmax(dim=-1)  # (batch, T)
@@ -217,11 +302,18 @@ def ctc_forced_align(log_probs: torch.Tensor, target_indices: list[int], blank: 
 
 
 def decode_window_core(window_audio, window_abs_start: float, core_start: float, core_end: float,
-                        model, vocab: Vocab, device: str, sr: int) -> str:
+                        model, vocab: Vocab, device: str, sr: int,
+                        lm=None, lm_weight: float = 0.3, beam_width: int = 20) -> str:
     """Decodes one audio window and keeps only the characters whose absolute
     start time (window_abs_start + their offset within the window) falls in
     [core_start, core_end) - the stretch of the timeline this window "owns"
-    in an overlapping sliding-window scheme. See decode_stream()."""
+    in an overlapping sliding-window scheme. See decode_stream().
+
+    When lm is provided, uses CTC beam search scored by the ham-domain
+    character LM instead of greedy decoding. Timing for the core-region
+    filter is recovered via forced alignment of the beam search result back
+    to frame positions, so the overlap-trim-stitch logic works identically
+    regardless of decode strategy."""
     from model.features import HOP_SAMPLES, extract_features
 
     hop_seconds = HOP_SAMPLES / sr
@@ -229,13 +321,38 @@ def decode_window_core(window_audio, window_abs_start: float, core_start: float,
     with torch.no_grad():
         x = torch.from_numpy(features).unsqueeze(0).to(device)
         log_probs = model(x)
-    chars_with_time = ctc_greedy_decode_with_times(log_probs.cpu(), vocab, hop_seconds)[0]
+    log_probs_cpu = log_probs[0].cpu()  # (T, vocab_size)
+
+    if lm is not None:
+        # Beam search for best text, forced-align back to frames for trimming
+        text = ctc_beam_decode(log_probs_cpu, vocab, lm=lm,
+                                lm_weight=lm_weight, beam_width=beam_width)
+        if not text:
+            return ""
+        target_indices = [vocab.char_to_idx[c] for c in text if c in vocab.char_to_idx]
+        if not target_indices:
+            return ""
+        spans = ctc_forced_align(log_probs_cpu, target_indices)
+        chars_with_time = []
+        char_idx = 0
+        for c in text:
+            if c not in vocab.char_to_idx:
+                continue
+            f0, f1 = spans[char_idx]
+            t = f0 * hop_seconds if f0 is not None else 0.0
+            chars_with_time.append((c, t))
+            char_idx += 1
+    else:
+        chars_with_time = ctc_greedy_decode_with_times(
+            log_probs_cpu.unsqueeze(0), vocab, hop_seconds)[0]
+
     return "".join(ch for ch, t in chars_with_time
                     if core_start <= window_abs_start + t < core_end)
 
 
 def decode_stream(audio, sr: int, model, vocab: Vocab, device: str,
-                   window_seconds: float = 8.0, stride_seconds: float = 4.0) -> str:
+                   window_seconds: float = 8.0, stride_seconds: float = 4.0,
+                   lm=None, lm_weight: float = 0.3, beam_width: int = 20) -> str:
     """Decodes a long, continuous recording as one piece of text, without the
     boundary-chopping bug fixed in dataprep/synthesize_morse_audio.py and
     inference/realtime_decode.py's original non-overlapping-window design:
@@ -271,7 +388,8 @@ def decode_stream(audio, sr: int, model, vocab: Vocab, device: str,
         core_end = total_seconds if is_last else window_abs_start + guard_seconds + stride_seconds
 
         pieces.append(decode_window_core(audio[window_start_sample:window_end_sample], window_abs_start,
-                                          core_start, core_end, model, vocab, device, sr))
+                                          core_start, core_end, model, vocab, device, sr,
+                                          lm=lm, lm_weight=lm_weight, beam_width=beam_width))
 
         if is_last:
             break

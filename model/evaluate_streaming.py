@@ -57,6 +57,11 @@ def main():
     parser.add_argument("--window-seconds", type=float, default=8.0)
     parser.add_argument("--stride-seconds", type=float, default=4.0)
     parser.add_argument("--device", default="auto", choices=["auto", "cpu", "cuda"])
+    parser.add_argument("--lm", default=None, metavar="PATH",
+                         help="path to ham_char_lm.json - enables CTC beam search instead of greedy decode")
+    parser.add_argument("--lm-weight", type=float, default=0.3,
+                         help="LM score weight relative to acoustic score (0 = acoustic only)")
+    parser.add_argument("--beam-width", type=int, default=20)
     args = parser.parse_args()
 
     device = args.device
@@ -69,6 +74,13 @@ def main():
     ckpt = torch.load(args.checkpoint, map_location=device)
     model.load_state_dict(ckpt["model_state"])
     model.eval()
+
+    lm = None
+    if args.lm:
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        from lm.ngram_lm import CharNgramLM
+        lm = CharNgramLM.load(args.lm)
+        print(f"LM: {args.lm} (weight={args.lm_weight}, beam={args.beam_width})")
 
     pairs = find_pairs(Path(args.raw_dir), args.max_files_per_speed)
     print(f"evaluating {len(pairs)} whole recordings\n")
@@ -83,7 +95,8 @@ def main():
             continue
 
         pred = decode_stream(audio, sr, model, vocab, device,
-                              window_seconds=args.window_seconds, stride_seconds=args.stride_seconds).upper()
+                              window_seconds=args.window_seconds, stride_seconds=args.stride_seconds,
+                              lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width).upper()
         c, w = cer(pred, ref), wer(pred, ref)
         total_cer += c
         total_wer += w

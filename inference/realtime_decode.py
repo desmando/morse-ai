@@ -72,10 +72,14 @@ class StreamDecoder:
     empty if not enough has accumulated yet for another window), and
     .flush() once the stream actually ends to decode whatever's left in the
     buffer (its core extends to the true end, since there's no next window
-    to cover the tail)."""
+    to cover the tail).
+
+    Pass lm=CharNgramLM.load(...) to enable CTC beam search rescored by the
+    ham-domain character LM instead of greedy decoding."""
 
     def __init__(self, model, vocab: Vocab, torch_device: str, sr: int,
-                 window_seconds: float = 8.0, stride_seconds: float = 4.0):
+                 window_seconds: float = 8.0, stride_seconds: float = 4.0,
+                 lm=None, lm_weight: float = 0.3, beam_width: int = 20):
         self.model = model
         self.vocab = vocab
         self.torch_device = torch_device
@@ -84,6 +88,9 @@ class StreamDecoder:
         self.stride_samples = int(stride_seconds * sr)
         self.guard_seconds = (window_seconds - stride_seconds) / 2
         self.stride_seconds = stride_seconds
+        self.lm = lm
+        self.lm_weight = lm_weight
+        self.beam_width = beam_width
         self.buf = np.zeros(0, dtype=np.float32)
         self.stream_pos_samples = 0
         self.is_first = True
@@ -97,7 +104,9 @@ class StreamDecoder:
             core_start = 0.0 if self.is_first else window_abs_start + self.guard_seconds
             core_end = window_abs_start + self.guard_seconds + self.stride_seconds
             pieces.append(decode_window_core(window_audio, window_abs_start, core_start, core_end,
-                                              self.model, self.vocab, self.torch_device, self.sr))
+                                              self.model, self.vocab, self.torch_device, self.sr,
+                                              lm=self.lm, lm_weight=self.lm_weight,
+                                              beam_width=self.beam_width))
             self.is_first = False
             self.buf = self.buf[self.stride_samples:]
             self.stream_pos_samples += self.stride_samples
@@ -110,7 +119,8 @@ class StreamDecoder:
         core_start = 0.0 if self.is_first else window_abs_start + self.guard_seconds
         core_end = window_abs_start + len(self.buf) / self.sr
         text = decode_window_core(self.buf, window_abs_start, core_start, core_end,
-                                   self.model, self.vocab, self.torch_device, self.sr)
+                                   self.model, self.vocab, self.torch_device, self.sr,
+                                   lm=self.lm, lm_weight=self.lm_weight, beam_width=self.beam_width)
         self.buf = np.zeros(0, dtype=np.float32)
         return text
 
@@ -152,6 +162,10 @@ def main():
                               "non-overlapping core regions; smaller values add latency cost for no benefit, "
                               "larger values widen the unstitched edge gap")
     parser.add_argument("--torch-device", default="cpu", choices=["cpu", "cuda"])
+    parser.add_argument("--lm", default=None, metavar="PATH",
+                         help="path to ham_char_lm.json to enable beam search + LM decoding")
+    parser.add_argument("--lm-weight", type=float, default=0.3)
+    parser.add_argument("--beam-width", type=int, default=20)
     parser.add_argument("--list-devices", action="store_true")
     args = parser.parse_args()
 
@@ -163,10 +177,18 @@ def main():
         parser.error("--checkpoint is required (unless using --list-devices)")
 
     model, vocab = load_model(args.checkpoint, args.vocab, args.torch_device)
+    lm = None
+    if args.lm:
+        import sys as _sys
+        from pathlib import Path as _Path
+        _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+        from lm.ngram_lm import CharNgramLM
+        lm = CharNgramLM.load(args.lm)
     device = parse_device(args.device)
     device_info = sd.query_devices(device, "input")
     decoder = StreamDecoder(model, vocab, args.torch_device, MODEL_SAMPLE_RATE,
-                             window_seconds=args.window_seconds, stride_seconds=args.stride_seconds)
+                             window_seconds=args.window_seconds, stride_seconds=args.stride_seconds,
+                             lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width)
 
     print(f"Listening on {device_info['name']!r} at {int(device_info['default_samplerate'])} Hz, "
           f"{args.window_seconds}s windows / {args.stride_seconds}s stride (Ctrl+C to stop) ...")

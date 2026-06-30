@@ -282,6 +282,12 @@ def main():
     parser.add_argument("--stride-seconds", type=float, default=4.0,
                          help="how far the window advances each step - window_seconds/2 gives clean "
                               "non-overlapping core regions")
+    parser.add_argument("--lm", default=None, metavar="PATH",
+                         help="path to ham_char_lm.json to enable CTC beam search + LM decoding "
+                              "instead of greedy; improves callsign and exchange accuracy")
+    parser.add_argument("--lm-weight", type=float, default=0.3,
+                         help="LM score weight (0 = pure acoustic greedy-equivalent, higher = more LM influence)")
+    parser.add_argument("--beam-width", type=int, default=20)
     parser.add_argument("--torch-device", default="cpu", choices=["cpu", "cuda"])
     parser.add_argument("--my-call", required=True)
     args = parser.parse_args()
@@ -290,11 +296,15 @@ def main():
         parser.error("--my-class and --my-section are required for --mode field-day")
 
     if args.fake_decode:
-        model, vocab, device, device_name = None, None, None, "FAKE (manual injection)"
+        model, vocab, device, device_name, lm = None, None, None, "FAKE (manual injection)", None
     else:
         if not args.checkpoint:
             parser.error("--checkpoint is required unless --fake-decode is set")
         model, vocab = load_model(args.checkpoint, args.vocab, args.torch_device)
+        lm = None
+        if args.lm:
+            from lm.ngram_lm import CharNgramLM
+            lm = CharNgramLM.load(args.lm)
         if args.device is not None:
             device = parse_device(args.device)
             device_name = sd.query_devices(device, "input")["name"]
@@ -508,7 +518,8 @@ def main():
 
     def worker():
         decoder = StreamDecoder(model, vocab, args.torch_device, MODEL_SAMPLE_RATE,
-                                 window_seconds=args.window_seconds, stride_seconds=args.stride_seconds)
+                                 window_seconds=args.window_seconds, stride_seconds=args.stride_seconds,
+                                 lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width)
         try:
             for text in iter_decoded_stream(device, decoder):
                 if text:
