@@ -79,7 +79,7 @@ class StreamDecoder:
 
     def __init__(self, model, vocab: Vocab, torch_device: str, sr: int,
                  window_seconds: float = 8.0, stride_seconds: float = 4.0,
-                 lm=None, lm_weight: float = 0.3, beam_width: int = 20):
+                 lm=None, lm_weight: float = 0.3, beam_width: int = 20, top_k: int = 15):
         self.model = model
         self.vocab = vocab
         self.torch_device = torch_device
@@ -91,6 +91,7 @@ class StreamDecoder:
         self.lm = lm
         self.lm_weight = lm_weight
         self.beam_width = beam_width
+        self.top_k = top_k
         self.buf = np.zeros(0, dtype=np.float32)
         self.stream_pos_samples = 0
         self.is_first = True
@@ -106,7 +107,7 @@ class StreamDecoder:
             pieces.append(decode_window_core(window_audio, window_abs_start, core_start, core_end,
                                               self.model, self.vocab, self.torch_device, self.sr,
                                               lm=self.lm, lm_weight=self.lm_weight,
-                                              beam_width=self.beam_width))
+                                              beam_width=self.beam_width, top_k=self.top_k))
             self.is_first = False
             self.buf = self.buf[self.stride_samples:]
             self.stream_pos_samples += self.stride_samples
@@ -120,7 +121,8 @@ class StreamDecoder:
         core_end = window_abs_start + len(self.buf) / self.sr
         text = decode_window_core(self.buf, window_abs_start, core_start, core_end,
                                    self.model, self.vocab, self.torch_device, self.sr,
-                                   lm=self.lm, lm_weight=self.lm_weight, beam_width=self.beam_width)
+                                   lm=self.lm, lm_weight=self.lm_weight,
+                                   beam_width=self.beam_width, top_k=self.top_k)
         self.buf = np.zeros(0, dtype=np.float32)
         return text
 

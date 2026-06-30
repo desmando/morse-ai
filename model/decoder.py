@@ -78,16 +78,23 @@ def collate_batch(batch):
 
 
 class CWDecoder(nn.Module):
-    def __init__(self, n_freq_bins: int = N_FREQ_BINS, vocab_size: int = 64,
-                 cnn_channels: int = 32, lstm_hidden: int = 128, lstm_layers: int = 2):
+    def __init__(self, n_freq_bins: int = N_FREQ_BINS, vocab_size: int = 48,
+                 cnn_channels: int = 32, lstm_hidden: int = 128, lstm_layers: int = 2,
+                 cnn_groups: int = 8):
         super().__init__()
+        # GroupNorm instead of BatchNorm2d: doesn't maintain running statistics,
+        # so its normalisation behaviour can't drift during long runs at a near-zero
+        # LR where BatchNorm statistics kept updating even when the optimizer
+        # wasn't making meaningful weight updates. Also correct for variable-length
+        # padded batches where BatchNorm's batch-level statistics are distorted by
+        # the zero-padded regions.
         self.cnn = nn.Sequential(
             nn.Conv2d(1, cnn_channels, kernel_size=3, padding=1),
-            nn.BatchNorm2d(cnn_channels),
+            nn.GroupNorm(num_groups=min(cnn_groups, cnn_channels), num_channels=cnn_channels),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=(1, 2)),  # downsample frequency axis only
             nn.Conv2d(cnn_channels, cnn_channels, kernel_size=3, padding=1),
-            nn.BatchNorm2d(cnn_channels),
+            nn.GroupNorm(num_groups=min(cnn_groups, cnn_channels), num_channels=cnn_channels),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=(1, 2)),
         )
@@ -125,7 +132,8 @@ def _log_sum_exp(a: float, b: float) -> float:
 
 
 def ctc_beam_decode(log_probs: torch.Tensor, vocab: Vocab, lm=None,
-                    lm_weight: float = 0.3, beam_width: int = 20) -> str:
+                    lm_weight: float = 0.3, beam_width: int = 20,
+                    top_k: int = 15) -> str:
     """CTC prefix beam search with optional ham-domain character LM scoring.
 
     Keeps beam_width candidate prefix sequences alive across all T frames,
@@ -140,9 +148,10 @@ def ctc_beam_decode(log_probs: torch.Tensor, vocab: Vocab, lm=None,
     lm: CharNgramLM instance, or None to run as pure acoustic beam search.
     Returns the best-scoring decoded string."""
     import math as _math
+    import numpy as _np
     NEG_INF = float("-inf")
-    lp = log_probs.float().cpu()
-    T = lp.shape[0]
+    lp = log_probs.float().cpu().numpy()
+    T, V = lp.shape
 
     # beams: {prefix_str: [log_Pb, log_Pnb]}
     # Pb  = log-prob of all CTC paths producing prefix AND ending with blank
@@ -157,6 +166,13 @@ def ctc_beam_decode(log_probs: torch.Tensor, vocab: Vocab, lm=None,
             if prefix not in new_beams:
                 new_beams[prefix] = [NEG_INF, NEG_INF]
 
+        # Only expand the top-K non-blank characters by acoustic probability.
+        # CTC posteriors are heavily peaked — the bottom V-top_k characters
+        # contribute near-zero probability mass and expanding them costs O(beam_width)
+        # dict operations each for negligible accuracy gain.
+        k = min(top_k, V - 1)
+        top_chars = _np.argpartition(lp_t[1:], -k)[-k:] + 1  # +1: skip blank at 0
+
         for prefix, (log_Pb, log_Pnb) in beams.items():
             log_P = _log_sum_exp(log_Pb, log_Pnb)
             last = prefix[-1] if prefix else None
@@ -166,9 +182,9 @@ def ctc_beam_decode(log_probs: torch.Tensor, vocab: Vocab, lm=None,
             new_beams[prefix][0] = _log_sum_exp(
                 new_beams[prefix][0], log_P + float(lp_t[0]))
 
-            # extend with each non-blank character
-            for c in range(1, lp_t.shape[0]):
-                char = vocab.idx_to_char.get(c)
+            # extend with each top-K non-blank character
+            for c in top_chars:
+                char = vocab.idx_to_char.get(int(c))
                 if not char:
                     continue
                 lp_char = float(lp_t[c])
@@ -303,7 +319,8 @@ def ctc_forced_align(log_probs: torch.Tensor, target_indices: list[int], blank: 
 
 def decode_window_core(window_audio, window_abs_start: float, core_start: float, core_end: float,
                         model, vocab: Vocab, device: str, sr: int,
-                        lm=None, lm_weight: float = 0.3, beam_width: int = 20) -> str:
+                        lm=None, lm_weight: float = 0.3, beam_width: int = 20,
+                        top_k: int = 15) -> str:
     """Decodes one audio window and keeps only the characters whose absolute
     start time (window_abs_start + their offset within the window) falls in
     [core_start, core_end) - the stretch of the timeline this window "owns"
@@ -326,7 +343,7 @@ def decode_window_core(window_audio, window_abs_start: float, core_start: float,
     if lm is not None:
         # Beam search for best text, forced-align back to frames for trimming
         text = ctc_beam_decode(log_probs_cpu, vocab, lm=lm,
-                                lm_weight=lm_weight, beam_width=beam_width)
+                                lm_weight=lm_weight, beam_width=beam_width, top_k=top_k)
         if not text:
             return ""
         target_indices = [vocab.char_to_idx[c] for c in text if c in vocab.char_to_idx]
@@ -352,7 +369,8 @@ def decode_window_core(window_audio, window_abs_start: float, core_start: float,
 
 def decode_stream(audio, sr: int, model, vocab: Vocab, device: str,
                    window_seconds: float = 8.0, stride_seconds: float = 4.0,
-                   lm=None, lm_weight: float = 0.3, beam_width: int = 20) -> str:
+                   lm=None, lm_weight: float = 0.3, beam_width: int = 20,
+                   top_k: int = 15) -> str:
     """Decodes a long, continuous recording as one piece of text, without the
     boundary-chopping bug fixed in dataprep/synthesize_morse_audio.py and
     inference/realtime_decode.py's original non-overlapping-window design:
@@ -389,7 +407,8 @@ def decode_stream(audio, sr: int, model, vocab: Vocab, device: str,
 
         pieces.append(decode_window_core(audio[window_start_sample:window_end_sample], window_abs_start,
                                           core_start, core_end, model, vocab, device, sr,
-                                          lm=lm, lm_weight=lm_weight, beam_width=beam_width))
+                                          lm=lm, lm_weight=lm_weight, beam_width=beam_width,
+                                          top_k=top_k))
 
         if is_last:
             break
