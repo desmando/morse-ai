@@ -67,13 +67,22 @@ port is selected (or pass --cat-dry-run to see simulated key-down/up
 logging without real hardware) - only the decode side is faked.
 
 Usage:
-  python inference/tui.py --checkpoint <path to decoder_epochNNN.pt> \\
-      --my-call W1ABC --my-class 3A --my-section ENY
+  # Field Day (default)
+  python inference/tui.py --checkpoint <path> --my-call W1ABC --my-class 3A --my-section ENY
 
-  python inference/tui.py --fake-decode \\
-      --my-call W1ABC --my-class 3A --my-section ENY
+  # Normal HF contact
+  python inference/tui.py --checkpoint <path> --mode contact \\
+      --my-call W1ABC --my-name Mike --my-qth "Chicago IL"
+
+  # Rag chew (auto-suggest just pre-fills callsign header, you type the rest)
+  python inference/tui.py --checkpoint <path> --mode ragchew --my-call W1ABC
+
+  # Fake-decode (no hardware or checkpoint needed, any mode)
+  python inference/tui.py --fake-decode --mode contact \\
+      --my-call W1ABC --my-name Mike --my-qth "Chicago IL"
 """
 import argparse
+import json
 import sys
 import threading
 from pathlib import Path
@@ -94,6 +103,8 @@ from inference.cat_keyer import CatKeyer
 from inference.fcc_uls import is_us_pattern, load_active_callsigns
 from inference.realtime_decode import MODEL_SAMPLE_RATE, StreamDecoder, iter_decoded_stream, load_model, parse_device
 from lm.adif_log import append_qso, broadcast_qso_udp, freq_to_band, load_worked_calls
+from lm.contact_responder import (extract_name, extract_qth, extract_rst, generate_contact_response,
+                                   generate_ragchew_response, is_signoff)
 from lm.field_day_responder import extract_callsigns, extract_exchange, generate_response
 from paths import DATA_ROOT
 
@@ -247,8 +258,19 @@ def main():
     parser.add_argument("--cat-dry-run", action="store_true",
                          help="log key-down/up transitions and fake CI-V replies instead of opening the "
                               "serial port - verify tx timing safely first")
-    parser.add_argument("--adif-log", default=str(DATA_ROOT / "logs" / "field_day.adi"),
+    parser.add_argument("--mode", default="field-day", choices=["field-day", "contact", "ragchew"],
+                         help="operating mode: field-day (contest exchange), contact (RST/name/QTH), "
+                              "ragchew (decoder + logging active, auto-suggest just pre-fills callsign)")
+    parser.add_argument("--my-class", default=None, help="Field Day class, e.g. 3A (required for field-day mode)")
+    parser.add_argument("--my-section", default=None, help="ARRL/RAC section (required for field-day mode)")
+    parser.add_argument("--my-name", default="", help="Your name, used in contact/ragchew responses")
+    parser.add_argument("--my-qth", default="", help="Your QTH, used in contact responses")
+    parser.add_argument("--my-rst", default="599", help="Default RST to send in contact mode")
+    parser.add_argument("--adif-log", default=str(DATA_ROOT / "logs" / "qso_log.adi"),
                          help="ADIF log file to append a record to after each completed QSO")
+    parser.add_argument("--conversation-log", default=str(DATA_ROOT / "logs" / "conversation_log.jsonl"),
+                         help="JSONL file logging every sent and received text chunk with timestamps - "
+                              "useful for reviewing contacts and building training data for future AI responses")
     parser.add_argument("--no-udp-log", action="store_true",
                          help="disable UDP broadcast of each logged QSO (enabled by default)")
     parser.add_argument("--udp-log-host", default="255.255.255.255",
@@ -262,9 +284,10 @@ def main():
                               "non-overlapping core regions")
     parser.add_argument("--torch-device", default="cpu", choices=["cpu", "cuda"])
     parser.add_argument("--my-call", required=True)
-    parser.add_argument("--my-class", required=True, help="e.g. 3A, 1D, 5F")
-    parser.add_argument("--my-section", required=True, help="ARRL/RAC section abbreviation")
     args = parser.parse_args()
+
+    if args.mode == "field-day" and (not args.my_class or not args.my_section):
+        parser.error("--my-class and --my-section are required for --mode field-day")
 
     if args.fake_decode:
         model, vocab, device, device_name = None, None, None, "FAKE (manual injection)"
@@ -294,13 +317,25 @@ def main():
         except Exception as exc:
             sys.exit(f"Failed to open {serial_port} for CAT control: {exc}")
 
+    def log_conversation(direction: str, text: str):
+        """Appends one sent/received entry to the conversation log as JSONL.
+        direction is 'received' or 'sent'. Both sides are logged so the full
+        exchange can be replayed or used as training data later."""
+        from datetime import datetime, timezone
+        entry = {"timestamp": datetime.now(timezone.utc).isoformat(),
+                 "direction": direction, "text": text}
+        log_path = Path(args.conversation_log)
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry) + "\n")
+
     worked_calls = load_worked_calls(args.adif_log)  # {band: {callsign, ...}} - survives a restart
     active_callsigns = load_active_callsigns()  # {} if inference/fcc_uls.py hasn't been run yet
     if not active_callsigns:
         print("warning: no FCC active-license index found - run inference/fcc_uls.py --download first "
               "to enable callsign verification (continuing without it)", file=sys.stderr)
     tx_lock = threading.Lock()
-    current_qso = {"call": None, "exchange": None}
+    current_qso = {"call": None, "exchange": None, "rst_rcvd": None, "their_name": None, "their_qth": None}
     current_tx_abort = {"event": None}  # the in-progress transmission's abort Event, if any
     current_wpm = {"value": args.tx_wpm}  # adjusted at runtime by QRQ/QRS
 
@@ -341,15 +376,31 @@ def main():
                                  abort_event=abort_event)
                 if abort_event.is_set():
                     return  # cut short - don't treat as a completed QSO
-                if "TU 73" in text.upper():  # sign-off = end of QSO, per field_day_responder's stage model
+                log_conversation("sent", text)
+
+                sent_upper = text.upper()
+                qso_complete = (
+                    (args.mode == "field-day" and "TU 73" in sent_upper) or
+                    (args.mode in ("contact", "ragchew") and is_signoff(sent_upper))
+                )
+                if qso_complete:
                     try:
                         freq_hz = keyer.read_frequency()
                         band = freq_to_band(freq_hz / 1e6)
                         append_transcript_line(f"[QSO complete @ {freq_hz / 1e6:.4f} MHz]")
                         if current_qso["call"]:
-                            record = append_qso(args.adif_log, my_call=args.my_call, their_call=current_qso["call"],
-                                                 freq_hz=freq_hz, my_class=args.my_class, my_section=args.my_section,
-                                                 their_exchange=current_qso["exchange"])
+                            if args.mode == "field-day":
+                                record = append_qso(args.adif_log, my_call=args.my_call,
+                                                     their_call=current_qso["call"], freq_hz=freq_hz,
+                                                     my_class=args.my_class, my_section=args.my_section,
+                                                     their_exchange=current_qso["exchange"])
+                            else:
+                                record = append_qso(args.adif_log, my_call=args.my_call,
+                                                     their_call=current_qso["call"], freq_hz=freq_hz,
+                                                     rst_sent=args.my_rst,
+                                                     rst_rcvd=current_qso["rst_rcvd"],
+                                                     their_name=current_qso["their_name"],
+                                                     their_qth=current_qso["their_qth"])
                             if band:
                                 worked_calls.setdefault(band, set()).add(current_qso["call"])
                             append_transcript_line(f"[logged to {args.adif_log}]")
@@ -365,8 +416,8 @@ def main():
                     except Exception as exc:
                         append_transcript_line(f"[frequency poll / log failed: {exc}]")
                     finally:
-                        current_qso["call"] = None
-                        current_qso["exchange"] = None
+                        current_qso.update({"call": None, "exchange": None,
+                                            "rst_rcvd": None, "their_name": None, "their_qth": None})
             finally:
                 current_tx_abort["event"] = None
                 set_tx_status(False)
@@ -388,6 +439,7 @@ def main():
 
     def on_text(text: str):
         append_transcript_line(text)
+        log_conversation("received", text)
         text_upper = text.upper()
 
         if "QRQ" in text_upper:
@@ -401,7 +453,6 @@ def main():
 
         calls = extract_callsigns(text)
         their_call = next((c for c in calls if c != args.my_call.upper()), None)
-        exchange = extract_exchange(text, exclude=(args.my_class.upper(), args.my_section.upper()))
 
         if (their_call and active_callsigns and is_us_pattern(their_call)
                 and their_call not in active_callsigns):
@@ -413,21 +464,44 @@ def main():
             try:
                 band = freq_to_band(keyer.read_frequency() / 1e6)
             except Exception:
-                band = None  # can't tell what band we're on - skip duplicate checking for this message
+                band = None
         already_worked = bool(band and their_call in worked_calls.get(band, set()))
 
-        if already_worked and exchange:
-            # they're completing the exchange with us - tell them we already have them, don't re-log
-            response = f"{their_call} DE {args.my_call.upper()} QSO B4 {band.upper()} K"
-        elif already_worked and "CQ" in text_upper:
-            # they're calling CQ and we already worked them on this band - don't answer at all
-            response = f"[{their_call} already logged on {band} - not calling]"
-        else:
+        if args.mode == "field-day":
+            exchange = extract_exchange(text, exclude=(args.my_class.upper(), args.my_section.upper()))
+            if already_worked and exchange:
+                response = f"{their_call} DE {args.my_call.upper()} QSO B4 {band.upper()} K"
+            elif already_worked and "CQ" in text_upper:
+                response = f"[{their_call} already logged on {band} - not calling]"
+            else:
+                if their_call:
+                    current_qso["call"] = their_call
+                if exchange:
+                    current_qso["exchange"] = exchange
+                response = generate_response(text, args.my_call, args.my_class, args.my_section)
+
+        elif args.mode == "contact":
             if their_call:
                 current_qso["call"] = their_call
-            if exchange:
-                current_qso["exchange"] = exchange
-            response = generate_response(text, args.my_call, args.my_class, args.my_section)
+            rst = extract_rst(text)
+            if rst:
+                current_qso["rst_rcvd"] = rst
+            name = extract_name(text)
+            if name:
+                current_qso["their_name"] = name
+            qth = extract_qth(text)
+            if qth:
+                current_qso["their_qth"] = qth
+            if already_worked and "CQ" in text_upper:
+                response = f"[{their_call} already logged on {band} - not calling]"
+            else:
+                response = generate_contact_response(text, args.my_call, args.my_name,
+                                                      args.my_qth, args.my_rst)
+
+        else:  # ragchew
+            if their_call:
+                current_qso["call"] = their_call
+            response = generate_ragchew_response(text, args.my_call)
 
         response_area.buffer.set_document(Document(response, cursor_position=len(response)))
         app.invalidate()

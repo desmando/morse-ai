@@ -45,14 +45,19 @@ def _field(tag: str, value: str) -> str:
     return f"<{tag}:{len(value)}>{value}"
 
 
-def format_qso_record(my_call: str, their_call: str, freq_hz: float, my_class: str, my_section: str,
-                       their_exchange: tuple[str, str] | None = None, mode: str = "CW", when=None) -> str:
+def format_qso_record(my_call: str, their_call: str, freq_hz: float, mode: str = "CW", when=None, *,
+                       my_class: str | None = None, my_section: str | None = None,
+                       their_exchange: tuple[str, str] | None = None,
+                       rst_sent: str | None = None, rst_rcvd: str | None = None,
+                       their_name: str | None = None, their_qth: str | None = None) -> str:
     """Returns one ADIF QSO record (fields + <EOR>, newline-terminated).
-    their_exchange, if known, is (class, section) as extracted from their
-    transmission - e.g. ("3A", "ENY")."""
+
+    For Field Day: pass my_class, my_section, and optionally their_exchange
+    (class, section) - writes CONTEST_ID, MY_ARRL_SECT, STX/SRX_STRING.
+    For general contacts: pass rst_sent/rst_rcvd/their_name/their_qth as
+    available - writes RST_SENT, RST_RCVD, NAME, QTH instead."""
     when = when or datetime.now(timezone.utc)
     freq_mhz = freq_hz / 1e6
-    my_exchange_str = f"{my_class} {my_section}"
 
     fields = [
         _field("CALL", their_call.upper()),
@@ -61,18 +66,30 @@ def format_qso_record(my_call: str, their_call: str, freq_hz: float, my_class: s
         _field("FREQ", f"{freq_mhz:.6f}"),
         _field("MODE", mode.upper()),
         _field("STATION_CALLSIGN", my_call.upper()),
-        _field("MY_ARRL_SECT", my_section.upper()),
-        _field("STX_STRING", my_exchange_str.upper()),
-        _field("CONTEST_ID", "ARRL-FIELD-DAY"),
     ]
     band = freq_to_band(freq_mhz)
     if band:
         fields.append(_field("BAND", band))
+
+    if my_section:
+        my_exchange_str = f"{my_class} {my_section}" if my_class else my_section
+        fields.append(_field("MY_ARRL_SECT", my_section.upper()))
+        fields.append(_field("STX_STRING", my_exchange_str.upper()))
+        fields.append(_field("CONTEST_ID", "ARRL-FIELD-DAY"))
     if their_exchange:
         their_class, their_section = their_exchange
         fields.append(_field("CLASS", their_class.upper()))
         fields.append(_field("ARRL_SECT", their_section.upper()))
         fields.append(_field("SRX_STRING", f"{their_class} {their_section}".upper()))
+
+    if rst_sent:
+        fields.append(_field("RST_SENT", rst_sent))
+    if rst_rcvd:
+        fields.append(_field("RST_RCVD", rst_rcvd))
+    if their_name:
+        fields.append(_field("NAME", their_name.upper()))
+    if their_qth:
+        fields.append(_field("QTH", their_qth.upper()))
 
     return " ".join(fields) + " <EOR>\n"
 
