@@ -105,6 +105,10 @@ def main():
                               "the old discrete ratio phases. 0 = full strength from epoch 1")
     parser.add_argument("--no-amp", action="store_true",
                          help="disable mixed-precision (AMP) training on CUDA")
+    parser.add_argument("--num-workers", type=int, default=8,
+                         help="DataLoader worker processes - raise on a many-core box, especially "
+                              "with --augment (impairments are CPU work in the workers; if nvidia-smi "
+                              "shows the GPU starved, this is the first knob to turn)")
     parser.add_argument("--stop-file", default=str(DATA_ROOT / "STOP_TRAINING"),
                          help="if this file exists, finish the current epoch, save its checkpoint, "
                               "delete the file, and exit cleanly - checked once per epoch, not mid-epoch, "
@@ -120,20 +124,31 @@ def main():
         device = "cpu"
     print(f"device: {device}")
 
-    vocab = Vocab.from_file(args.vocab)
     rows = load_manifest_rows(args.manifest)
     train_rows, val_rows = split_rows_by_source(rows, 0 if args.dry_run else args.val_fraction, args.seed)
 
-    # The model config (feature hop, CNN time stride, sizes) must be settled
-    # before the datasets exist - feature extraction depends on it. A resumed
-    # run keeps the checkpoint's recorded config (legacy defaults if it
-    # predates config recording); a fresh run uses the current recipe.
+    # The model config (feature hop, CNN time stride, sizes) and vocab must be
+    # settled before the datasets exist - feature extraction and target
+    # encoding depend on them. A resumed run keeps the checkpoint's recorded
+    # config AND vocab (resuming with a different vocab file would silently
+    # remap every character index the model already learned); a fresh run
+    # uses the current recipe and the vocab file.
     resume_ckpt = None
     if args.resume_from:
         resume_ckpt = torch.load(args.resume_from, map_location=device)
         model_config = model_config_from_checkpoint(resume_ckpt)
+        if resume_ckpt.get("vocab_chars"):
+            vocab = Vocab(list(resume_ckpt["vocab_chars"]))
+            file_vocab = Vocab.from_file(args.vocab)
+            if file_vocab.chars != vocab.chars:
+                print(f"NOTE: using the checkpoint's recorded vocab ({len(vocab)} incl. blank), "
+                      f"not {args.vocab} ({len(file_vocab)}) - they differ, and the checkpoint's "
+                      f"learned character indices win on resume")
+        else:
+            vocab = Vocab.from_file(args.vocab)
     else:
         model_config = dict(DEFAULT_MODEL_CONFIG)
+        vocab = Vocab.from_file(args.vocab)
     print(f"model config: {model_config}")
 
     snr_lo, snr_hi = (float(x) for x in args.snr_db_range.split(","))
@@ -147,7 +162,7 @@ def main():
 
     loader = DataLoader(
         dataset, batch_size=args.batch_size, shuffle=not args.dry_run,
-        collate_fn=collate_batch, num_workers=0 if args.dry_run else 8,
+        collate_fn=collate_batch, num_workers=0 if args.dry_run else args.num_workers,
     )
     val_loader = None
     if val_rows:

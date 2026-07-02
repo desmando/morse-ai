@@ -46,15 +46,28 @@ def model_config_from_checkpoint(ckpt: dict) -> dict:
     return {**LEGACY_MODEL_CONFIG, **(ckpt.get("model_config") or {})}
 
 
-def load_checkpoint_model(checkpoint_path, vocab: Vocab, device: str):
+def load_checkpoint_model(checkpoint_path, device: str, vocab_path=None):
     """Build a CWDecoder matching the checkpoint's recorded config and load
-    its weights. Returns (model, ckpt_dict); the config is on model.config."""
+    its weights. Returns (model, vocab, ckpt_dict); config is on model.config.
+
+    The vocab comes from the checkpoint's own recorded vocab_chars (every
+    checkpoint ever produced by train.py records them), NOT from whatever
+    vocab.txt happens to be on this machine - so extending the vocab file for
+    a new training run (e.g. adding '<'/'>' for prosigns) can never silently
+    remap or break an older checkpoint's character indices. vocab_path is
+    only the fallback for checkpoints missing vocab_chars."""
     ckpt = torch.load(checkpoint_path, map_location=device)
+    if ckpt.get("vocab_chars"):
+        vocab = Vocab(list(ckpt["vocab_chars"]))
+    elif vocab_path is not None:
+        vocab = Vocab.from_file(vocab_path)
+    else:
+        raise ValueError(f"{checkpoint_path} has no recorded vocab_chars and no vocab_path given")
     config = model_config_from_checkpoint(ckpt)
     model = CWDecoder(vocab_size=len(vocab), **config).to(device)
     model.load_state_dict(ckpt["model_state"])
     model.eval()
-    return model, ckpt
+    return model, vocab, ckpt
 
 
 def load_manifest_rows(manifest_path: str) -> list[dict]:

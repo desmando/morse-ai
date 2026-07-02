@@ -21,6 +21,12 @@
 >   (`<AR>`/`<SK>`/`<KN>`/`<BT>`/`<AS>`), randomized rise time, and a
 >   `tone_hz` manifest column so training never mis-detects the tone under
 >   heavy augmentation.
+> - **Vocab**: extend vocab.txt with `<` and `>` before the v4 run (49 chars
+>   + blank; see start_v4_training.sh prerequisites) or prosign labels get
+>   silently stripped from training targets. Safe for old checkpoints: every
+>   checkpoint records its own vocab_chars and all loaders use those, so the
+>   file only matters for NEW training runs. Rebuild the character LM
+>   (`python lm/ngram_lm.py --build`) after regenerating the corpus.
 > - **Real-data path**: once a checkpoint transfers to real ARRL audio at
 >   all, run `dataprep/realign_arrl_labels.py --checkpoint <best>` to
 >   force-align the real recordings' transcripts into exactly-labeled clips

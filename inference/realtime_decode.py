@@ -38,10 +38,11 @@ MODEL_SAMPLE_RATE = SAMPLE_RATE
 
 
 def load_model(checkpoint_path: str, vocab_path: str, device: str):
-    """Rebuilds the model from the checkpoint's recorded model_config (legacy
-    checkpoints reconstruct as the legacy architecture automatically)."""
-    vocab = Vocab.from_file(vocab_path)
-    model, _ckpt = load_checkpoint_model(checkpoint_path, vocab, device)
+    """Rebuilds the model from the checkpoint's recorded model_config and
+    vocab_chars (legacy checkpoints reconstruct as the legacy architecture
+    automatically; vocab_path is only a fallback for checkpoints without
+    recorded vocab_chars)."""
+    model, vocab, _ckpt = load_checkpoint_model(checkpoint_path, device, vocab_path=vocab_path)
     return model, vocab
 
 

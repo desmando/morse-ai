@@ -4,13 +4,25 @@
 # augmented manifests, no ramp files, no per-phase --reset-optimizer resumes).
 #
 # Prerequisites on the box:
-#   1. Regenerate the corpus and synthetic clips with the v4 realism defaults
-#      (prosigns, per-sender style, Farnsworth, 10-40 WPM, tone_hz column):
+#   1. Extend vocab.txt with the prosign brackets (one-time; keep a backup).
+#      Old checkpoints are unaffected - they carry their own vocab_chars:
+#        python - <<'EOF'
+#        from pathlib import Path
+#        import os
+#        p = Path(os.environ["MORSE_AI_DATA"]) / "manifests" / "vocab.txt"
+#        chars = sorted(set(l for l in p.read_text().splitlines() if l) | {"<", ">"})
+#        p.write_text("".join(c + "\n" for c in chars))
+#        print(f"vocab now {len(chars)} chars")
+#        EOF
+#   2. Regenerate the corpus and synthetic clips with the v4 realism defaults
+#      (prosigns, per-sender style, Farnsworth, 10-40 WPM, tone_hz column),
+#      then rebuild the character LM so beam decoding knows prosign notation:
 #        python lm/generate_qso_corpus.py --num-qsos 20000
 #        python dataprep/synthesize_morse_audio.py --clip-seconds 8.0
-#      (build_manifest.py's vocab.txt is unchanged - 47 chars + blank.)
-#   2. No augmented_synthetic manifest needed - impairments happen in the
-#      dataloader.
+#        python lm/ngram_lm.py --build
+#   3. No augmented_synthetic manifest needed - impairments happen in the
+#      dataloader. If nvidia-smi shows the GPU starved, raise --num-workers
+#      (augmentation is CPU work in the dataloader workers).
 export MORSE_AI_DATA=/root/morse-ai-data
 cd /root/morse-ai
 source .venv/bin/activate

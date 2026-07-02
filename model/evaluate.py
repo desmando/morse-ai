@@ -62,9 +62,8 @@ def main():
         device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"device: {device}")
 
-    vocab = Vocab.from_file(args.vocab)
-    model, _ckpt = load_checkpoint_model(args.checkpoint, vocab, device)
-    print(f"model config: {model.config}")
+    model, vocab, _ckpt = load_checkpoint_model(args.checkpoint, device, vocab_path=args.vocab)
+    print(f"model config: {model.config}  vocab size {len(vocab)} (incl. blank)")
 
     lm = None
     if args.lm:
