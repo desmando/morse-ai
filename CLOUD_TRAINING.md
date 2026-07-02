@@ -1,5 +1,36 @@
 # Training on a rented Ubuntu GPU
 
+> **v4 recipe (current)** - supersedes the noise-ramp phase curriculum
+> described in the "Context" section below. One run via
+> `start_v4_training.sh`:
+>
+> - **On-the-fly augmentation** (`train.py --augment`): HF impairments
+>   (noise, QSB, QRM, QRN, drift) are applied per clip in the dataloader -
+>   fresh noise every epoch, annealed smoothly from clean to full strength
+>   over `--aug-anneal-epochs`. No pre-rendered augmented manifests, no ramp
+>   files, no phase resumes - and no abrupt distribution jumps, which is what
+>   collapsed training twice at the 50pct->combined transition.
+> - **Model config travels in the checkpoint** (`model_config`): the v4
+>   architecture (feature hop 56 + CNN time-stride 2, LSTM dropout 0.2,
+>   packed padded sequences) is reconstructed automatically by every
+>   eval/inference script via `load_checkpoint_model()`. Legacy checkpoints
+>   still load as the legacy architecture.
+> - **Mixed precision** (AMP) is on by default on CUDA (`--no-amp` to disable).
+> - **Synthesis realism** (regenerate clips before training): per-sender
+>   keying style, Farnsworth spacing at slow speeds, 10-40 WPM, prosigns
+>   (`<AR>`/`<SK>`/`<KN>`/`<BT>`/`<AS>`), randomized rise time, and a
+>   `tone_hz` manifest column so training never mis-detects the tone under
+>   heavy augmentation.
+> - **Real-data path**: once a checkpoint transfers to real ARRL audio at
+>   all, run `dataprep/realign_arrl_labels.py --checkpoint <best>` to
+>   force-align the real recordings' transcripts into exactly-labeled clips
+>   (fixes build_manifest.py's proportional-slicing label corruption), then
+>   fine-tune on synthetic + realigned-real combined. This - not more
+>   synthetic noise - is the expected fix for the ~97% real-audio CER.
+> - Track real-audio transfer per phase with `model/evaluate_streaming.py`
+>   (whole recordings, honest end-to-end measure), and measure the LM's
+>   actual contribution with `model/evaluate.py --lm`.
+
 This project's acoustic model (`model/train.py`) is GPU-compute-bound, not
 VRAM-bound — the LSTM's sequential nature keeps the GPU at ~100% utilization
 even though it barely touches VRAM. So when scaling up to a long (1000+

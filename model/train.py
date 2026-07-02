@@ -19,8 +19,9 @@ from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from model.decoder import (CWDecoder, MorseClipDataset, cer, collate_batch, ctc_greedy_decode,
-                            load_manifest_rows, split_rows_by_source)
+from model.decoder import (CWDecoder, DEFAULT_MODEL_CONFIG, MorseClipDataset, cer, collate_batch,
+                            ctc_greedy_decode, load_manifest_rows, model_config_from_checkpoint,
+                            split_rows_by_source)
 from model.vocab import Vocab
 from paths import DATA_ROOT
 
@@ -70,6 +71,12 @@ def main():
     parser.add_argument("--decode-check-threshold", type=float, default=0.5,
                          help="stop training if the decode-check CER exceeds this (e.g. 0.5 = 50%%) - "
                              "checkpoint is still saved first, so the bad epoch is there to diagnose")
+    parser.add_argument("--decode-check-grace-epochs", type=int, default=3,
+                         help="don't enforce --decode-check-threshold during the first N epochs of a "
+                              "FRESH (non-resumed) run - a from-scratch model legitimately decodes "
+                              "garbage before CTC alignment kicks in, which isn't the divergence this "
+                              "check exists to catch. Resumed runs get no grace: they start from a "
+                              "model that could already decode, so a bad CER there is always a red flag")
     parser.add_argument("--val-fraction", type=float, default=0.02,
                          help="fraction of source recordings (not rows) held out for validation, 0 to disable")
     parser.add_argument("--seed", type=int, default=0, help="train/val split seed")
@@ -83,6 +90,21 @@ def main():
                               "Adam momentum and near-zero converged LR aren't appropriate for adapting "
                               "to new data, and its val_loss 'best' isn't a fair baseline once the "
                               "validation set itself gets harder. Pair with a fresh --checkpoint-dir.")
+    parser.add_argument("--augment", action="store_true",
+                         help="apply HF-channel impairments (noise/QSB/QRM/QRN/drift) on the fly to "
+                              "every training clip - fresh random noise each epoch, annealed from clean "
+                              "to full strength over --aug-anneal-epochs. Train on the CLEAN synthetic "
+                              "manifest with this; it replaces the pre-rendered augmented manifests and "
+                              "the noise-ramp phase curriculum entirely (whose abrupt distribution jumps "
+                              "repeatedly collapsed training - see CLOUD_TRAINING.md)")
+    parser.add_argument("--snr-db-range", default="-3,20",
+                         help="final (fully annealed) SNR range for --augment noise")
+    parser.add_argument("--aug-anneal-epochs", type=int, default=20,
+                         help="epochs to ramp --augment from clean to full strength/SNR range; the ramp "
+                              "is per-batch-smooth (every batch mixes the whole current range), unlike "
+                              "the old discrete ratio phases. 0 = full strength from epoch 1")
+    parser.add_argument("--no-amp", action="store_true",
+                         help="disable mixed-precision (AMP) training on CUDA")
     parser.add_argument("--stop-file", default=str(DATA_ROOT / "STOP_TRAINING"),
                          help="if this file exists, finish the current epoch, save its checkpoint, "
                               "delete the file, and exit cleanly - checked once per epoch, not mid-epoch, "
@@ -101,9 +123,27 @@ def main():
     vocab = Vocab.from_file(args.vocab)
     rows = load_manifest_rows(args.manifest)
     train_rows, val_rows = split_rows_by_source(rows, 0 if args.dry_run else args.val_fraction, args.seed)
-    dataset = MorseClipDataset(train_rows, vocab)
+
+    # The model config (feature hop, CNN time stride, sizes) must be settled
+    # before the datasets exist - feature extraction depends on it. A resumed
+    # run keeps the checkpoint's recorded config (legacy defaults if it
+    # predates config recording); a fresh run uses the current recipe.
+    resume_ckpt = None
+    if args.resume_from:
+        resume_ckpt = torch.load(args.resume_from, map_location=device)
+        model_config = model_config_from_checkpoint(resume_ckpt)
+    else:
+        model_config = dict(DEFAULT_MODEL_CONFIG)
+    print(f"model config: {model_config}")
+
+    snr_lo, snr_hi = (float(x) for x in args.snr_db_range.split(","))
+    dataset = MorseClipDataset(train_rows, vocab, hop_samples=model_config["hop_samples"],
+                                augment="random" if args.augment else None,
+                                snr_db_range=(snr_lo, snr_hi), aug_seed=args.seed)
     print(f"dataset: {len(dataset)} train clips, {len(val_rows)} held-out val clips, "
-          f"vocab size {len(vocab)} (incl. blank)")
+          f"vocab size {len(vocab)} (incl. blank)"
+          + (f", on-the-fly augmentation ON (SNR {snr_lo}..{snr_hi} dB over "
+             f"{args.aug_anneal_epochs} anneal epochs)" if args.augment else ""))
 
     loader = DataLoader(
         dataset, batch_size=args.batch_size, shuffle=not args.dry_run,
@@ -111,12 +151,22 @@ def main():
     )
     val_loader = None
     if val_rows:
-        val_loader = DataLoader(MorseClipDataset(val_rows, vocab), batch_size=args.batch_size,
+        # Validation uses FIXED per-clip impairments at full strength (seeded
+        # by clip index): a stationary noisy set, so val_loss/decode_cer stay
+        # comparable across epochs while the training distribution anneals.
+        val_dataset = MorseClipDataset(val_rows, vocab, hop_samples=model_config["hop_samples"],
+                                        augment="fixed" if args.augment else None,
+                                        snr_db_range=(snr_lo, snr_hi), aug_seed=args.seed)
+        val_loader = DataLoader(val_dataset, batch_size=args.batch_size,
                                  shuffle=False, collate_fn=collate_batch)
 
-    model = CWDecoder(vocab_size=len(vocab)).to(device)
+    model = CWDecoder(vocab_size=len(vocab), **model_config).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     ctc_loss = torch.nn.CTCLoss(blank=0, zero_infinity=True)
+    use_amp = device == "cuda" and not args.no_amp
+    scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
+    if use_amp:
+        print("mixed-precision (AMP) enabled")
 
     def lr_lambda(step):
         return min(1.0, (step + 1) / args.warmup_steps) if args.warmup_steps > 0 else 1.0
@@ -136,7 +186,7 @@ def main():
 
     start_epoch = 1
     if args.resume_from:
-        ckpt = torch.load(args.resume_from, map_location=device)
+        ckpt = resume_ckpt
         model.load_state_dict(ckpt["model_state"])
         if args.reset_optimizer:
             print(f"resumed from {args.resume_from} (model weights only - optimizer, LR schedulers, "
@@ -155,10 +205,11 @@ def main():
         model.train()
         for step, (features, targets, input_lengths, target_lengths) in enumerate(loader):
             features, targets = features.to(device), targets.to(device)
-            log_probs = model(features)  # (batch, T, vocab)
+            log_probs = model(features, input_lengths)  # (batch, T', vocab)
             log_probs_ctc = log_probs.permute(1, 0, 2)  # CTCLoss wants (T, batch, vocab)
+            ctc_lengths = model.downsampled_lengths(input_lengths)
 
-            loss = ctc_loss(log_probs_ctc, targets, input_lengths, target_lengths)
+            loss = ctc_loss(log_probs_ctc, targets, ctc_lengths, target_lengths)
             optimizer.zero_grad()
             loss.backward()
             if args.grad_clip > 0:
@@ -166,7 +217,7 @@ def main():
             optimizer.step()
             scheduler.step()
 
-            preds = ctc_greedy_decode(log_probs.detach(), vocab)
+            preds = ctc_greedy_decode(log_probs.detach(), vocab, lengths=ctc_lengths)
             print(f"[dry-run step {step}] loss={loss.item():.3f} sample_pred={preds[0]!r}")
             if step >= 2:
                 break
@@ -185,16 +236,28 @@ def main():
     floor_bad_epochs = 0
 
     for epoch in range(start_epoch, args.epochs + 1):
+        aug_msg = ""
+        if args.augment:
+            # Smooth curriculum: impairment probability and SNR floor anneal
+            # together from clean to the full range - every batch spans the
+            # whole current range, so there is never a distribution cliff
+            # between epochs (the failure mode of the old ratio-phase ramp).
+            strength = 1.0 if args.aug_anneal_epochs <= 0 else min(1.0, epoch / args.aug_anneal_epochs)
+            epoch_snr_lo = snr_hi - (snr_hi - snr_lo) * strength
+            dataset.set_augmentation(strength, (epoch_snr_lo, snr_hi))
+            aug_msg = f"  aug={strength:.2f}/snr>{epoch_snr_lo:.0f}dB"
+
         model.train()
         epoch_start = time.time()
         total_loss, n_batches, n_skipped = 0.0, 0, 0
 
         for features, targets, input_lengths, target_lengths in loader:
             features, targets = features.to(device), targets.to(device)
-            log_probs = model(features)
-            log_probs_ctc = log_probs.permute(1, 0, 2)
-
-            loss = ctc_loss(log_probs_ctc, targets, input_lengths, target_lengths)
+            with torch.autocast(device_type="cuda", enabled=use_amp):
+                log_probs = model(features, input_lengths)
+                log_probs_ctc = log_probs.permute(1, 0, 2)
+                ctc_lengths = model.downsampled_lengths(input_lengths)
+                loss = ctc_loss(log_probs_ctc, targets, ctc_lengths, target_lengths)
             if not torch.isfinite(loss):
                 # A NaN/Inf loss corrupts Adam's running moment estimates for
                 # many subsequent steps if allowed through backward() - skip
@@ -207,10 +270,12 @@ def main():
                 continue
 
             optimizer.zero_grad()
-            loss.backward()
+            scaler.scale(loss).backward()
             if args.grad_clip > 0:
+                scaler.unscale_(optimizer)
                 torch.nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)
-            optimizer.step()
+            scaler.step(optimizer)
+            scaler.update()
             if scheduler.last_epoch < args.warmup_steps:
                 scheduler.step()  # warmup only - see plateau_scheduler comment above
 
@@ -230,9 +295,10 @@ def main():
             with torch.no_grad():
                 for features, targets, input_lengths, target_lengths in val_loader:
                     features, targets = features.to(device), targets.to(device)
-                    log_probs = model(features)
+                    log_probs = model(features, input_lengths)
                     log_probs_ctc = log_probs.permute(1, 0, 2)
-                    loss = ctc_loss(log_probs_ctc, targets, input_lengths, target_lengths)
+                    ctc_lengths = model.downsampled_lengths(input_lengths)
+                    loss = ctc_loss(log_probs_ctc, targets, ctc_lengths, target_lengths)
                     val_loss += loss.item()
                     val_batches += 1
 
@@ -241,7 +307,7 @@ def main():
                     # decode output silently degenerated into runaway
                     # repetition for 60+ epochs while loss stayed smooth.
                     if args.decode_check_clips > 0 and decode_n < args.decode_check_clips:
-                        preds = ctc_greedy_decode(log_probs.cpu(), vocab)
+                        preds = ctc_greedy_decode(log_probs.cpu(), vocab, lengths=ctc_lengths)
                         offset = 0
                         for i, pred in enumerate(preds):
                             tlen = int(target_lengths[i])
@@ -262,15 +328,20 @@ def main():
         skip_msg = f"  skipped={n_skipped}" if n_skipped else ""
         cur_lr = optimizer.param_groups[0]["lr"]
         print(f"epoch {epoch}/{args.epochs}  avg_loss={avg_loss:.3f}{val_msg}  "
-              f"lr={cur_lr:.2e}{skip_msg}  ({elapsed:.1f}s)")
+              f"lr={cur_lr:.2e}{skip_msg}{aug_msg}  ({elapsed:.1f}s)")
 
         ckpt_path = checkpoint_dir / f"decoder_epoch{epoch:03d}.pt"
         torch.save({"model_state": model.state_dict(), "optimizer_state": optimizer.state_dict(),
                     "scheduler_state": scheduler.state_dict(),
                     "plateau_scheduler_state": plateau_scheduler.state_dict() if plateau_scheduler else None,
-                    "epoch": epoch, "vocab_chars": vocab.chars}, ckpt_path)
+                    "epoch": epoch, "vocab_chars": vocab.chars,
+                    # the reconstruction recipe - load_checkpoint_model() rebuilds
+                    # the exact model + feature pipeline from this
+                    "model_config": model.config}, ckpt_path)
 
-        if decode_cer is not None and args.decode_check_threshold > 0 and decode_cer > args.decode_check_threshold:
+        in_grace = not args.resume_from and epoch <= args.decode_check_grace_epochs
+        if (decode_cer is not None and args.decode_check_threshold > 0 and not in_grace
+                and decode_cer > args.decode_check_threshold):
             print(f"  WARNING: decode CER {decode_cer:.3f} exceeds --decode-check-threshold "
                   f"{args.decode_check_threshold} at epoch {epoch} - decode quality has broken even "
                   f"though loss may look fine. Examples: {decode_examples}")

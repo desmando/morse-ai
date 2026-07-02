@@ -13,12 +13,23 @@ straight into augment_hf_channel.py for noise/fading/QRM impairments:
   python synthesize_morse_audio.py --text-file <path to qso_corpus.txt>
   python augment_hf_channel.py --manifest <synth manifest> --out-dir ...
 
+Realism knobs (all on by default - see main()):
+- per-sender keying style: dash weight, gap stretch, element jitter sampled
+  once per line, so each "operator" has a consistent fist rather than
+  i.i.d. random timing
+- Farnsworth spacing at slow speeds (characters keyed fast, gaps stretched)
+- prosigns (<AR>, <SK>, <KN>, <BT>, <AS>): member letters run together with
+  only element gaps, labeled as the "<XX>" text ARRL transcripts use - so
+  the '<'/'>' vocab entries are actually trainable
+- randomized keying envelope rise time
+
 Usage:
-  python synthesize_morse_audio.py --wpm-range 18,32 --tone-hz-range 400,900
+  python synthesize_morse_audio.py --wpm-range 10,40 --tone-hz-range 400,900
 """
 import argparse
 import csv
 import random
+import re
 import sys
 from pathlib import Path
 
@@ -42,17 +53,48 @@ MORSE_CODE = {
     "-": "-....-", "'": ".----.", '"': ".-..-.", "(": "-.--.", ")": "-.--.-",
 }
 
+# A word is split into keying units: either a "<XX>" prosign (member letters
+# keyed as one character - element gaps only, no inter-character gaps) or a
+# single character. The prosign's label text keeps the angle brackets, same
+# as ARRL transcripts write them.
+_UNIT_RE = re.compile(r"<[A-Z0-9]+>|.")
 
-def char_elements(ch: str, dot_s: float, dash_s: float, gap_s: float):
-    code = MORSE_CODE.get(ch)
-    if code is None:
-        return []
+
+def unit_code(unit: str) -> str | None:
+    """Dot-dash code for one keying unit ('K', or a prosign like '<AR>')."""
+    if len(unit) == 1:
+        return MORSE_CODE.get(unit)
+    inner = unit[1:-1]
+    if inner and all(c in MORSE_CODE for c in inner):
+        return "".join(MORSE_CODE[c] for c in inner)
+    return None
+
+
+def code_elements(code: str, dot_s: float, dash_s: float, gap_s: float):
     elements = []
     for i, sym in enumerate(code):
         if i > 0:
             elements.append((gap_s, False))
         elements.append((dash_s if sym == "-" else dot_s, True))
     return elements
+
+
+def sample_style(rng) -> dict:
+    """One simulated operator's fist: consistent systematic timing biases,
+    sampled per line/sender. Real keying deviates *coherently* (a heavy
+    dash hand, cramped or spacey gaps - classic straight-key swing), not as
+    independent per-element noise; a model trained only on i.i.d. jitter
+    never learns to adapt to a sender's consistent style."""
+    return {
+        "dash_ratio": min(3.6, max(2.5, rng.gauss(3.0, 0.2))),
+        "intra_gap_ratio": min(1.4, max(0.7, rng.gauss(1.0, 0.12))),
+        "char_gap_scale": min(1.6, max(0.7, rng.gauss(1.0, 0.15))),
+        "word_gap_scale": min(1.7, max(0.75, rng.gauss(1.0, 0.15))),
+    }
+
+
+DEFAULT_STYLE = {"dash_ratio": 3.0, "intra_gap_ratio": 1.0,
+                 "char_gap_scale": 1.0, "word_gap_scale": 1.0}
 
 
 def _jitter(duration: float, rng, amount: float) -> float:
@@ -66,20 +108,28 @@ def _jitter(duration: float, rng, amount: float) -> float:
 
 def synthesize_line(text: str, wpm: float, tone_hz: float, sr: int = SAMPLE_RATE,
                      farnsworth_wpm: float = None, ramp_s: float = 0.004,
-                     timing_jitter: float = 0.0, rng=None):
-    """Returns (audio, char_spans) where char_spans is [(char, start_s, end_s), ...]
-    for every transmitted (non-space, mapped) character - exact, not approximate,
-    even with timing_jitter applied (each element's randomized duration is what
-    actually gets rendered, so spans always match the audio precisely)."""
+                     timing_jitter: float = 0.0, rng=None, style: dict = None):
+    """Returns (audio, char_spans) where char_spans is [(unit, start_s, end_s), ...]
+    for every transmitted (non-space, mapped) keying unit - a unit is one
+    character or one prosign like '<AR>' (multi-char label string, keyed as a
+    single run-together character). Spans are exact, not approximate, even
+    with timing_jitter applied (each element's randomized duration is what
+    actually gets rendered, so spans always match the audio precisely).
+
+    farnsworth_wpm: keys individual characters at this (faster) speed while
+    inter-character/word gaps stay at the overall wpm - standard Farnsworth
+    spacing, ubiquitous in slow-speed practice and real slow QSOs.
+    style: per-sender systematic timing biases (see sample_style)."""
     rng = rng or random.Random()
+    style = style or DEFAULT_STYLE
     char_wpm = farnsworth_wpm if farnsworth_wpm else wpm
     dot_s = 1.2 / char_wpm
-    dash_s = 3 * dot_s
-    intra_gap_s = dot_s
+    dash_s = style["dash_ratio"] * dot_s
+    intra_gap_s = style["intra_gap_ratio"] * dot_s
 
     dot_s_target = 1.2 / wpm
-    inter_char_gap_s = 3 * dot_s_target
-    inter_word_gap_s = 7 * dot_s_target
+    inter_char_gap_s = 3 * dot_s_target * style["char_gap_scale"]
+    inter_word_gap_s = 7 * dot_s_target * style["word_gap_scale"]
 
     elements: list[tuple[float, bool]] = []
     char_spans: list[tuple[str, float, float]] = []
@@ -87,19 +137,19 @@ def synthesize_line(text: str, wpm: float, tone_hz: float, sr: int = SAMPLE_RATE
 
     words = text.split(" ")
     for wi, word in enumerate(words):
-        chars_in_word = [c for c in word if c in MORSE_CODE]
-        for ci, ch in enumerate(chars_in_word):
+        units = [u for u in _UNIT_RE.findall(word) if unit_code(u) is not None]
+        for ci, unit in enumerate(units):
             start = t
-            for d, is_tone in char_elements(ch, dot_s, dash_s, intra_gap_s):
+            for d, is_tone in code_elements(unit_code(unit), dot_s, dash_s, intra_gap_s):
                 d = _jitter(d, rng, timing_jitter)
                 elements.append((d, is_tone))
                 t += d
-            char_spans.append((ch, start, t))
-            if ci < len(chars_in_word) - 1:
+            char_spans.append((unit, start, t))
+            if ci < len(units) - 1:
                 d = _jitter(inter_char_gap_s, rng, timing_jitter)
                 elements.append((d, False))
                 t += d
-        if wi < len(words) - 1 and chars_in_word:
+        if wi < len(words) - 1 and units:
             start = t
             d = _jitter(inter_word_gap_s, rng, timing_jitter)
             elements.append((d, False))
@@ -170,13 +220,22 @@ def main():
     parser.add_argument("--text-file", default=str(DATA_ROOT / "text_corpus" / "qso_corpus.txt"))
     parser.add_argument("--out-dir", default=str(DATA_ROOT / "synthetic" / "clips"))
     parser.add_argument("--manifest-out", default=str(DATA_ROOT / "manifests" / "synthetic_manifest.csv"))
-    parser.add_argument("--wpm-range", default="18,32")
+    parser.add_argument("--wpm-range", default="10,40",
+                         help="overall speed range - matches the full range the decoder claims to "
+                              "support (tx side runs 5-40 WPM), not just comfortable middle speeds")
     parser.add_argument("--tone-hz-range", default="400,900")
     parser.add_argument("--clip-seconds", type=float, default=4.0)
     parser.add_argument("--max-lines", type=int, default=0, help="0 = all lines in the text file")
-    parser.add_argument("--timing-jitter", type=float, default=0.0,
-                         help="relative std-dev of random per-element timing variation (e.g. 0.08 = ~8%%), "
+    parser.add_argument("--timing-jitter", type=float, default=0.05,
+                         help="relative std-dev of random per-element timing variation (e.g. 0.05 = ~5%%), "
                               "0 = perfectly metronomic. Real human keying isn't perfectly even.")
+    parser.add_argument("--farnsworth-prob", type=float, default=0.5,
+                         help="probability that a line below --farnsworth-below WPM uses Farnsworth "
+                              "spacing (characters keyed faster, gaps stretched to the overall speed)")
+    parser.add_argument("--farnsworth-below", type=float, default=20.0,
+                         help="only lines slower than this WPM are candidates for Farnsworth spacing")
+    parser.add_argument("--no-style", action="store_true",
+                         help="disable per-sender keying-style variation (metronome-perfect ratios)")
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
 
@@ -197,8 +256,16 @@ def main():
         wpm = rng.uniform(wpm_lo, wpm_hi)
         tone_hz = rng.uniform(hz_lo, hz_hi)
         amp = rng.uniform(0.6, 1.0)
+        style = DEFAULT_STYLE if args.no_style else sample_style(rng)
+        ramp_s = rng.uniform(0.002, 0.008)  # keying envelope rise time varies by rig
 
-        audio, char_spans = synthesize_line(line, wpm, tone_hz, timing_jitter=args.timing_jitter, rng=rng)
+        farnsworth_wpm = None
+        if wpm < args.farnsworth_below and rng.random() < args.farnsworth_prob:
+            farnsworth_wpm = rng.uniform(wpm + 3, min(wpm + 12, 30))
+
+        audio, char_spans = synthesize_line(line, wpm, tone_hz, farnsworth_wpm=farnsworth_wpm,
+                                             ramp_s=ramp_s, timing_jitter=args.timing_jitter,
+                                             rng=rng, style=style)
         audio = audio * amp
 
         for j, (clip_audio, label) in enumerate(slice_into_clips(audio, char_spans, SAMPLE_RATE, args.clip_seconds)):
@@ -214,13 +281,18 @@ def main():
                 # a single shared source value makes synthetic-only training
                 # put 100% of the data in either train or val, never both.
                 "source": f"synth_line_{i:05d}",
+                # known exactly (we generated it) - training feature extraction
+                # centers the band here instead of re-detecting the tone from
+                # (possibly noise-augmented) audio, where detector mistakes
+                # silently corrupt the clip
+                "tone_hz": f"{tone_hz:.1f}",
             })
 
         if i % 200 == 0:
             print(f"  {i}/{len(lines)} lines synthesized, {len(rows)} clips so far")
 
     with open(args.manifest_out, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["clip_path", "label", "wpm", "source"])
+        writer = csv.DictWriter(f, fieldnames=["clip_path", "label", "wpm", "source", "tone_hz"])
         writer.writeheader()
         writer.writerows(rows)
 

@@ -24,7 +24,7 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from dataprep.build_manifest import clean_transcript
-from model.decoder import CWDecoder, cer, decode_stream, wer
+from model.decoder import cer, decode_stream, load_checkpoint_model, wer
 from model.vocab import Vocab
 from paths import DATA_ROOT
 
@@ -70,10 +70,8 @@ def main():
     print(f"device: {device}")
 
     vocab = Vocab.from_file(args.vocab)
-    model = CWDecoder(vocab_size=len(vocab)).to(device)
-    ckpt = torch.load(args.checkpoint, map_location=device)
-    model.load_state_dict(ckpt["model_state"])
-    model.eval()
+    model, _ckpt = load_checkpoint_model(args.checkpoint, vocab, device)
+    print(f"model config: {model.config}")
 
     lm = None
     if args.lm:

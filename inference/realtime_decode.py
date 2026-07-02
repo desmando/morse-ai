@@ -22,38 +22,48 @@ Usage:
 import argparse
 import queue
 import sys
-from math import gcd
 from pathlib import Path
 
 import numpy as np
 import sounddevice as sd
-import torch
-from scipy.signal import resample_poly
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from model.decoder import CWDecoder, decode_window_core
+from model.decoder import decode_window_core, load_checkpoint_model
+from model.features import SAMPLE_RATE, detect_tone_freq, resample_to_model_rate
 from model.vocab import Vocab
 from paths import DATA_ROOT
 
-MODEL_SAMPLE_RATE = 8000
+MODEL_SAMPLE_RATE = SAMPLE_RATE
 
 
 def load_model(checkpoint_path: str, vocab_path: str, device: str):
+    """Rebuilds the model from the checkpoint's recorded model_config (legacy
+    checkpoints reconstruct as the legacy architecture automatically)."""
     vocab = Vocab.from_file(vocab_path)
-    model = CWDecoder(vocab_size=len(vocab))
-    ckpt = torch.load(checkpoint_path, map_location=device)
-    model.load_state_dict(ckpt["model_state"])
-    model.to(device)
-    model.eval()
+    model, _ckpt = load_checkpoint_model(checkpoint_path, vocab, device)
     return model, vocab
 
 
-def resample_to_model_rate(chunk: np.ndarray, native_sr: int) -> np.ndarray:
-    if native_sr == MODEL_SAMPLE_RATE:
-        return chunk
-    g = gcd(native_sr, MODEL_SAMPLE_RATE)
-    return resample_poly(chunk, MODEL_SAMPLE_RATE // g, native_sr // g)
+def make_fcc_rescorer(bonus: float = 2.0):
+    """Final-beam rescorer for CTC beam search: boosts candidate decodes whose
+    US-pattern callsign tokens are actual active FCC licenses. A character
+    n-gram LM is weakest exactly where accuracy matters most - callsigns are
+    near-random strings the LM actively penalizes - so this puts the FCC
+    index (already used for post-hoc verification flags in the TUI) into the
+    decoding loop itself, tipping close beams toward real licensed calls.
+    Returns None (with a warning) if the FCC index hasn't been built."""
+    from inference.fcc_uls import is_us_pattern, load_active_callsigns
+    active = load_active_callsigns()
+    if not active:
+        print("warning: FCC index not found - run `python inference/fcc_uls.py --download` first; "
+              "continuing without callsign rescoring", file=sys.stderr)
+        return None
+
+    def rescore(text: str) -> float:
+        return sum(bonus for tok in text.split() if is_us_pattern(tok) and tok in active)
+
+    return rescore
 
 
 def parse_device(device: str | None):
@@ -75,11 +85,25 @@ class StreamDecoder:
     to cover the tail).
 
     Pass lm=CharNgramLM.load(...) to enable CTC beam search rescored by the
-    ham-domain character LM instead of greedy decoding."""
+    ham-domain character LM instead of greedy decoding, and/or
+    final_rescore=make_fcc_rescorer() to tip close beams toward decodes whose
+    callsigns are real FCC licenses.
+
+    The CW tone frequency is tracked ACROSS windows rather than re-detected
+    independently per window: the station being worked doesn't move, so the
+    held estimate is smoothed (EMA) and a single outlier detection - e.g. a
+    QRM burst dominating one window - can't yank the feature band off the
+    signal mid-QSO. A persistent change (tuned to a new station) takes over
+    after a few consecutive windows agree on it."""
+
+    TONE_JUMP_HZ = 60.0       # detections farther than this from the held tone are outliers
+    TONE_EMA_ALPHA = 0.3      # smoothing for in-range updates (tracks slow drift)
+    TONE_OUTLIER_WINDOWS = 3  # consecutive outliers before accepting the new frequency
 
     def __init__(self, model, vocab: Vocab, torch_device: str, sr: int,
                  window_seconds: float = 8.0, stride_seconds: float = 4.0,
-                 lm=None, lm_weight: float = 0.3, beam_width: int = 20, top_k: int = 15):
+                 lm=None, lm_weight: float = 0.3, beam_width: int = 20, top_k: int = 15,
+                 final_rescore=None):
         self.model = model
         self.vocab = vocab
         self.torch_device = torch_device
@@ -92,9 +116,26 @@ class StreamDecoder:
         self.lm_weight = lm_weight
         self.beam_width = beam_width
         self.top_k = top_k
+        self.final_rescore = final_rescore
         self.buf = np.zeros(0, dtype=np.float32)
         self.stream_pos_samples = 0
         self.is_first = True
+        self.tone_freq = None
+        self._tone_outliers = 0
+
+    def _track_tone(self, window_audio: np.ndarray) -> float:
+        detected = detect_tone_freq(window_audio, self.sr, hop_samples=self.model.hop_samples)
+        if self.tone_freq is None:
+            self.tone_freq = detected
+        elif abs(detected - self.tone_freq) <= self.TONE_JUMP_HZ:
+            self.tone_freq += self.TONE_EMA_ALPHA * (detected - self.tone_freq)
+            self._tone_outliers = 0
+        else:
+            self._tone_outliers += 1
+            if self._tone_outliers >= self.TONE_OUTLIER_WINDOWS:
+                self.tone_freq = detected  # a real retune, not a blip
+                self._tone_outliers = 0
+        return self.tone_freq
 
     def feed(self, chunk: np.ndarray) -> str:
         self.buf = np.concatenate([self.buf, chunk])
@@ -107,7 +148,9 @@ class StreamDecoder:
             pieces.append(decode_window_core(window_audio, window_abs_start, core_start, core_end,
                                               self.model, self.vocab, self.torch_device, self.sr,
                                               lm=self.lm, lm_weight=self.lm_weight,
-                                              beam_width=self.beam_width, top_k=self.top_k))
+                                              beam_width=self.beam_width, top_k=self.top_k,
+                                              tone_freq=self._track_tone(window_audio),
+                                              final_rescore=self.final_rescore))
             self.is_first = False
             self.buf = self.buf[self.stride_samples:]
             self.stream_pos_samples += self.stride_samples
@@ -119,10 +162,14 @@ class StreamDecoder:
         window_abs_start = self.stream_pos_samples / self.sr
         core_start = 0.0 if self.is_first else window_abs_start + self.guard_seconds
         core_end = window_abs_start + len(self.buf) / self.sr
+        # use the held tone estimate - the leftover buffer may be too short
+        # (or too noise-dominated) for a reliable fresh detection
+        tone = self.tone_freq if self.tone_freq is not None else None
         text = decode_window_core(self.buf, window_abs_start, core_start, core_end,
                                    self.model, self.vocab, self.torch_device, self.sr,
                                    lm=self.lm, lm_weight=self.lm_weight,
-                                   beam_width=self.beam_width, top_k=self.top_k)
+                                   beam_width=self.beam_width, top_k=self.top_k,
+                                   tone_freq=tone, final_rescore=self.final_rescore)
         self.buf = np.zeros(0, dtype=np.float32)
         return text
 
@@ -168,6 +215,9 @@ def main():
                          help="path to ham_char_lm.json to enable beam search + LM decoding")
     parser.add_argument("--lm-weight", type=float, default=0.3)
     parser.add_argument("--beam-width", type=int, default=20)
+    parser.add_argument("--fcc-rescore", action="store_true",
+                         help="boost beam-search candidates whose callsigns are active FCC licenses "
+                              "(requires the FCC index - see inference/fcc_uls.py - and --lm)")
     parser.add_argument("--list-devices", action="store_true")
     args = parser.parse_args()
 
@@ -181,16 +231,17 @@ def main():
     model, vocab = load_model(args.checkpoint, args.vocab, args.torch_device)
     lm = None
     if args.lm:
-        import sys as _sys
-        from pathlib import Path as _Path
-        _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
         from lm.ngram_lm import CharNgramLM
         lm = CharNgramLM.load(args.lm)
+    final_rescore = make_fcc_rescorer() if args.fcc_rescore and lm is not None else None
+    if args.fcc_rescore and lm is None:
+        print("warning: --fcc-rescore only applies with --lm (beam search); ignoring", file=sys.stderr)
     device = parse_device(args.device)
     device_info = sd.query_devices(device, "input")
     decoder = StreamDecoder(model, vocab, args.torch_device, MODEL_SAMPLE_RATE,
                              window_seconds=args.window_seconds, stride_seconds=args.stride_seconds,
-                             lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width)
+                             lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width,
+                             final_rescore=final_rescore)
 
     print(f"Listening on {device_info['name']!r} at {int(device_info['default_samplerate'])} Hz, "
           f"{args.window_seconds}s windows / {args.stride_seconds}s stride (Ctrl+C to stop) ...")

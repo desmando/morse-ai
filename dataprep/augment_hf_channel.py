@@ -1,12 +1,19 @@
-"""Synthesize noisy/faded/QRM'd HF-channel variants of the clean ARRL clips.
+"""HF-channel impairments (noise/QRN, fading/QSB, frequency drift, QRM) for
+CW training audio.
 
-The ARRL clips are clean studio-quality 750 Hz tone - nothing like what actually
-comes out of an HF receiver (band-limited noise/QRN, ionospheric fading/QSB,
-frequency drift, other CW signals bleeding through as QRM). This script adds
-those impairments synthetically so the acoustic model sees something closer to
-real off-air audio during training.
+Clean synthetic/ARRL clips are nothing like what actually comes out of an HF
+receiver. The impairment functions here add that realism. Two ways to use them:
+
+1. On-the-fly (preferred): model.decoder.MorseClipDataset calls augment_clip()
+   per item during training, so the model never sees the same noise twice and
+   the impairment strength/SNR can be annealed smoothly across epochs (see
+   train.py --augment) instead of the fragile pre-rendered noise-ramp phases.
+2. Pre-rendered (this script's main()): writes fixed noisy variants to disk.
+   Still useful for building a *stationary* evaluation set.
 
 Ground-truth label text is unaffected by any of this - only the audio changes.
+augment_clip() reports the frequency shift it applied, so a manifest's known
+tone_hz can be corrected instead of re-detected from the (now noisy) audio.
 
 Usage:
   python augment_hf_channel.py --variants-per-clip 3 --snr-db-range -3,20
@@ -56,7 +63,9 @@ def apply_fading(audio: np.ndarray, sr: int, rng: np.random.Generator,
 
 def apply_freq_drift(audio: np.ndarray, sr: int, rng: np.random.Generator,
                       base_shift_hz: float = None, drift_amp_hz: float = None,
-                      drift_rate_hz: float = None) -> np.ndarray:
+                      drift_rate_hz: float = None) -> tuple[np.ndarray, float]:
+    """Returns (shifted_audio, base_shift_hz) - the shift is reported so a
+    known tone frequency can be corrected rather than re-detected."""
     if base_shift_hz is None:
         base_shift_hz = rng.uniform(-30.0, 30.0)
     if drift_amp_hz is None:
@@ -69,7 +78,30 @@ def apply_freq_drift(audio: np.ndarray, sr: int, rng: np.random.Generator,
     analytic = hilbert(audio)
     phase = 2 * np.pi * np.cumsum(shift_curve) / sr
     shifted = analytic * np.exp(1j * phase)
-    return shifted.real
+    return shifted.real, float(base_shift_hz)
+
+
+def add_impulse_noise(audio: np.ndarray, sr: int, rng: np.random.Generator,
+                       bursts_per_second: float = None, amplitude: float = None) -> np.ndarray:
+    """QRN - lightning static crashes: short exponentially-decaying broadband
+    bursts, the other big natural impairment on HF besides steady band noise."""
+    if bursts_per_second is None:
+        bursts_per_second = rng.uniform(0.1, 1.5)
+    if amplitude is None:
+        amplitude = rng.uniform(0.3, 1.2)
+    n_samples = len(audio)
+    out = audio.copy()
+    n_bursts = rng.poisson(bursts_per_second * n_samples / sr)
+    for _ in range(n_bursts):
+        start = rng.integers(0, n_samples)
+        burst_len = int(rng.uniform(0.002, 0.03) * sr)
+        end = min(start + burst_len, n_samples)
+        n = end - start
+        if n <= 0:
+            continue
+        envelope = np.exp(-np.arange(n) / (0.2 * n + 1))
+        out[start:end] += amplitude * envelope * rng.normal(0.0, 1.0, n)
+    return out
 
 
 def add_qrm(audio: np.ndarray, sr: int, rng: np.random.Generator,
@@ -97,20 +129,34 @@ def add_qrm(audio: np.ndarray, sr: int, rng: np.random.Generator,
     return audio + amplitude * tone * keying
 
 
-def augment_clip(audio: np.ndarray, sr: int, rng: np.random.Generator, snr_range) -> np.ndarray:
+def augment_clip(audio: np.ndarray, sr: int, rng: np.random.Generator, snr_range,
+                  strength: float = 1.0) -> tuple[np.ndarray, dict]:
+    """Applies a random draw of HF impairments. strength in [0, 1] scales each
+    impairment's probability (SNR range is the caller's job to anneal), giving
+    a smooth curriculum from clean to fully impaired with no distribution
+    cliff - the abrupt pre-rendered ratio jumps are what repeatedly collapsed
+    training (see CLOUD_TRAINING.md).
+
+    Returns (audio, info) where info carries snr_db and freq_shift_hz (0.0 if
+    no drift was applied) so a known tone frequency can be corrected."""
     out = audio.copy()
-    if rng.random() < 0.8:
-        out = apply_freq_drift(out, sr, rng)
-    if rng.random() < 0.7:
+    info = {"freq_shift_hz": 0.0, "snr_db": None}
+    if rng.random() < 0.8 * strength:
+        out, shift = apply_freq_drift(out, sr, rng)
+        info["freq_shift_hz"] = shift
+    if rng.random() < 0.7 * strength:
         out = apply_fading(out, sr, rng)
-    if rng.random() < 0.5:
+    if rng.random() < 0.5 * strength:
         out = add_qrm(out, sr, rng)
+    if rng.random() < 0.3 * strength:
+        out = add_impulse_noise(out, sr, rng)
     snr_db = rng.uniform(*snr_range)
     out = add_noise(out, sr, snr_db, rng)
+    info["snr_db"] = snr_db
     peak = np.max(np.abs(out)) + 1e-12
     if peak > 1.0:
         out = out / peak
-    return out, snr_db
+    return out, info
 
 
 def main():
@@ -145,20 +191,28 @@ def main():
         speed_dir.mkdir(parents=True, exist_ok=True)
 
         for v in range(args.variants_per_clip):
-            aug_audio, snr_db = augment_clip(audio, sr, rng, snr_range)
+            aug_audio, info = augment_clip(audio, sr, rng, snr_range)
             aug_name = f"{clip_path.stem}_aug{v:02d}.wav"
             aug_path = speed_dir / aug_name
             sf.write(aug_path, aug_audio, sr)
-            rows.append({
+            out_row = {
                 "clip_path": aug_path.relative_to(DATA_ROOT).as_posix(),
                 "label": row["label"],
                 "wpm": row["wpm"],
                 "source": row["source"],
-                "snr_db": f"{snr_db:.1f}",
-            })
+                "snr_db": f"{info['snr_db']:.1f}",
+            }
+            # carry the (drift-corrected) tone frequency through, if the
+            # source manifest knows it - lets training skip tone detection
+            if row.get("tone_hz"):
+                out_row["tone_hz"] = f"{float(row['tone_hz']) + info['freq_shift_hz']:.1f}"
+            rows.append(out_row)
 
+    fieldnames = ["clip_path", "label", "wpm", "source", "snr_db"]
+    if any("tone_hz" in r for r in rows):
+        fieldnames.append("tone_hz")
     with open(args.manifest_out, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["clip_path", "label", "wpm", "source", "snr_db"])
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
 

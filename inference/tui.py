@@ -288,6 +288,9 @@ def main():
     parser.add_argument("--lm-weight", type=float, default=0.3,
                          help="LM score weight (0 = pure acoustic greedy-equivalent, higher = more LM influence)")
     parser.add_argument("--beam-width", type=int, default=20)
+    parser.add_argument("--no-fcc-rescore", action="store_true",
+                         help="with --lm, beam-search candidates whose callsigns are active FCC licenses "
+                              "are boosted automatically (when the FCC index is built) - this disables that")
     parser.add_argument("--torch-device", default="cpu", choices=["cpu", "cuda"])
     parser.add_argument("--my-call", required=True)
     args = parser.parse_args()
@@ -517,9 +520,16 @@ def main():
         app.invalidate()
 
     def worker():
+        # FCC callsign rescoring rides on beam search: reuse the verification
+        # index already loaded above rather than reading it twice
+        final_rescore = None
+        if lm is not None and active_callsigns and not args.no_fcc_rescore:
+            final_rescore = lambda text: sum(
+                2.0 for tok in text.split() if is_us_pattern(tok) and tok in active_callsigns)
         decoder = StreamDecoder(model, vocab, args.torch_device, MODEL_SAMPLE_RATE,
                                  window_seconds=args.window_seconds, stride_seconds=args.stride_seconds,
-                                 lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width)
+                                 lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width,
+                                 final_rescore=final_rescore)
         try:
             for text in iter_decoded_stream(device, decoder):
                 if text:
