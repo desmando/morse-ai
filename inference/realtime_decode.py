@@ -30,7 +30,7 @@ import sounddevice as sd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from model.decoder import decode_window_core, load_checkpoint_model
-from model.features import SAMPLE_RATE, detect_tone_freq, resample_to_model_rate
+from model.features import SAMPLE_RATE, ToneTracker, detect_tone_freq, resample_to_model_rate
 from model.vocab import Vocab
 from paths import DATA_ROOT
 
@@ -90,21 +90,22 @@ class StreamDecoder:
     final_rescore=make_fcc_rescorer() to tip close beams toward decodes whose
     callsigns are real FCC licenses.
 
-    The CW tone frequency is tracked ACROSS windows rather than re-detected
-    independently per window: the station being worked doesn't move, so the
-    held estimate is smoothed (EMA) and a single outlier detection - e.g. a
-    QRM burst dominating one window - can't yank the feature band off the
-    signal mid-QSO. A persistent change (tuned to a new station) takes over
-    after a few consecutive windows agree on it."""
+    The CW tone frequency is tracked ACROSS windows via the shared
+    features.ToneTracker (same policy as offline decode_stream): EMA
+    smoothing, one-off outlier rejection, retune acceptance after a few
+    consistent windows.
 
-    TONE_JUMP_HZ = 60.0       # detections farther than this from the held tone are outliers
-    TONE_EMA_ALPHA = 0.3      # smoothing for in-range updates (tracks slow drift)
-    TONE_OUTLIER_WINDOWS = 3  # consecutive outliers before accepting the new frequency
+    squelch_db gates each window on CW-likeness before decoding (see
+    features.cw_activity_db) so dead air, static, and tuning noise between
+    transmissions don't become hallucinated characters. Live radio audio is
+    mostly not-CW, hence the nonzero default here; offline evaluation of
+    known-CW recordings defaults it off."""
 
     def __init__(self, model, vocab: Vocab, torch_device: str, sr: int,
                  window_seconds: float = 8.0, stride_seconds: float = 4.0,
                  lm=None, lm_weight: float = 0.3, beam_width: int = 20, top_k: int = 15,
-                 final_rescore=None):
+                 final_rescore=None, squelch_db: float = 6.0,
+                 length_bonus: float = 0.0, repeat_penalty: float = 0.0):
         self.model = model
         self.vocab = vocab
         self.torch_device = torch_device
@@ -118,25 +119,27 @@ class StreamDecoder:
         self.beam_width = beam_width
         self.top_k = top_k
         self.final_rescore = final_rescore
+        self.squelch_db = squelch_db
+        self.length_bonus = length_bonus
+        self.repeat_penalty = repeat_penalty
         self.buf = np.zeros(0, dtype=np.float32)
         self.stream_pos_samples = 0
         self.is_first = True
-        self.tone_freq = None
-        self._tone_outliers = 0
+        self._tracker = ToneTracker()
 
-    def _track_tone(self, window_audio: np.ndarray) -> float:
-        detected = detect_tone_freq(window_audio, self.sr, hop_samples=self.model.hop_samples)
-        if self.tone_freq is None:
-            self.tone_freq = detected
-        elif abs(detected - self.tone_freq) <= self.TONE_JUMP_HZ:
-            self.tone_freq += self.TONE_EMA_ALPHA * (detected - self.tone_freq)
-            self._tone_outliers = 0
-        else:
-            self._tone_outliers += 1
-            if self._tone_outliers >= self.TONE_OUTLIER_WINDOWS:
-                self.tone_freq = detected  # a real retune, not a blip
-                self._tone_outliers = 0
-        return self.tone_freq
+    @property
+    def tone_freq(self):
+        return self._tracker.value
+
+    def _decode(self, window_audio, window_abs_start, core_start, core_end, tone) -> str:
+        return decode_window_core(window_audio, window_abs_start, core_start, core_end,
+                                   self.model, self.vocab, self.torch_device, self.sr,
+                                   lm=self.lm, lm_weight=self.lm_weight,
+                                   beam_width=self.beam_width, top_k=self.top_k,
+                                   tone_freq=tone, final_rescore=self.final_rescore,
+                                   squelch_db=self.squelch_db,
+                                   length_bonus=self.length_bonus,
+                                   repeat_penalty=self.repeat_penalty)
 
     def feed(self, chunk: np.ndarray) -> str:
         self.buf = np.concatenate([self.buf, chunk])
@@ -146,12 +149,9 @@ class StreamDecoder:
             window_abs_start = self.stream_pos_samples / self.sr
             core_start = 0.0 if self.is_first else window_abs_start + self.guard_seconds
             core_end = window_abs_start + self.guard_seconds + self.stride_seconds
-            pieces.append(decode_window_core(window_audio, window_abs_start, core_start, core_end,
-                                              self.model, self.vocab, self.torch_device, self.sr,
-                                              lm=self.lm, lm_weight=self.lm_weight,
-                                              beam_width=self.beam_width, top_k=self.top_k,
-                                              tone_freq=self._track_tone(window_audio),
-                                              final_rescore=self.final_rescore))
+            tone = self._tracker.update(detect_tone_freq(window_audio, self.sr,
+                                                          hop_samples=self.model.hop_samples))
+            pieces.append(self._decode(window_audio, window_abs_start, core_start, core_end, tone))
             self.is_first = False
             self.buf = self.buf[self.stride_samples:]
             self.stream_pos_samples += self.stride_samples
@@ -165,12 +165,7 @@ class StreamDecoder:
         core_end = window_abs_start + len(self.buf) / self.sr
         # use the held tone estimate - the leftover buffer may be too short
         # (or too noise-dominated) for a reliable fresh detection
-        tone = self.tone_freq if self.tone_freq is not None else None
-        text = decode_window_core(self.buf, window_abs_start, core_start, core_end,
-                                   self.model, self.vocab, self.torch_device, self.sr,
-                                   lm=self.lm, lm_weight=self.lm_weight,
-                                   beam_width=self.beam_width, top_k=self.top_k,
-                                   tone_freq=tone, final_rescore=self.final_rescore)
+        text = self._decode(self.buf, window_abs_start, core_start, core_end, self._tracker.value)
         self.buf = np.zeros(0, dtype=np.float32)
         return text
 
@@ -219,6 +214,15 @@ def main():
     parser.add_argument("--fcc-rescore", action="store_true",
                          help="boost beam-search candidates whose callsigns are active FCC licenses "
                               "(requires the FCC index - see inference/fcc_uls.py - and --lm)")
+    parser.add_argument("--squelch-db", type=float, default=6.0,
+                         help="skip decoding windows whose tone-bin keying activity is below this "
+                              "(dB, p85/p15 envelope ratio) - suppresses hallucinated characters from "
+                              "dead air/static between transmissions. 0 = decode everything")
+    parser.add_argument("--length-bonus", type=float, default=0.0,
+                         help="beam-search score bonus per output character (sweep before trusting)")
+    parser.add_argument("--repeat-penalty", type=float, default=0.0,
+                         help="beam-search penalty per repeated-run character - targets the "
+                              "runaway-repetition failure mode (sweep before trusting)")
     parser.add_argument("--list-devices", action="store_true")
     args = parser.parse_args()
 
@@ -242,7 +246,8 @@ def main():
     decoder = StreamDecoder(model, vocab, args.torch_device, MODEL_SAMPLE_RATE,
                              window_seconds=args.window_seconds, stride_seconds=args.stride_seconds,
                              lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width,
-                             final_rescore=final_rescore)
+                             final_rescore=final_rescore, squelch_db=args.squelch_db,
+                             length_bonus=args.length_bonus, repeat_penalty=args.repeat_penalty)
 
     print(f"Listening on {device_info['name']!r} at {int(device_info['default_samplerate'])} Hz, "
           f"{args.window_seconds}s windows / {args.stride_seconds}s stride (Ctrl+C to stop) ...")

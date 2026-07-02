@@ -1,4 +1,10 @@
-"""Drives the noise-ramp curriculum sequence automatically: launches each
+"""DEPRECATED - superseded by the v4 recipe (train.py --augment with a smooth
+per-epoch anneal; see start_v4_training.sh and CLOUD_TRAINING.md). This phase
+curriculum is the design whose abrupt distribution jumps collapsed training
+twice at the 50pct->combined transition. Kept for reference and for resuming
+historical runs only - do NOT use it for new training.
+
+Drives the noise-ramp curriculum sequence automatically: launches each
 phase's train.py run, waits for it to exit, checks the structured
 RUN_STATUS.json it writes (see train.py's write_run_status), and only
 advances to the next phase if that status is "converged" - any other
@@ -114,7 +120,8 @@ def pick_best_checkpoint(checkpoint_dir: Path, manifest: Path, device: str = "au
         result = subprocess.run(
             [sys.executable, str(Path(__file__).resolve().parent / "evaluate.py"),
              "--manifest", str(manifest), "--checkpoint", str(ckpt),
-             "--max-clips", "2000", "--device", device],
+             "--max-clips", "2000", "--device", device,
+             "--lm", "none"],  # greedy: comparable to historical phase CERs, and fast
             capture_output=True, text=True, check=True,
         )
         m = _CER_RE.search(result.stdout)

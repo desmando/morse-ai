@@ -1,4 +1,9 @@
-"""Builds a series of manifests at increasing noisy/augmented-clip ratios,
+"""DEPRECATED - superseded by the v4 recipe (train.py --augment applies
+impairments on the fly with a smooth per-epoch anneal; see
+start_v4_training.sh). These discrete ratio steps are the design whose
+distribution jumps collapsed training twice. Kept for reference only.
+
+Builds a series of manifests at increasing noisy/augmented-clip ratios,
 for a gradual curriculum transition from the clean-only basis phase to the
 full combined_manifest.csv. A single abrupt switch from 0% to ~75% noisy
 data risks destabilizing training the same way the original silent

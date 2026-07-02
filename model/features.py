@@ -69,6 +69,57 @@ def detect_tone_freq(audio: np.ndarray, sr: int, hop_samples: int = DEFAULT_HOP_
     return _detect_tone_from_spectrogram(freqs, Sxx)
 
 
+class ToneTracker:
+    """Persistent CW tone estimate across analysis windows - the ONE shared
+    policy for live (StreamDecoder) and offline (decode_stream) decoding, so
+    batch ARRL evaluation exercises the same front-end behavior as the radio.
+
+    The station being worked doesn't move: in-range detections update an EMA
+    (tracks slow drift), a single outlier - e.g. a QRM burst dominating one
+    window - is rejected, and a persistent change (retuned to a new station)
+    takes over after `outlier_windows` consecutive windows agree on it."""
+
+    def __init__(self, jump_hz: float = 60.0, ema_alpha: float = 0.3, outlier_windows: int = 3):
+        self.jump_hz = jump_hz
+        self.ema_alpha = ema_alpha
+        self.outlier_windows = outlier_windows
+        self.value: float | None = None
+        self._outliers = 0
+
+    def update(self, detected: float) -> float:
+        if self.value is None:
+            self.value = detected
+        elif abs(detected - self.value) <= self.jump_hz:
+            self.value += self.ema_alpha * (detected - self.value)
+            self._outliers = 0
+        else:
+            self._outliers += 1
+            if self._outliers >= self.outlier_windows:
+                self.value = detected  # a real retune, not a blip
+                self._outliers = 0
+        return self.value
+
+
+def cw_activity_db(audio: np.ndarray, sr: int, hop_samples: int = DEFAULT_HOP_SAMPLES,
+                    tone_freq: float | None = None) -> float:
+    """How CW-like this audio is, in dB: the p85/p15 envelope ratio of the
+    (detected or given) tone bin. Keyed CW switches that bin on and off, so
+    the ratio is large (typically well over 6 dB even at poor broadband SNR -
+    the tone is narrowband, so per-bin SNR is ~19 dB better than the 2.5 kHz
+    channel figure). Silence, broadband static, and steady carriers score low.
+    Used as a squelch gate so dead air and tuning noise between transmissions
+    don't get 'decoded' into confident-looking garbage characters."""
+    freqs, _times, Sxx = _compute_spectrogram(audio, sr, hop_samples)
+    if tone_freq is None:
+        tone_freq = _detect_tone_from_spectrogram(freqs, Sxx)
+    peak_bin = int(np.argmin(np.abs(freqs - tone_freq)))
+    env = Sxx[peak_bin]
+    if env.size < 8:
+        return 0.0
+    hi, lo = np.percentile(env, [85, 15])
+    return float(10.0 * np.log10((hi + 1e-12) / (lo + 1e-12)))
+
+
 def extract_features(audio: np.ndarray, sr: int, n_freq_bins: int = N_FREQ_BINS,
                       hop_samples: int = DEFAULT_HOP_SAMPLES,
                       tone_freq: float | None = None) -> np.ndarray:

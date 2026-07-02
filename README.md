@@ -36,6 +36,12 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+Note: reading the ARRL practice MP3s requires libsndfile ≥ 1.1 (the first
+release with MP3 support). The `soundfile` wheel bundles a new-enough copy on
+Windows/Mac; on Linux, if you see `Format not recognised` errors opening
+`.mp3` files, your distro's libsndfile is too old — `pip install soundfile
+--force-reinstall` gets the bundled one.
+
 Install PyTorch separately — pick the right build for your machine:
 
 ```bash

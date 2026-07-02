@@ -225,6 +225,10 @@ def main():
                               "support (tx side runs 5-40 WPM), not just comfortable middle speeds")
     parser.add_argument("--tone-hz-range", default="400,900")
     parser.add_argument("--clip-seconds", type=float, default=4.0)
+    parser.add_argument("--clip-seconds-range", default="",
+                         help="e.g. '4,12': sample each line's target clip length uniformly from this "
+                              "range instead of the fixed --clip-seconds - trains the model on mixed "
+                              "context lengths so it's less brittle around inference window boundaries")
     parser.add_argument("--max-lines", type=int, default=0, help="0 = all lines in the text file")
     parser.add_argument("--timing-jitter", type=float, default=0.05,
                          help="relative std-dev of random per-element timing variation (e.g. 0.05 = ~5%%), "
@@ -251,6 +255,10 @@ def main():
     if args.max_lines:
         lines = lines[: args.max_lines]
 
+    clip_s_range = None
+    if args.clip_seconds_range:
+        clip_s_range = tuple(float(x) for x in args.clip_seconds_range.split(","))
+
     rows = []
     for i, line in enumerate(lines):
         wpm = rng.uniform(wpm_lo, wpm_hi)
@@ -258,6 +266,7 @@ def main():
         amp = rng.uniform(0.6, 1.0)
         style = DEFAULT_STYLE if args.no_style else sample_style(rng)
         ramp_s = rng.uniform(0.002, 0.008)  # keying envelope rise time varies by rig
+        clip_seconds = rng.uniform(*clip_s_range) if clip_s_range else args.clip_seconds
 
         farnsworth_wpm = None
         if wpm < args.farnsworth_below and rng.random() < args.farnsworth_prob:
@@ -268,7 +277,7 @@ def main():
                                              rng=rng, style=style)
         audio = audio * amp
 
-        for j, (clip_audio, label) in enumerate(slice_into_clips(audio, char_spans, SAMPLE_RATE, args.clip_seconds)):
+        for j, (clip_audio, label) in enumerate(slice_into_clips(audio, char_spans, SAMPLE_RATE, clip_seconds)):
             clip_name = f"synth_{i:05d}_{j:03d}.wav"
             clip_path = out_dir / clip_name
             sf.write(clip_path, clip_audio, SAMPLE_RATE)

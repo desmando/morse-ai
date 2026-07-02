@@ -26,7 +26,8 @@ from torch.utils.data import Dataset
 
 from dataprep.augment_hf_channel import augment_clip
 from model.features import (DEFAULT_HOP_SAMPLES, LEGACY_HOP_SAMPLES, N_FREQ_BINS, SAMPLE_RATE,
-                             extract_features, resample_to_model_rate)
+                             ToneTracker, cw_activity_db, detect_tone_freq, extract_features,
+                             resample_to_model_rate)
 from model.vocab import Vocab
 from paths import DATA_ROOT
 
@@ -56,7 +57,10 @@ def load_checkpoint_model(checkpoint_path, device: str, vocab_path=None):
     a new training run (e.g. adding '<'/'>' for prosigns) can never silently
     remap or break an older checkpoint's character indices. vocab_path is
     only the fallback for checkpoints missing vocab_chars."""
-    ckpt = torch.load(checkpoint_path, map_location=device)
+    # weights_only=False explicitly: checkpoints carry optimizer/scheduler
+    # state beyond plain tensors (PyTorch >= 2.6 flips the default), and
+    # they're this project's own files
+    ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
     if ckpt.get("vocab_chars"):
         vocab = Vocab(list(ckpt["vocab_chars"]))
     elif vocab_path is not None:
@@ -166,6 +170,12 @@ class MorseClipDataset(Dataset):
         tone_freq = float(row["tone_hz"]) if row.get("tone_hz") else None
         if self.augment:
             rng = self._rng_for(idx)
+            # random leading/trailing silence: an inference window rarely
+            # starts exactly at a keyed element, so teach the model clips
+            # that begin/end in dead air (the noise below covers it too)
+            pad_lo = np.zeros(int(rng.uniform(0.0, 0.5) * SAMPLE_RATE))
+            pad_hi = np.zeros(int(rng.uniform(0.0, 0.5) * SAMPLE_RATE))
+            audio = np.concatenate([pad_lo, audio, pad_hi])
             audio, info = augment_clip(audio, SAMPLE_RATE, rng, self.snr_db_range,
                                         strength=self.aug_strength)
             if tone_freq is not None:
@@ -348,9 +358,26 @@ def _log_sum_exp(a: float, b: float) -> float:
     return b + math.log1p(math.exp(a - b))
 
 
+def _max_repeat_run(text: str, max_period: int = 2) -> int:
+    """Longest streak of a period-1 or period-2 repetition ('AAAA' or
+    'AEAEAE') - the runaway-collapse signature, measured in repeated chars."""
+    best = 0
+    for p in range(1, max_period + 1):
+        run = 0
+        for i in range(p, len(text)):
+            if text[i] == text[i - p]:
+                run += 1
+                if run > best:
+                    best = run
+            else:
+                run = 0
+    return best
+
+
 def ctc_beam_decode(log_probs: torch.Tensor, vocab: Vocab, lm=None,
                     lm_weight: float = 0.3, beam_width: int = 20,
-                    top_k: int = 15, final_rescore=None) -> str:
+                    top_k: int = 15, final_rescore=None,
+                    length_bonus: float = 0.0, repeat_penalty: float = 0.0) -> str:
     """CTC prefix beam search with optional ham-domain character LM scoring.
 
     Keeps beam_width candidate prefix sequences alive across all T frames,
@@ -366,6 +393,11 @@ def ctc_beam_decode(log_probs: torch.Tensor, vocab: Vocab, lm=None,
     final_rescore: optional callable(text) -> log-score bonus, applied once
     to the finished beams before picking the winner (e.g. FCC callsign
     verification boosting beams whose callsigns are real licensed calls).
+    length_bonus adds +bonus per output character (counteracts CTC/LM bias
+    toward short outputs); repeat_penalty subtracts penalty * the longest
+    period-1/2 repetition run (targets the runaway-repetition collapse mode
+    specifically). Both default 0.0 = no effect; sweep them with
+    evaluate.py --sweep before trusting nonzero values.
     Returns the best-scoring decoded string."""
     import numpy as _np
     NEG_INF = float("-inf")
@@ -433,6 +465,10 @@ def ctc_beam_decode(log_probs: torch.Tensor, vocab: Vocab, lm=None,
         score = _log_sum_exp(kv[1][0], kv[1][1])
         if final_rescore is not None:
             score += final_rescore(kv[0])
+        if length_bonus:
+            score += length_bonus * len(kv[0])
+        if repeat_penalty:
+            score -= repeat_penalty * _max_repeat_run(kv[0])
         return score
 
     best = max(beams.items(), key=_final_score)
@@ -572,20 +608,29 @@ def decode_window_core(window_audio, window_abs_start: float, core_start: float,
                         model, vocab: Vocab, device: str, sr: int,
                         lm=None, lm_weight: float = 0.3, beam_width: int = 20,
                         top_k: int = 15, tone_freq: float | None = None,
-                        final_rescore=None) -> str:
+                        final_rescore=None, squelch_db: float = 0.0,
+                        length_bonus: float = 0.0, repeat_penalty: float = 0.0) -> str:
     """Decodes one audio window and keeps only the characters whose absolute
     start time (window_abs_start + their offset within the window) falls in
     [core_start, core_end) - the stretch of the timeline this window "owns"
     in an overlapping sliding-window scheme. See decode_stream().
 
     tone_freq: known/tracked CW tone frequency to center the feature band on
-    (e.g. StreamDecoder's smoothed estimate); None = detect per window.
+    (e.g. a ToneTracker's smoothed estimate); None = detect per window.
+
+    squelch_db > 0 gates the window on CW-likeness first (see
+    features.cw_activity_db): silence, static, and steady carriers return ""
+    instead of being hallucinated into characters. 0 = no gating (the right
+    default when the audio is known to contain CW, e.g. clip evaluation).
 
     When lm is provided, uses CTC beam search scored by the ham-domain
     character LM instead of greedy decoding. Timing for the core-region
     filter is recovered via forced alignment of the beam search result back
     to frame positions, so the overlap-trim-stitch logic works identically
     regardless of decode strategy."""
+    if squelch_db > 0 and cw_activity_db(window_audio, sr, hop_samples=model.hop_samples,
+                                          tone_freq=tone_freq) < squelch_db:
+        return ""
     hop_seconds = model.frame_seconds(sr)
     features = extract_features(window_audio, sr, hop_samples=model.hop_samples,
                                  tone_freq=tone_freq)
@@ -598,7 +643,8 @@ def decode_window_core(window_audio, window_abs_start: float, core_start: float,
         # Beam search for best text, forced-align back to frames for trimming
         text = ctc_beam_decode(log_probs_cpu, vocab, lm=lm,
                                 lm_weight=lm_weight, beam_width=beam_width, top_k=top_k,
-                                final_rescore=final_rescore)
+                                final_rescore=final_rescore,
+                                length_bonus=length_bonus, repeat_penalty=repeat_penalty)
         if not text:
             return ""
         target_indices = [vocab.char_to_idx[c] for c in text if c in vocab.char_to_idx]
@@ -625,7 +671,8 @@ def decode_window_core(window_audio, window_abs_start: float, core_start: float,
 def decode_stream(audio, sr: int, model, vocab: Vocab, device: str,
                    window_seconds: float = 8.0, stride_seconds: float = 4.0,
                    lm=None, lm_weight: float = 0.3, beam_width: int = 20,
-                   top_k: int = 15, final_rescore=None) -> str:
+                   top_k: int = 15, final_rescore=None, squelch_db: float = 0.0,
+                   length_bonus: float = 0.0, repeat_penalty: float = 0.0) -> str:
     """Decodes a long, continuous recording as one piece of text, without the
     boundary-chopping bug fixed in dataprep/synthesize_morse_audio.py and
     inference/realtime_decode.py's original non-overlapping-window design:
@@ -644,6 +691,10 @@ def decode_stream(audio, sr: int, model, vocab: Vocab, device: str,
     design never had.
 
     Audio at any sample rate is accepted and resampled to the model rate.
+    The CW tone is tracked across windows with the same ToneTracker policy
+    the live StreamDecoder uses (EMA + outlier rejection), so offline
+    evaluation exercises the same front end as the radio - a QRM burst in
+    one window can't yank the feature band off the signal here either.
     """
     audio = resample_to_model_rate(audio, sr)
     sr = SAMPLE_RATE
@@ -652,6 +703,7 @@ def decode_stream(audio, sr: int, model, vocab: Vocab, device: str,
     stride_samples = int(stride_seconds * sr)
     guard_seconds = (window_seconds - stride_seconds) / 2
     total_seconds = n_samples / sr
+    tone_tracker = ToneTracker()
 
     pieces = []
     window_start_sample = 0
@@ -664,10 +716,15 @@ def decode_stream(audio, sr: int, model, vocab: Vocab, device: str,
         core_start = 0.0 if is_first else window_abs_start + guard_seconds
         core_end = total_seconds if is_last else window_abs_start + guard_seconds + stride_seconds
 
-        pieces.append(decode_window_core(audio[window_start_sample:window_end_sample], window_abs_start,
+        window_audio = audio[window_start_sample:window_end_sample]
+        tone = tone_tracker.update(detect_tone_freq(window_audio, sr,
+                                                     hop_samples=model.hop_samples))
+        pieces.append(decode_window_core(window_audio, window_abs_start,
                                           core_start, core_end, model, vocab, device, sr,
                                           lm=lm, lm_weight=lm_weight, beam_width=beam_width,
-                                          top_k=top_k, final_rescore=final_rescore))
+                                          top_k=top_k, final_rescore=final_rescore,
+                                          tone_freq=tone, squelch_db=squelch_db,
+                                          length_bonus=length_bonus, repeat_penalty=repeat_penalty))
 
         if is_last:
             break
@@ -677,16 +734,31 @@ def decode_stream(audio, sr: int, model, vocab: Vocab, device: str,
 
 
 def edit_distance(a, b) -> int:
+    """Levenshtein distance with the inner DP loop vectorized in numpy -
+    evaluate_streaming.py runs this on multi-thousand-character whole-recording
+    transcripts, where the pure-Python O(n^2) version dominated eval time.
+
+    The left-neighbor recurrence cur[j] = min(t[j-1], cur[j-1] + 1) is a
+    running minimum with +1 per step, which closes to
+    cur[j] = j + min(i, min_{k<=j}(t[k-1] - k)) - one minimum.accumulate."""
     if len(a) < len(b):
         a, b = b, a
-    prev = list(range(len(b) + 1))
-    for i, ca in enumerate(a, 1):
-        curr = [i] + [0] * len(b)
-        for j, cb in enumerate(b, 1):
-            cost = 0 if ca == cb else 1
-            curr[j] = min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost)
-        prev = curr
-    return prev[-1]
+    if not len(b):
+        return len(a)
+    # map tokens (chars or whole words) to ints so comparisons are vectorized
+    ids: dict = {}
+    a_ids = np.fromiter((ids.setdefault(x, len(ids)) for x in a), dtype=np.int32, count=len(a))
+    b_ids = np.fromiter((ids.setdefault(x, len(ids)) for x in b), dtype=np.int32, count=len(b))
+    m = len(b_ids)
+    jrange = np.arange(1, m + 1, dtype=np.int32)
+    prev = np.arange(m + 1, dtype=np.int32)
+    for i, ca in enumerate(a_ids, 1):
+        t = np.minimum(prev[:-1] + (b_ids != ca), prev[1:] + 1)
+        cur = np.empty(m + 1, dtype=np.int32)
+        cur[0] = i
+        cur[1:] = jrange + np.minimum(np.minimum.accumulate(t - jrange), np.int32(i))
+        prev = cur
+    return int(prev[-1])
 
 
 def cer(pred: str, ref: str) -> float:

@@ -18,7 +18,7 @@
 #      (prosigns, per-sender style, Farnsworth, 10-40 WPM, tone_hz column),
 #      then rebuild the character LM so beam decoding knows prosign notation:
 #        python lm/generate_qso_corpus.py --num-qsos 20000
-#        python dataprep/synthesize_morse_audio.py --clip-seconds 8.0
+#        python dataprep/synthesize_morse_audio.py --clip-seconds-range 4,12
 #        python lm/ngram_lm.py --build
 #   3. No augmented_synthetic manifest needed - impairments happen in the
 #      dataloader. If nvidia-smi shows the GPU starved, raise --num-workers
@@ -42,4 +42,5 @@ python model/train.py \
   --lr-min 1e-5 \
   --decode-check-clips 200 \
   --decode-check-threshold 0.5 \
+  --keep-last 20 \
   2>&1 | tee /root/morse-ai-data/train_v4.log
