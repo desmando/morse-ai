@@ -220,9 +220,13 @@ def main():
     parser.add_argument("--text-file", default=str(DATA_ROOT / "text_corpus" / "qso_corpus.txt"))
     parser.add_argument("--out-dir", default=str(DATA_ROOT / "synthetic" / "clips"))
     parser.add_argument("--manifest-out", default=str(DATA_ROOT / "manifests" / "synthetic_manifest.csv"))
-    parser.add_argument("--wpm-range", default="10,40",
+    parser.add_argument("--wpm-range", default="5,40",
                          help="overall speed range - matches the full range the decoder claims to "
-                              "support (tx side runs 5-40 WPM), not just comfortable middle speeds")
+                              "support (tx side runs 5-40 WPM), not just comfortable middle speeds. "
+                              "5 WPM real ARRL practice audio was found to be near-total out-of-"
+                              "distribution failure when this floor was 10 - see the Farnsworth "
+                              "char-speed floor fix just above for why naive uniform slowdown alone "
+                              "wouldn't have fixed it even at a wider range")
     parser.add_argument("--tone-hz-range", default="400,900")
     parser.add_argument("--clip-seconds", type=float, default=4.0)
     parser.add_argument("--clip-seconds-range", default="",
@@ -270,7 +274,15 @@ def main():
 
         farnsworth_wpm = None
         if wpm < args.farnsworth_below and rng.random() < args.farnsworth_prob:
-            farnsworth_wpm = rng.uniform(wpm + 3, min(wpm + 12, 30))
+            # Character speed has a realistic floor, not just "overall wpm + a
+            # few" - real slow-speed practice (5-10 WPM) keys characters at a
+            # normal, recognizable pace (commonly ~13-18 WPM) with the GAPS
+            # stretched to hit the slow overall rate, not every element
+            # uniformly slowed down (which would make characters lose their
+            # shape gestalt and sound unlike how real slow-speed CW is sent).
+            char_lo = max(wpm + 3, 13.0)
+            char_hi = max(char_lo, min(wpm + 15, 30))
+            farnsworth_wpm = rng.uniform(char_lo, char_hi)
 
         audio, char_spans = synthesize_line(line, wpm, tone_hz, farnsworth_wpm=farnsworth_wpm,
                                              ramp_s=ramp_s, timing_jitter=args.timing_jitter,
