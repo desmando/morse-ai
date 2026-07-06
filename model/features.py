@@ -120,6 +120,104 @@ def cw_activity_db(audio: np.ndarray, sr: int, hop_samples: int = DEFAULT_HOP_SA
     return float(10.0 * np.log10((hi + 1e-12) / (lo + 1e-12)))
 
 
+def estimate_signal_quality(audio: np.ndarray, sr: int, hop_samples: int = DEFAULT_HOP_SAMPLES,
+                             tone_freq: float | None = None) -> tuple[float, float]:
+    """Raw (activity_db, snr_db) for one window - the measurements behind
+    bucket_readability()/bucket_strength() and SignalTracker, for generating
+    a live signal report. One spectrogram pass (deliberately not sharing it
+    with cw_activity_db's separate call at the squelch gate - the redundant
+    FFT costs microseconds against the seconds-per-window decode budget, and
+    keeping each caller self-contained is simpler than threading a shared
+    Sxx through decode_window_core's existing squelch path).
+
+    activity_db: same on/off keying contrast as cw_activity_db - drives R.
+
+    snr_db: tone-bin near-peak power (90th percentile - keying is on/off, so
+    the mean underestimates the "on" level) vs. the median power in nearby
+    non-tone bins (a simple noise-floor estimate, skipping +-50Hz around the
+    tone itself). This is an audio-domain proxy, NOT a calibrated S-meter
+    reading - the software has no access to the receiver's RF gain/AGC
+    state, only the digitized audio after it. It's closer to what an
+    operator estimates by ear when not looking at the meter. Calibrated
+    against dataprep/augment_hf_channel.py's controlled additive-noise sweep
+    (-6..+30 dB target SNR maps to ~9..27 dB measured here, monotonically),
+    not against real receiver behavior - treat bucket_strength()'s S-units
+    as a reasoned first pass to refine with real operating experience, not
+    a finished calibration.
+    """
+    freqs, _times, Sxx = _compute_spectrogram(audio, sr, hop_samples)
+    if tone_freq is None:
+        tone_freq = _detect_tone_from_spectrogram(freqs, Sxx)
+    peak_bin = int(np.argmin(np.abs(freqs - tone_freq)))
+    env = Sxx[peak_bin]
+    if env.size < 8:
+        return 0.0, -99.0
+    hi, lo = np.percentile(env, [85, 15])
+    activity_db = float(10.0 * np.log10((hi + 1e-12) / (lo + 1e-12)))
+
+    bin_hz = freqs[1] - freqs[0] if len(freqs) > 1 else 1.0
+    guard = max(1, int(round(50.0 / bin_hz)))
+    noise_bins = [i for i in range(len(freqs)) if guard < abs(i - peak_bin) < guard * 6]
+    noise_power = float(np.median(Sxx[noise_bins])) if noise_bins else float(np.median(Sxx))
+    signal_power = float(np.percentile(env, 90))
+    snr_db = float(10.0 * np.log10((signal_power + 1e-12) / (noise_power + 1e-12)))
+    return activity_db, snr_db
+
+
+def bucket_readability(activity_db: float) -> int:
+    """R (1-5, standard RST convention) from on/off keying contrast.
+    Thresholds calibrated against the controlled SNR sweep in
+    estimate_signal_quality's docstring, not real-operator ground truth."""
+    if activity_db >= 20.0:
+        return 5
+    if activity_db >= 15.0:
+        return 4
+    if activity_db >= 11.0:
+        return 3
+    if activity_db >= 7.0:
+        return 2
+    return 1
+
+
+def bucket_strength(snr_db: float) -> int:
+    """S (1-9, standard RST convention) from tone-bin SNR. ~3 dB/S-unit over
+    the calibrated -6..+22 dB range - see estimate_signal_quality's
+    docstring for the important caveat: this is an audio-SNR proxy, not a
+    calibrated receiver S-meter reading."""
+    return int(np.clip(round((snr_db + 6.0) / 3.0), 1, 9))
+
+
+class SignalTracker:
+    """Smoothed CW signal-quality estimate across windows, for reporting a
+    live RST. Plain EMA - unlike ToneTracker's outlier rejection (a real
+    station's frequency shouldn't jump around, so a sudden reading is
+    probably an artifact), real QSB/interference SHOULD move a signal report
+    responsively; there's no "outlier" to reject here."""
+
+    def __init__(self, ema_alpha: float = 0.4):
+        self.ema_alpha = ema_alpha
+        self.activity_db: float | None = None
+        self.snr_db: float | None = None
+
+    def update(self, activity_db: float, snr_db: float) -> tuple[int, int]:
+        if self.activity_db is None:
+            self.activity_db, self.snr_db = activity_db, snr_db
+        else:
+            self.activity_db += self.ema_alpha * (activity_db - self.activity_db)
+            self.snr_db += self.ema_alpha * (snr_db - self.snr_db)
+        return bucket_readability(self.activity_db), bucket_strength(self.snr_db)
+
+    @property
+    def rst(self) -> str | None:
+        """3-digit RST ('R', 'S', then a fixed '9' for Tone - no chirp/
+        click/hum analysis exists to assess tone purity), or None before the
+        first measurement."""
+        if self.activity_db is None:
+            return None
+        r, s = bucket_readability(self.activity_db), bucket_strength(self.snr_db)
+        return f"{r}{s}9"
+
+
 def extract_features(audio: np.ndarray, sr: int, n_freq_bins: int = N_FREQ_BINS,
                       hop_samples: int = DEFAULT_HOP_SAMPLES,
                       tone_freq: float | None = None) -> np.ndarray:

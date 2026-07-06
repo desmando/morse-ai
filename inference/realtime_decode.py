@@ -30,7 +30,8 @@ import sounddevice as sd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from model.decoder import decode_window_core, load_checkpoint_model
-from model.features import SAMPLE_RATE, ToneTracker, detect_tone_freq, resample_to_model_rate
+from model.features import (SAMPLE_RATE, SignalTracker, ToneTracker, detect_tone_freq,
+                             estimate_signal_quality, resample_to_model_rate)
 from model.vocab import Vocab
 from paths import DATA_ROOT
 
@@ -99,7 +100,12 @@ class StreamDecoder:
     features.cw_activity_db) so dead air, static, and tuning noise between
     transmissions don't become hallucinated characters. Live radio audio is
     mostly not-CW, hence the nonzero default here; offline evaluation of
-    known-CW recordings defaults it off."""
+    known-CW recordings defaults it off.
+
+    .signal_report exposes a live-measured RST string (e.g. "579") from the
+    audio itself - see features.SignalTracker/estimate_signal_quality for
+    what it measures and its calibration caveats. None until the first
+    window is processed."""
 
     def __init__(self, model, vocab: Vocab, torch_device: str, sr: int,
                  window_seconds: float = 8.0, stride_seconds: float = 4.0,
@@ -126,10 +132,15 @@ class StreamDecoder:
         self.stream_pos_samples = 0
         self.is_first = True
         self._tracker = ToneTracker()
+        self._signal = SignalTracker()
 
     @property
     def tone_freq(self):
         return self._tracker.value
+
+    @property
+    def signal_report(self):
+        return self._signal.rst
 
     def _decode(self, window_audio, window_abs_start, core_start, core_end, tone) -> str:
         return decode_window_core(window_audio, window_abs_start, core_start, core_end,
@@ -151,6 +162,10 @@ class StreamDecoder:
             core_end = window_abs_start + self.guard_seconds + self.stride_seconds
             tone = self._tracker.update(detect_tone_freq(window_audio, self.sr,
                                                           hop_samples=self.model.hop_samples))
+            activity_db, snr_db = estimate_signal_quality(window_audio, self.sr,
+                                                            hop_samples=self.model.hop_samples,
+                                                            tone_freq=tone)
+            self._signal.update(activity_db, snr_db)
             pieces.append(self._decode(window_audio, window_abs_start, core_start, core_end, tone))
             self.is_first = False
             self.buf = self.buf[self.stride_samples:]
@@ -165,6 +180,11 @@ class StreamDecoder:
         core_end = window_abs_start + len(self.buf) / self.sr
         # use the held tone estimate - the leftover buffer may be too short
         # (or too noise-dominated) for a reliable fresh detection
+        if len(self.buf) >= 8:
+            activity_db, snr_db = estimate_signal_quality(self.buf, self.sr,
+                                                            hop_samples=self.model.hop_samples,
+                                                            tone_freq=self._tracker.value)
+            self._signal.update(activity_db, snr_db)
         text = self._decode(self.buf, window_abs_start, core_start, core_end, self._tracker.value)
         self.buf = np.zeros(0, dtype=np.float32)
         return text

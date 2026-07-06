@@ -116,7 +116,16 @@ and send yours → 73/SK sign-off. The responder picks up the other station's
 name and QTH from their decoded text and acknowledges them by name if it caught
 it. ADIF records use `RST_SENT`, `RST_RCVD`, `NAME`, and `QTH`.
 
-Use `--my-rst` to set the signal report you send (default `599`).
+**The RST you send is measured live from the audio**, not a fixed `599`: R
+(readability) and S (strength) are estimated from the decoded signal's on/off
+keying contrast and tone-bin SNR, shown in the header as `Sig: 579` and used
+automatically once decoding has measured at least one window. T (tone) is
+always reported `9` — there's no chirp/click/hum analysis. This is a
+heuristic, audio-only estimate, not a calibrated S-meter reading (the
+software has no access to the receiver's RF gain/AGC state) — treat it as a
+reasoned first pass, not gospel. `--my-rst` sets the fallback used before the
+first measurement; `--no-auto-rst` disables live measurement entirely and
+always sends `--my-rst`.
 
 ### Rag chew
 
@@ -196,7 +205,8 @@ informational note if they're calling CQ.
 | `--my-section` | *(required for field-day)* | ARRL/RAC section, e.g. `ENY` |
 | `--my-name` | | Your name — used in contact/ragchew responses |
 | `--my-qth` | | Your QTH — used in contact responses |
-| `--my-rst` | `599` | RST to send the other station in contact mode |
+| `--my-rst` | `599` | Fallback RST before the first live measurement (or always, with `--no-auto-rst`) |
+| `--no-auto-rst` | off | Always send `--my-rst` instead of the live-measured signal report |
 | `--device` | *(prompted)* | Audio input device name or index |
 | `--serial-port` | *(prompted)* | Serial port for CW keying, e.g. `COM5` |
 | `--key-line` | `rts` | Which serial line keys CW: `rts` or `dtr` |

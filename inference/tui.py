@@ -265,7 +265,16 @@ def main():
     parser.add_argument("--my-section", default=None, help="ARRL/RAC section (required for field-day mode)")
     parser.add_argument("--my-name", default="", help="Your name, used in contact/ragchew responses")
     parser.add_argument("--my-qth", default="", help="Your QTH, used in contact responses")
-    parser.add_argument("--my-rst", default="599", help="Default RST to send in contact mode")
+    parser.add_argument("--my-rst", default="599",
+                         help="RST to send in contact mode - used as a fallback before the first live "
+                              "measurement (or always, with --no-auto-rst)")
+    parser.add_argument("--no-auto-rst", action="store_true",
+                         help="always send --my-rst rather than the live-measured signal report. By "
+                              "default, R (readability) and S (strength) are estimated from the "
+                              "decoded audio itself once decoding starts (T is always reported 9 - no "
+                              "tone-purity/chirp analysis exists) - a heuristic first-pass calibration, "
+                              "not a calibrated S-meter reading; use this flag if you don't trust it or "
+                              "want a fixed, reproducible report")
     parser.add_argument("--adif-log", default=str(DATA_ROOT / "logs" / "qso_log.adi"),
                          help="ADIF log file to append a record to after each completed QSO")
     parser.add_argument("--conversation-log", default=str(DATA_ROOT / "logs" / "conversation_log.jsonl"),
@@ -348,9 +357,12 @@ def main():
         print("warning: no FCC active-license index found - run inference/fcc_uls.py --download first "
               "to enable callsign verification (continuing without it)", file=sys.stderr)
     tx_lock = threading.Lock()
-    current_qso = {"call": None, "exchange": None, "rst_rcvd": None, "their_name": None, "their_qth": None}
+    current_qso = {"call": None, "exchange": None, "rst_rcvd": None, "rst_sent": None,
+                    "their_name": None, "their_qth": None}
     current_tx_abort = {"event": None}  # the in-progress transmission's abort Event, if any
     current_wpm = {"value": args.tx_wpm}  # adjusted at runtime by QRQ/QRS
+    current_signal = {"rst": None}  # live-measured signal report (contact mode) - see StreamDecoder.signal_report
+    tx_state = {"active": False}  # single source of truth for the header's TRANSMITTING suffix
 
     def append_transcript_line(line: str):
         new_transcript = transcript_area.text + line + "\n"
@@ -358,12 +370,22 @@ def main():
             Document(new_transcript, cursor_position=len(new_transcript)), bypass_readonly=True)
         app.invalidate()
 
-    def set_tx_status(active: bool):
+    def render_header():
+        # Reads tx_state rather than taking an "active" argument so the
+        # decode-worker thread can safely refresh the signal-report portion
+        # of the header (called every ~stride_seconds) without racing or
+        # clobbering an in-progress transmission's TRANSMITTING suffix.
         cat = f"{serial_port} @ {format_serial_settings(serial_settings)}" if serial_port else "none"
-        suffix = " - TRANSMITTING (Esc to abort)" if active else ""
-        header.text = (f" Audio: {device_name!r} - CAT: {cat}{suffix} - {current_wpm['value']:.0f} WPM - "
-                        f"DE {args.my_call.upper()} - Enter to send, Esc to abort, Ctrl+C/Ctrl+Q to quit ")
+        suffix = " - TRANSMITTING (Esc to abort)" if tx_state["active"] else ""
+        sig = f" - Sig: {current_signal['rst']}" if current_signal["rst"] else ""
+        header.text = (f" Audio: {device_name!r} - CAT: {cat}{suffix} - {current_wpm['value']:.0f} WPM"
+                        f"{sig} - DE {args.my_call.upper()} - "
+                        f"Enter to send, Esc to abort, Ctrl+C/Ctrl+Q to quit ")
         app.invalidate()
+
+    def set_tx_status(active: bool):
+        tx_state["active"] = active
+        render_header()
 
     def on_abort():
         abort_event = current_tx_abort["event"]
@@ -410,7 +432,7 @@ def main():
                             else:
                                 record = append_qso(args.adif_log, my_call=args.my_call,
                                                      their_call=current_qso["call"], freq_hz=freq_hz,
-                                                     rst_sent=args.my_rst,
+                                                     rst_sent=current_qso["rst_sent"] or args.my_rst,
                                                      rst_rcvd=current_qso["rst_rcvd"],
                                                      their_name=current_qso["their_name"],
                                                      their_qth=current_qso["their_qth"])
@@ -429,8 +451,8 @@ def main():
                     except Exception as exc:
                         append_transcript_line(f"[frequency poll / log failed: {exc}]")
                     finally:
-                        current_qso.update({"call": None, "exchange": None,
-                                            "rst_rcvd": None, "their_name": None, "their_qth": None})
+                        current_qso.update({"call": None, "exchange": None, "rst_rcvd": None,
+                                            "rst_sent": None, "their_name": None, "their_qth": None})
             finally:
                 current_tx_abort["event"] = None
                 set_tx_status(False)
@@ -508,8 +530,16 @@ def main():
             if already_worked and "CQ" in text_upper:
                 response = f"[{their_call} already logged on {band} - not calling]"
             else:
+                # Live-measured (see StreamDecoder.signal_report) unless
+                # --no-auto-rst or no measurement exists yet (e.g. the very
+                # first exchange, or --fake-decode). Frozen into current_qso
+                # now rather than re-read at ADIF-log time, so the logged
+                # record reflects what was actually SENT, not whatever the
+                # live reading has drifted to by QSO completion.
+                my_rst = args.my_rst if args.no_auto_rst else (current_signal["rst"] or args.my_rst)
+                current_qso["rst_sent"] = my_rst
                 response = generate_contact_response(text, args.my_call, args.my_name,
-                                                      args.my_qth, args.my_rst)
+                                                      args.my_qth, my_rst)
 
         else:  # ragchew
             if their_call:
@@ -532,6 +562,9 @@ def main():
                                  final_rescore=final_rescore)
         try:
             for text in iter_decoded_stream(device, decoder):
+                if current_signal["rst"] != decoder.signal_report:
+                    current_signal["rst"] = decoder.signal_report
+                    render_header()
                 if text:
                     on_text(text)
         except Exception as exc:  # surface audio/decoding errors instead of silently dying
