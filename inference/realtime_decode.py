@@ -22,6 +22,7 @@ Usage:
 import argparse
 import queue
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -194,19 +195,36 @@ def iter_decoded_stream(device, decoder: StreamDecoder):
     """Captures audio from `device` and yields newly decoded text as it
     becomes available - runs until the caller stops iterating (e.g. via
     `break`) or the input stream raises. Caller should call decoder.flush()
-    afterward to get any text left in the buffer."""
+    afterward to get any text left in the buffer.
+
+    latency='high' asks PortAudio for a larger internal buffer: the decode
+    loop already runs several seconds behind real time by design (window/
+    stride), so a few hundred extra ms of input buffering costs nothing but
+    meaningfully reduces "input overflow" (dropped audio - PortAudio's ring
+    buffer filling faster than this thread drains it, e.g. while Python's
+    GIL is held by a model forward pass on a slower CPU) - the default
+    low-latency buffer is sized for interactive use, not this."""
     device_info = sd.query_devices(device, "input")
     native_sr = int(device_info["default_samplerate"])
 
     audio_q: "queue.Queue[np.ndarray]" = queue.Queue()
+    last_status_print = [0.0]
 
     def callback(indata, frames, time_info, status):
         if status:
-            print(f"[audio status: {status}]", file=sys.stderr)
+            # Rate-limited: a chronic overflow (e.g. an underpowered CPU
+            # struggling to keep up) would otherwise print on every single
+            # callback - many times a second - spamming/corrupting the
+            # terminal (especially a full-screen TUI) rather than just
+            # informing once that it's happening.
+            now = time.monotonic()
+            if now - last_status_print[0] > 2.0:
+                print(f"[audio status: {status}]", file=sys.stderr)
+                last_status_print[0] = now
         audio_q.put(indata[:, 0].copy())
 
     with sd.InputStream(device=device, channels=1, samplerate=native_sr,
-                         dtype="float32", callback=callback):
+                         dtype="float32", callback=callback, latency="high"):
         while True:
             chunk = resample_to_model_rate(audio_q.get(), native_sr)
             text = decoder.feed(chunk)
