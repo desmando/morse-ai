@@ -464,6 +464,10 @@ def main():
     def on_inject_accept(buf) -> bool:
         text = buf.text.strip()
         if text:
+            # --fake-decode has no StreamDecoder/worker() loop grouping
+            # fragments by detected transmission boundary - each injected
+            # message is one complete transmission, so show it immediately.
+            append_transcript_line(text)
             on_text(text)
         return False  # clear the field after feeding it in
 
@@ -473,7 +477,11 @@ def main():
         inject_handler=on_inject_accept if args.fake_decode else None)
 
     def on_text(text: str):
-        append_transcript_line(text)
+        # Transcript DISPLAY grouping (one line per detected transmission,
+        # not per ~4s decode fragment) happens in worker()'s accumulator,
+        # not here - this still reacts to each raw fragment immediately for
+        # QRQ/QRS, callsign/RST extraction, and response generation, which
+        # shouldn't wait for a silence gap to be detected.
         log_conversation("received", text)
         text_upper = text.upper()
 
@@ -560,13 +568,22 @@ def main():
                                  window_seconds=args.window_seconds, stride_seconds=args.stride_seconds,
                                  lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width,
                                  final_rescore=final_rescore)
+        current_line = []
         try:
-            for text in iter_decoded_stream(device, decoder):
+            for text, boundary in iter_decoded_stream(device, decoder):
                 if current_signal["rst"] != decoder.signal_report:
                     current_signal["rst"] = decoder.signal_report
                     render_header()
                 if text:
+                    current_line.append(text)
                     on_text(text)
+                if boundary and current_line:
+                    # A detected silence gap beyond the current WPM-adaptive
+                    # threshold ends the line here - one transmission per
+                    # transcript line (e.g. a repeated CQ shows as separate
+                    # lines) instead of an endless undifferentiated scroll.
+                    append_transcript_line("".join(current_line))
+                    current_line = []
         except Exception as exc:  # surface audio/decoding errors instead of silently dying
             append_transcript_line(f"[worker error: {exc}]")
 

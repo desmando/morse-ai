@@ -31,8 +31,8 @@ import sounddevice as sd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from model.decoder import decode_window_core, load_checkpoint_model
-from model.features import (SAMPLE_RATE, SignalTracker, ToneTracker, detect_tone_freq,
-                             estimate_signal_quality, resample_to_model_rate)
+from model.features import (SAMPLE_RATE, SignalTracker, ToneTracker, TransmissionSegmenter,
+                             detect_tone_freq, estimate_signal_quality, resample_to_model_rate)
 from model.vocab import Vocab
 from paths import DATA_ROOT
 
@@ -106,7 +106,18 @@ class StreamDecoder:
     .signal_report exposes a live-measured RST string (e.g. "579") from the
     audio itself - see features.SignalTracker/estimate_signal_quality for
     what it measures and its calibration caveats. None until the first
-    window is processed."""
+    window is processed.
+
+    .consume_boundary() returns whether a complete transmission ended since
+    the last call (a silence gap beyond the current WPM-adaptive threshold -
+    see features.TransmissionSegmenter), resetting the flag - callers
+    should treat text accumulated since the last boundary as one complete
+    line for display, rather than an endless undifferentiated scroll. The
+    WPM estimate the segmenter needs is derived here from actual decoded
+    characters per second of audio (a far more reliable source than
+    inferring it from raw envelope pulse timing - see the segmenter's own
+    docstring), smoothed with a light EMA so one short/noisy window's
+    estimate doesn't swing the threshold around."""
 
     def __init__(self, model, vocab: Vocab, torch_device: str, sr: int,
                  window_seconds: float = 8.0, stride_seconds: float = 4.0,
@@ -134,6 +145,9 @@ class StreamDecoder:
         self.is_first = True
         self._tracker = ToneTracker()
         self._signal = SignalTracker()
+        self._segmenter = TransmissionSegmenter()
+        self._wpm_ema = None
+        self._boundary_fired = False
 
     @property
     def tone_freq(self):
@@ -142,6 +156,14 @@ class StreamDecoder:
     @property
     def signal_report(self):
         return self._signal.rst
+
+    def consume_boundary(self) -> bool:
+        """Returns whether a transmission boundary fired since the last
+        call, resetting the flag - an explicit "I've handled this" step
+        (not a plain property) so it can't be silently missed or
+        double-consumed by reading it more than once."""
+        fired, self._boundary_fired = self._boundary_fired, False
+        return fired
 
     def _decode(self, window_audio, window_abs_start, core_start, core_end, tone) -> str:
         return decode_window_core(window_audio, window_abs_start, core_start, core_end,
@@ -154,6 +176,11 @@ class StreamDecoder:
                                    repeat_penalty=self.repeat_penalty)
 
     def feed(self, chunk: np.ndarray) -> str:
+        # Runs on the raw incoming chunk, independent of the window/stride
+        # cadence below - a boundary can and should be detected between
+        # window firings, not just when one happens to complete.
+        self._boundary_fired = self._segmenter.update(chunk, self._tracker.value) or self._boundary_fired
+
         self.buf = np.concatenate([self.buf, chunk])
         pieces = []
         while len(self.buf) >= self.window_samples:
@@ -167,7 +194,20 @@ class StreamDecoder:
                                                             hop_samples=self.model.hop_samples,
                                                             tone_freq=tone)
             self._signal.update(activity_db, snr_db)
-            pieces.append(self._decode(window_audio, window_abs_start, core_start, core_end, tone))
+            piece = self._decode(window_audio, window_abs_start, core_start, core_end, tone)
+            pieces.append(piece)
+            # WPM from actual decoded chars / core seconds (the standard
+            # "PARIS" approximation: WPM = (chars/5) / (seconds/60)) - more
+            # reliable than inferring it from raw envelope pulse timing (see
+            # TransmissionSegmenter's docstring). Skip trivial/empty pieces,
+            # which would give a noisy or undefined estimate; EMA-smooth so
+            # one short window's estimate doesn't swing the threshold around.
+            core_s = core_end - core_start
+            if len(piece) >= 3 and core_s > 0:
+                wpm_estimate = 12.0 * len(piece) / core_s
+                self._wpm_ema = wpm_estimate if self._wpm_ema is None else (
+                    self._wpm_ema + 0.3 * (wpm_estimate - self._wpm_ema))
+                self._segmenter.set_wpm(self._wpm_ema)
             self.is_first = False
             self.buf = self.buf[self.stride_samples:]
             self.stream_pos_samples += self.stride_samples
@@ -192,10 +232,15 @@ class StreamDecoder:
 
 
 def iter_decoded_stream(device, decoder: StreamDecoder):
-    """Captures audio from `device` and yields newly decoded text as it
-    becomes available - runs until the caller stops iterating (e.g. via
-    `break`) or the input stream raises. Caller should call decoder.flush()
-    afterward to get any text left in the buffer.
+    """Captures audio from `device` and yields (text, boundary) as it
+    becomes available - text is newly decoded characters (possibly empty,
+    e.g. a boundary firing with nothing new since the last yield), boundary
+    is whether a complete transmission ended (see StreamDecoder.
+    consume_boundary) - callers should treat text accumulated since the
+    last boundary=True as one complete display line, not an endless
+    undifferentiated scroll. Runs until the caller stops iterating (e.g.
+    via `break`) or the input stream raises. Caller should call
+    decoder.flush() afterward to get any text left in the buffer.
 
     latency='high' asks PortAudio for a larger internal buffer: the decode
     loop already runs several seconds behind real time by design (window/
@@ -228,8 +273,9 @@ def iter_decoded_stream(device, decoder: StreamDecoder):
         while True:
             chunk = resample_to_model_rate(audio_q.get(), native_sr)
             text = decoder.feed(chunk)
-            if text:
-                yield text
+            boundary = decoder.consume_boundary()
+            if text or boundary:
+                yield text, boundary
 
 
 def main():
@@ -291,12 +337,24 @@ def main():
           f"{args.window_seconds}s windows / {args.stride_seconds}s stride (Ctrl+C to stop) ...")
 
     try:
-        for text in iter_decoded_stream(device, decoder):
+        current_line = []
+        for text, boundary in iter_decoded_stream(device, decoder):
             if text:
-                print(text, end="", flush=True)
+                current_line.append(text)
+            if boundary and current_line:
+                # A detected silence gap beyond the current WPM-adaptive
+                # threshold ends the line here - one transmission per line
+                # (e.g. a repeated CQ prints as separate lines) instead of
+                # an endless undifferentiated scroll.
+                print("".join(current_line), flush=True)
+                current_line = []
     except KeyboardInterrupt:
-        print(decoder.flush(), end="", flush=True)
-        print("\nstopped.")
+        tail = decoder.flush()
+        if tail:
+            current_line.append(tail)
+        if current_line:
+            print("".join(current_line), flush=True)
+        print("stopped.")
 
 
 if __name__ == "__main__":
