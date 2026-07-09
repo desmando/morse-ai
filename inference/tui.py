@@ -294,8 +294,11 @@ def main():
     parser.add_argument("--lm", default=None, metavar="PATH",
                          help="path to ham_char_lm.json to enable CTC beam search + LM decoding "
                               "instead of greedy; improves callsign and exchange accuracy")
-    parser.add_argument("--lm-weight", type=float, default=0.3,
-                         help="LM score weight (0 = pure acoustic greedy-equivalent, higher = more LM influence)")
+    parser.add_argument("--lm-weight", type=float, default=0.1,
+                         help="LM score weight (0 = pure acoustic greedy-equivalent, higher = more LM "
+                              "influence) - 0.1 measured best via evaluate.py --sweep on real checkpoints; "
+                              "0.3 already measurably hurts (re-sweep on any checkpoint you deploy - the LM "
+                              "was tuned against the corpus/vocab in this repo, not guaranteed elsewhere)")
     parser.add_argument("--beam-width", type=int, default=20)
     parser.add_argument("--no-fcc-rescore", action="store_true",
                          help="with --lm, beam-search candidates whose callsigns are active FCC licenses "

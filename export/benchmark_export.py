@@ -21,27 +21,26 @@ import soundfile as sf
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from model.decoder import CWDecoder, decode_stream
-from model.vocab import Vocab
-
-
-class PyTorchModel:
-    def __init__(self, checkpoint_path):
-        ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
-        self.vocab = Vocab(ckpt["vocab_chars"])
-        self.model = CWDecoder(vocab_size=len(self.vocab))
-        self.model.load_state_dict(ckpt["model_state"])
-        self.model.eval()
-
-    def __call__(self, x: torch.Tensor) -> torch.Tensor:
-        with torch.no_grad():
-            return self.model(x)
+from model.decoder import decode_stream, load_checkpoint_model
 
 
 class ONNXModel:
-    def __init__(self, onnx_path: str):
+    """Wraps an ONNX Runtime session with the attributes decode_window_core
+    needs (hop_samples, frame_seconds()) - decode_stream doesn't care
+    whether the model underneath is PyTorch or ONNX, but it does read these
+    off whatever object it's given, matching CWDecoder's own interface.
+    Values come from the PyTorch checkpoint's recorded model_config (the
+    ONNX graph itself doesn't carry them) - must be the same checkpoint the
+    ONNX file was exported from, or these silently describe the wrong model."""
+
+    def __init__(self, onnx_path: str, hop_samples: int, time_stride: int):
         self.session = ort.InferenceSession(onnx_path, providers=["CPUExecutionProvider"])
         self.input_name = self.session.get_inputs()[0].name
+        self.hop_samples = hop_samples
+        self.time_stride = time_stride
+
+    def frame_seconds(self, sr: int) -> float:
+        return self.hop_samples * self.time_stride / sr
 
     def __call__(self, x: torch.Tensor) -> torch.Tensor:
         out = self.session.run(None, {self.input_name: x.numpy()})[0]
@@ -75,12 +74,12 @@ def main():
         audio = audio.mean(axis=1)
     print(f"benchmarking against {args.audio} ({len(audio)/sr:.1f}s of real audio)")
 
-    pt = PyTorchModel(args.checkpoint)
-    pt_text, _ = run_benchmark("PyTorch / CPU", pt.model, audio, sr, pt.vocab,
+    pt_model, vocab, _ckpt = load_checkpoint_model(args.checkpoint, "cpu")
+    pt_text, _ = run_benchmark("PyTorch / CPU", pt_model, audio, sr, vocab,
                                 args.window_seconds, args.stride_seconds)
 
-    onnx_model = ONNXModel(args.onnx)
-    onnx_text, _ = run_benchmark("ONNX / CPU EP", onnx_model, audio, sr, pt.vocab,
+    onnx_model = ONNXModel(args.onnx, pt_model.hop_samples, pt_model.time_stride)
+    onnx_text, _ = run_benchmark("ONNX / CPU EP", onnx_model, audio, sr, vocab,
                                   args.window_seconds, args.stride_seconds)
 
     print("\nMATCH" if pt_text == onnx_text else "\nMISMATCH - investigate before trusting the export")

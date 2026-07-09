@@ -58,18 +58,17 @@ The trained model weights are not in this repo. Download the latest `.pt`
 checkpoint file from the [Releases page](../../releases) and put it anywhere
 convenient — you'll pass the path via `--checkpoint`.
 
-The `vocab.txt` file must also be accessible. By default the software looks
-for it at `$MORSE_AI_DATA/manifests/vocab.txt`. Set that environment variable
-to point at your data directory:
+Checkpoints are self-describing: the vocabulary and model architecture are
+recorded inside the file itself, so **you don't need to separately provide
+`vocab.txt`** to load or run one. `--vocab` (default
+`$MORSE_AI_DATA/manifests/vocab.txt`) is only consulted as a fallback for
+checkpoints old enough to predate this (unlikely for anything on the
+Releases page) — if you're not training or regenerating data, you can
+ignore `MORSE_AI_DATA` entirely.
 
-```bash
-# Windows
-set MORSE_AI_DATA=C:\morse-ai-data
-# Mac/Linux
-export MORSE_AI_DATA=/path/to/morse-ai-data
-```
-
-Then put `vocab.txt` at `<MORSE_AI_DATA>/manifests/vocab.txt`.
+**Also grab `ham_char_lm.json`** from the same release if you want beam
+search + language-model decoding (recommended — see `--lm` below): put it
+anywhere and pass its path via `--lm`.
 
 ## Optional: FCC callsign verification
 
@@ -159,7 +158,11 @@ python inference/tui.py \
 
 ## What the TUI does
 
-- **Top pane**: the running decoded transcript, scrollable
+- **Top pane**: the running decoded transcript, scrollable. Text is grouped
+  one line per detected transmission — a silence gap clearly longer than
+  the current sending speed's normal inter-word gap ends the line, so a
+  station repeating the same CQ shows as separate lines rather than one
+  endless run-on scroll
 - **Bottom pane**: the suggested response, auto-filled after each decoded
   chunk — edit it freely, then press **Enter** to transmit it as CW
 
@@ -224,6 +227,10 @@ informational note if they're calling CQ.
 | `--no-udp-log` | off | Disable UDP broadcast |
 | `--window-seconds` | `8.0` | Decode window length |
 | `--stride-seconds` | `4.0` | Overlap stride — `window/2` gives clean boundary stitching |
+| `--lm` | off | Path to `ham_char_lm.json` — enables beam search + language-model decoding instead of greedy. Recommended: measurably better than greedy on real audio |
+| `--lm-weight` | `0.1` | LM influence when `--lm` is set — measured best via `evaluate.py --sweep`; going much higher (e.g. `0.3`) already measurably hurts |
+| `--beam-width` | `20` | Beam search width when `--lm` is set — width above ~10 measured no further benefit |
+| `--no-fcc-rescore` | off | With `--lm`, beam candidates whose callsigns are active FCC licenses are boosted automatically once the FCC index is built (see below) — this disables that |
 
 ---
 

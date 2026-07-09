@@ -293,7 +293,9 @@ def main():
     parser.add_argument("--torch-device", default="cpu", choices=["cpu", "cuda"])
     parser.add_argument("--lm", default=None, metavar="PATH",
                          help="path to ham_char_lm.json to enable beam search + LM decoding")
-    parser.add_argument("--lm-weight", type=float, default=0.3)
+    parser.add_argument("--lm-weight", type=float, default=0.1,
+                         help="0.1 measured best via evaluate.py --sweep on real checkpoints - 0.3 "
+                              "already measurably hurts (re-sweep on any checkpoint you deploy)")
     parser.add_argument("--beam-width", type=int, default=20)
     parser.add_argument("--fcc-rescore", action="store_true",
                          help="boost beam-search candidates whose callsigns are active FCC licenses "

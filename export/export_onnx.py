@@ -16,7 +16,8 @@ from pathlib import Path
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from model.decoder import CWDecoder
+from model.decoder import load_checkpoint_model
+from model.vocab import Vocab
 
 
 def main():
@@ -27,16 +28,18 @@ def main():
     args = parser.parse_args()
 
     ckpt_path = Path(args.checkpoint)
-    ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
-    vocab_chars = ckpt["vocab_chars"]
-    vocab_size = len(vocab_chars) + 1  # + blank
-
-    model = CWDecoder(vocab_size=vocab_size)
-    model.load_state_dict(ckpt["model_state"])
-    model.eval()
+    # Rebuilds the model from the checkpoint's OWN recorded model_config
+    # (n_freq_bins, cnn_channels, lstm_hidden, time_stride, hop_samples,
+    # ...), not this script's assumptions - constructing CWDecoder with
+    # only vocab_size silently uses default architecture params, which only
+    # happens to match a checkpoint's real architecture by coincidence.
+    model, vocab, ckpt = load_checkpoint_model(ckpt_path, "cpu")
 
     out_path = Path(args.out) if args.out else ckpt_path.with_suffix(".onnx")
-    dummy = torch.zeros(1, 200, 32, dtype=torch.float32)  # (batch, T, n_freq_bins) - T is dynamic
+    # (batch, T, n_freq_bins) - n_freq_bins must match this checkpoint's
+    # config (usually 32, but not guaranteed - read from the model, not
+    # hardcoded), T is dynamic
+    dummy = torch.zeros(1, 200, model.n_freq_bins, dtype=torch.float32)
 
     torch.onnx.export(
         model, dummy, str(out_path),
@@ -45,7 +48,8 @@ def main():
         opset_version=args.opset,
         dynamo=False,
     )
-    print(f"Exported to {out_path} (vocab_size={vocab_size}, epoch={ckpt.get('epoch')})")
+    print(f"Exported to {out_path} (vocab_size={len(vocab)}, epoch={ckpt.get('epoch')}, "
+          f"config={model.config})")
 
 
 if __name__ == "__main__":

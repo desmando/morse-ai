@@ -100,8 +100,9 @@ def main():
     parser.add_argument("--lm", default="auto", metavar="PATH|auto|none",
                          help="'auto' (default): beam search + the default ham LM if it exists; "
                               "'none': greedy decode; or an explicit ham_char_lm.json path")
-    parser.add_argument("--lm-weight", type=float, default=0.3,
-                         help="LM score weight relative to acoustic score")
+    parser.add_argument("--lm-weight", type=float, default=0.1,
+                         help="LM score weight relative to acoustic score - 0.1 measured best via "
+                              "evaluate.py --sweep on real checkpoints, 0.3 already measurably hurts")
     parser.add_argument("--beam-width", type=int, default=20)
     parser.add_argument("--length-bonus", type=float, default=0.0)
     parser.add_argument("--repeat-penalty", type=float, default=0.0)

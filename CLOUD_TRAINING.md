@@ -17,25 +17,41 @@
 >   still load as the legacy architecture.
 > - **Mixed precision** (AMP) is on by default on CUDA (`--no-amp` to disable).
 > - **Synthesis realism** (regenerate clips before training): per-sender
->   keying style, Farnsworth spacing at slow speeds, 10-40 WPM, prosigns
->   (`<AR>`/`<SK>`/`<KN>`/`<BT>`/`<AS>`), randomized rise time, and a
->   `tone_hz` manifest column so training never mis-detects the tone under
->   heavy augmentation.
-> - **Vocab**: extend vocab.txt with `<` and `>` before the v4 run (49 chars
+>   keying style, Farnsworth spacing (with a realistic character-speed
+>   floor - real slow-speed practice keys characters at a normal ~13-25 WPM
+>   pace with stretched gaps, not everything uniformly slowed), **5-40 WPM**
+>   (was 10-40 - real ARRL audio at 5 WPM was a near-total decode failure
+>   until this widened, since the model had simply never heard anything
+>   that slow), prosigns (`<AR>`/`<SK>`/`<KN>`/`<BT>`/`<AS>`), randomized
+>   rise time, and a `tone_hz` manifest column so training never mis-detects
+>   the tone under heavy augmentation.
+> - **Vocab**: extend vocab.txt with `<` and `>` before training (49 chars
 >   + blank; see start_v4_training.sh prerequisites) or prosign labels get
 >   silently stripped from training targets. Safe for old checkpoints: every
 >   checkpoint records its own vocab_chars and all loaders use those, so the
 >   file only matters for NEW training runs. Rebuild the character LM
 >   (`python lm/ngram_lm.py --build`) after regenerating the corpus.
+> - **Decode params**: `--lm-weight 0.1` (not the old 0.3 default) measured
+>   best via `evaluate.py --sweep` on real checkpoints - re-sweep on
+>   anything you train yourself, this isn't guaranteed to transfer.
 > - **Real-data path**: once a checkpoint transfers to real ARRL audio at
 >   all, run `dataprep/realign_arrl_labels.py --checkpoint <best>` to
 >   force-align the real recordings' transcripts into exactly-labeled clips
 >   (fixes build_manifest.py's proportional-slicing label corruption), then
->   fine-tune on synthetic + realigned-real combined. This - not more
->   synthetic noise - is the expected fix for the ~97% real-audio CER.
-> - Track real-audio transfer per phase with `model/evaluate_streaming.py`
->   (whole recordings, honest end-to-end measure), and measure the LM's
->   actual contribution with `model/evaluate.py --lm`.
+>   fine-tune on synthetic + realigned-real combined.
+> - **`evaluate_streaming.py`'s CER is currently pessimistic for real ARRL
+>   files, sometimes drastically - fix this before trusting its numbers.**
+>   `build_manifest.py`'s `clean_transcript()` strips the "NOW XX WPM = TEXT
+>   IS FROM..." announcer header/footer from the reference text (correct
+>   for training targets), but that header is genuinely spoken in the
+>   audio and a working model decodes it - `evaluate_streaming.py` compares
+>   against the *stripped* reference, so real correct decoding of real
+>   content gets counted as pure error. This hits short files hardest (the
+>   fixed-size header is a bigger fraction of a short reference) - measured
+>   directly: a file reporting 13.0% CER against the stripped reference
+>   scored 2.2% against the unstripped one. Don't conclude a model is bad
+>   at some WPM tier from this script's raw numbers without checking
+>   whether this is why.
 
 This project's acoustic model (`model/train.py`) is GPU-compute-bound, not
 VRAM-bound — the LSTM's sequential nature keeps the GPU at ~100% utilization
@@ -325,3 +341,68 @@ rather than carrying forward a run that had already partially adapted to
 the full 75% distribution). If combined still diverges after this, the
 next move is another intermediate step (e.g. 65pct -> 70pct) rather than
 abandoning the ramp approach.
+
+## v4: on-the-fly augmentation, then a 5-40 WPM widening (superseded the above)
+
+The noise-ramp curriculum above was superseded entirely by on-the-fly
+per-clip augmentation (see the callout at the top) - a single training run
+with a smooth anneal, no phase resumes. A full v4 run on local hardware
+(RTX 3060) converged cleanly; real-ARRL evaluation across all trained
+speeds then found **near-total decode failure specifically at 5 WPM**
+(CER ~1.0) while 10-40 WPM scored well - traced to `--wpm-range` never
+including anything that slow (was `10,40`). Confirmed independently via
+`dataprep/realign_arrl_labels.py`'s forced-alignment self-consistency
+check, which also came back at ~1.0 CER for 5 WPM real audio - the model
+had no real signal there at all, not just weaker performance.
+
+**Fix and retrain**: widened `--wpm-range` to `5,40` and fixed a latent
+Farnsworth realism bug the wider range would have made worse (character
+speed floor was `wpm+3`, giving an unrealistically slow ~8 WPM character
+speed at `wpm=5`; real slow-speed practice keys characters at a normal
+~13-25 WPM pace with the gaps stretched - fixed to `max(wpm+3, 13)`).
+Regenerated synthetic clips (243,874, up from 199,552 - slower speech
+produces more clips per line) and **resumed from the prior v4 run's best
+checkpoint** with `--reset-optimizer` rather than retraining from scratch -
+transfer learning converged dramatically faster than the original run
+(epoch 1 already near where the from-scratch run took ~50 epochs to
+reach), since most of what the model knows doesn't need relearning, only
+the WPM floor needed extending.
+
+**Two infra-level crashes during this retrain, both resolved by the same
+fix.** First a `CUDNN_STATUS_EXECUTION_FAILED` (had happened once before,
+in the original v4 run, resumed without incident at the time), then on
+retry a `CUDNN_STATUS_INTERNAL_ERROR` at the identical call site (LSTM
+backward pass), then on a third attempt a `CUDA error: out of memory` at a
+suspicious location (`pad_packed_sequence`'s `.cpu()` index move, which
+cannot plausibly exhaust GPU memory on its own - PyTorch's own
+asynchronous-error warning in that traceback makes it likely this was the
+same underlying instability resurfacing through a different code path, not
+three unrelated bugs). GPU health checks (`nvidia-smi`, Windows driver
+event log) showed nothing - not thermal, not a driver reset. **Resuming
+with `--no-amp --batch-size 32`** (half the normal batch size, mixed
+precision disabled) fixed it - 28+ clean epochs before the next
+interruption was an unrelated full machine reboot, cleanly recovered via
+the normal checkpoint-resume path. If this recurs on a from-scratch v4 run
+under normal settings, try this combination before assuming something
+structural is wrong.
+
+**Result, and an important evaluation-methodology finding.** The retrained
+model (best checkpoint by re-evaluating the last several, not just latest -
+epoch 95 of this phase) showed **zero regression at any of the original
+10-40 WPM tiers** - confirms the wider range didn't thin out training
+density at the speeds that already worked (checked directly: the 5-9 WPM
+band alone was 68,808 of 243,874 clips, healthy, not diluted). **5 WPM
+improved from ~0% to ~8% accuracy - real, but not fixed** - likely a
+harder problem than the WPM-range gap alone (possibly the windowed-decode
+architecture struggles with how sparse actual keying is within an
+8-second window at very slow rates, or real 5 WPM ARRL timing differs from
+what the Farnsworth fix modeled); not pursued further given 5 WPM is
+rare traffic (beginner practice speed) rather than typical live QSO
+content - revisit if that changes.
+
+While investigating the 18-35 WPM numbers looking unexpectedly worse than
+40 WPM despite being *easier* in principle (more time per character), found
+that most of the apparent gap was `evaluate_streaming.py` itself - see the
+callout box above for the header-stripping measurement bug. True accuracy
+at 18-40 WPM is ~97-98%, not the ~82-94% the raw script output suggested.
+Fix the evaluation script before drawing further conclusions from it.
