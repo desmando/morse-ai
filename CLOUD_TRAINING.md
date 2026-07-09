@@ -39,19 +39,21 @@
 >   force-align the real recordings' transcripts into exactly-labeled clips
 >   (fixes build_manifest.py's proportional-slicing label corruption), then
 >   fine-tune on synthetic + realigned-real combined.
-> - **`evaluate_streaming.py`'s CER is currently pessimistic for real ARRL
->   files, sometimes drastically - fix this before trusting its numbers.**
->   `build_manifest.py`'s `clean_transcript()` strips the "NOW XX WPM = TEXT
->   IS FROM..." announcer header/footer from the reference text (correct
->   for training targets), but that header is genuinely spoken in the
->   audio and a working model decodes it - `evaluate_streaming.py` compares
+> - **`evaluate_streaming.py` used to score against a header-stripped
+>   reference - fixed, but know the history if you see old numbers cited
+>   anywhere (including earlier in this file, or the v4.1.0 release
+>   notes).** `build_manifest.py`'s `clean_transcript()` strips the "NOW XX
+>   WPM = TEXT IS FROM..." announcer header/footer from the reference text
+>   (correct for training targets), but that header is genuinely spoken in
+>   the audio and a working model decodes it - the old code compared
 >   against the *stripped* reference, so real correct decoding of real
->   content gets counted as pure error. This hits short files hardest (the
->   fixed-size header is a bigger fraction of a short reference) - measured
->   directly: a file reporting 13.0% CER against the stripped reference
->   scored 2.2% against the unstripped one. Don't conclude a model is bad
->   at some WPM tier from this script's raw numbers without checking
->   whether this is why.
+>   content got counted as pure error. Hit short files hardest (the
+>   fixed-size header is a bigger fraction of a short reference) - one file
+>   went from a reported 13.0% CER down to a true 2.2% once fixed. Now uses
+>   `normalize_transcript()` (control-char/whitespace cleanup only, no
+>   header/footer stripping) instead - see the "v4: on-the-fly
+>   augmentation..." section below for the corrected per-speed numbers this
+>   produced across the full real-ARRL eval set.
 
 This project's acoustic model (`model/train.py`) is GPU-compute-bound, not
 VRAM-bound — the LSTM's sequential nature keeps the GPU at ~100% utilization
@@ -391,18 +393,33 @@ model (best checkpoint by re-evaluating the last several, not just latest -
 epoch 95 of this phase) showed **zero regression at any of the original
 10-40 WPM tiers** - confirms the wider range didn't thin out training
 density at the speeds that already worked (checked directly: the 5-9 WPM
-band alone was 68,808 of 243,874 clips, healthy, not diluted). **5 WPM
-improved from ~0% to ~8% accuracy - real, but not fixed** - likely a
-harder problem than the WPM-range gap alone (possibly the windowed-decode
-architecture struggles with how sparse actual keying is within an
-8-second window at very slow rates, or real 5 WPM ARRL timing differs from
-what the Farnsworth fix modeled); not pursued further given 5 WPM is
-rare traffic (beginner practice speed) rather than typical live QSO
-content - revisit if that changes.
+band alone was 68,808 of 243,874 clips, healthy, not diluted).
 
 While investigating the 18-35 WPM numbers looking unexpectedly worse than
 40 WPM despite being *easier* in principle (more time per character), found
-that most of the apparent gap was `evaluate_streaming.py` itself - see the
-callout box above for the header-stripping measurement bug. True accuracy
-at 18-40 WPM is ~97-98%, not the ~82-94% the raw script output suggested.
-Fix the evaluation script before drawing further conclusions from it.
+that most of the apparent gap was `evaluate_streaming.py` itself scoring
+against a header-stripped reference (see the callout box above) - **now
+fixed** (`normalize_transcript()`, commit after this one). Re-running the
+full 50-file/all-speed-tier evaluation with the fix gave the honest
+picture, and the initial ~97-98%/~8% figures quoted in the first version of
+this section (and in the v4.1.0 release notes) were themselves still partly
+distorted by the same bug - corrected numbers, all speeds, all 5 files/tier:
+
+| Speed | Accuracy | | Speed | Accuracy |
+|---|---|---|---|---|
+| 5 WPM | **40.4%** | | 25 WPM | 97.1% |
+| 10 WPM | 94.8% | | 30 WPM | 97.4% |
+| 13 WPM | 96.5% | | 35 WPM | 97.7% |
+| 15 WPM | 96.0% | | 40 WPM | 98.0% |
+| 18 WPM | 96.1% | | | |
+| 20 WPM | 96.9% | | | |
+
+**Every tier from 18-40 WPM is at or above 96%** - the model itself never
+needed further work here, only the measurement did. **5 WPM is a real,
+substantial improvement over the ~0% before this phase's retrain (not the
+~8% first estimated) but still not usable** - still likely a harder
+problem than the WPM-range gap alone; not pursued further given it's rare
+traffic (beginner practice speed) rather than typical live QSO content -
+revisit if that changes. Overall avg CER across all 50 files: 0.0891 (was
+0.2057 under the buggy measurement) - the model didn't change, only how
+honestly it was being scored.
