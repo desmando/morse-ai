@@ -54,6 +54,17 @@ POWERS = ["5W", "QRP", "100W", "500W", "1KW"]
 PARK_FLAVOR = ["IN THE PARK", "AT THE LAKE", "ON A HILLTOP", "PORTABLE OP", "AT THE SUMMIT"]
 PROSIGNS_SIGNOFF = ["TU 73 GL", "TNX QSO 73", "GL IN THE TEST", "73 ES GL", "QSL TU 73", "QSL 73 GL"]
 
+# True prosigns, keyed as one run-together character and written <XX> the way
+# ARRL transcripts mark them (dataprep/synthesize_morse_audio.py keys them
+# that way from this notation). Without these in the corpus, the '<'/'>'
+# vocab entries are untrainable dead classes - and prosigns matter
+# operationally: <SK> is one of the sign-offs that triggers QSO logging.
+PROSIGN_AR = "<AR>"   # end of message
+PROSIGN_SK = "<SK>"   # end of contact
+PROSIGN_KN = "<KN>"   # go ahead, addressed station only
+PROSIGN_BT = "<BT>"   # break/separator (same code as "=")
+PROSIGN_AS = "<AS>"   # wait/standby
+
 
 def random_callsign(rng: random.Random) -> str:
     prefix = rng.choice(US_PREFIXES if rng.random() < 0.8 else DX_PREFIXES)
@@ -139,12 +150,25 @@ def generate_qso(rng: random.Random, scenario: str) -> str:
     else:  # generic contest serial
         exch_a, exch_b = exchange_contest_serial(rng), exchange_contest_serial(rng)
 
+    # go-ahead: plain K mostly, <KN> (addressed-station-only) some of the time
+    k_a = PROSIGN_KN if rng.random() < 0.25 else "K"
+    k_b = PROSIGN_KN if rng.random() < 0.25 else "K"
+    signoff = f"R {exch_a} TU" + (f" {station_chatter(rng)}" if rng.random() < 0.25 else "")
+    if rng.random() < 0.2:
+        signoff += f" {PROSIGN_AR}"
+    signoff += f" {rng.choice(PROSIGNS_SIGNOFF)}"
+    if rng.random() < 0.4:
+        signoff += f" {PROSIGN_SK}"  # true end-of-contact prosign
+    if rng.random() < 0.1:
+        signoff += " E E"  # the "dit dit" farewell
+
     lines = [
-        f"{b} DE {a} {a} K",
-        f"{a} DE {b} {exch_b} {exch_b} K",
-        f"R {exch_a} TU" + (f" {station_chatter(rng)}" if rng.random() < 0.25 else "") + f" {rng.choice(PROSIGNS_SIGNOFF)}",
+        f"{b} DE {a} {a} {k_a}",
+        f"{a} DE {b} {exch_b} {exch_b} {k_b}",
+        signoff,
     ]
-    return " = ".join(lines) if rng.random() < 0.3 else " ".join(lines)
+    sep = f" {PROSIGN_BT} " if rng.random() < 0.15 else (" = " if rng.random() < 0.3 else " ")
+    return sep.join(lines)
 
 
 SCENARIO_WEIGHTS = {
@@ -171,6 +195,8 @@ def generate_band(rng: random.Random, n_qsos: int) -> str:
         if rng.random() < 0.2:
             # working a pileup - inviting the next caller without a fresh CQ
             lines.append(f"{call} QRZ?" if rng.random() < 0.5 else "QRZ?")
+        if rng.random() < 0.05:
+            lines.append(f"{PROSIGN_AS}")  # asking the pileup to stand by
     return "\n".join(lines)
 
 

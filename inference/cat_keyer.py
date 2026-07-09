@@ -49,7 +49,7 @@ from pathlib import Path
 import serial
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from dataprep.synthesize_morse_audio import MORSE_CODE, _jitter, char_elements
+from dataprep.synthesize_morse_audio import _UNIT_RE, _jitter, code_elements, unit_code
 
 CONTROLLER_ADDRESS = 0xE0
 DEFAULT_CIV_ADDRESS = 0x94  # IC-7300 factory default - override if yours differs
@@ -70,7 +70,9 @@ def _bcd_le_to_freq(data: bytes) -> int:
 def text_to_key_elements(text: str, wpm: float, timing_jitter: float = 0.0, rng=None):
     """Returns [(duration_s, is_key_down), ...] for `text` at `wpm` - the same
     dot/dash/gap timing model as synthesize_morse_audio.py's synthesize_line,
-    minus Farnsworth spacing and audio rendering (not needed for live keying)."""
+    minus Farnsworth spacing and audio rendering (not needed for live keying).
+    Prosigns written <AR>/<SK>/<KN>/etc. are keyed properly as one
+    run-together character (element gaps only)."""
     rng = rng or random.Random()
     dot_s = 1.2 / wpm
     dash_s = 3 * dot_s
@@ -81,13 +83,13 @@ def text_to_key_elements(text: str, wpm: float, timing_jitter: float = 0.0, rng=
     elements: list[tuple[float, bool]] = []
     words = text.upper().split(" ")
     for wi, word in enumerate(words):
-        chars_in_word = [c for c in word if c in MORSE_CODE]
-        for ci, ch in enumerate(chars_in_word):
-            for d, is_tone in char_elements(ch, dot_s, dash_s, intra_gap_s):
+        units = [u for u in _UNIT_RE.findall(word) if unit_code(u) is not None]
+        for ci, unit in enumerate(units):
+            for d, is_tone in code_elements(unit_code(unit), dot_s, dash_s, intra_gap_s):
                 elements.append((_jitter(d, rng, timing_jitter), is_tone))
-            if ci < len(chars_in_word) - 1:
+            if ci < len(units) - 1:
                 elements.append((_jitter(inter_char_gap_s, rng, timing_jitter), False))
-        if wi < len(words) - 1 and chars_in_word:
+        if wi < len(words) - 1 and units:
             elements.append((_jitter(inter_word_gap_s, rng, timing_jitter), False))
 
     return elements

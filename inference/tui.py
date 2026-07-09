@@ -265,7 +265,16 @@ def main():
     parser.add_argument("--my-section", default=None, help="ARRL/RAC section (required for field-day mode)")
     parser.add_argument("--my-name", default="", help="Your name, used in contact/ragchew responses")
     parser.add_argument("--my-qth", default="", help="Your QTH, used in contact responses")
-    parser.add_argument("--my-rst", default="599", help="Default RST to send in contact mode")
+    parser.add_argument("--my-rst", default="599",
+                         help="RST to send in contact mode - used as a fallback before the first live "
+                              "measurement (or always, with --no-auto-rst)")
+    parser.add_argument("--no-auto-rst", action="store_true",
+                         help="always send --my-rst rather than the live-measured signal report. By "
+                              "default, R (readability) and S (strength) are estimated from the "
+                              "decoded audio itself once decoding starts (T is always reported 9 - no "
+                              "tone-purity/chirp analysis exists) - a heuristic first-pass calibration, "
+                              "not a calibrated S-meter reading; use this flag if you don't trust it or "
+                              "want a fixed, reproducible report")
     parser.add_argument("--adif-log", default=str(DATA_ROOT / "logs" / "qso_log.adi"),
                          help="ADIF log file to append a record to after each completed QSO")
     parser.add_argument("--conversation-log", default=str(DATA_ROOT / "logs" / "conversation_log.jsonl"),
@@ -285,9 +294,15 @@ def main():
     parser.add_argument("--lm", default=None, metavar="PATH",
                          help="path to ham_char_lm.json to enable CTC beam search + LM decoding "
                               "instead of greedy; improves callsign and exchange accuracy")
-    parser.add_argument("--lm-weight", type=float, default=0.3,
-                         help="LM score weight (0 = pure acoustic greedy-equivalent, higher = more LM influence)")
+    parser.add_argument("--lm-weight", type=float, default=0.1,
+                         help="LM score weight (0 = pure acoustic greedy-equivalent, higher = more LM "
+                              "influence) - 0.1 measured best via evaluate.py --sweep on real checkpoints; "
+                              "0.3 already measurably hurts (re-sweep on any checkpoint you deploy - the LM "
+                              "was tuned against the corpus/vocab in this repo, not guaranteed elsewhere)")
     parser.add_argument("--beam-width", type=int, default=20)
+    parser.add_argument("--no-fcc-rescore", action="store_true",
+                         help="with --lm, beam-search candidates whose callsigns are active FCC licenses "
+                              "are boosted automatically (when the FCC index is built) - this disables that")
     parser.add_argument("--torch-device", default="cpu", choices=["cpu", "cuda"])
     parser.add_argument("--my-call", required=True)
     args = parser.parse_args()
@@ -345,9 +360,12 @@ def main():
         print("warning: no FCC active-license index found - run inference/fcc_uls.py --download first "
               "to enable callsign verification (continuing without it)", file=sys.stderr)
     tx_lock = threading.Lock()
-    current_qso = {"call": None, "exchange": None, "rst_rcvd": None, "their_name": None, "their_qth": None}
+    current_qso = {"call": None, "exchange": None, "rst_rcvd": None, "rst_sent": None,
+                    "their_name": None, "their_qth": None}
     current_tx_abort = {"event": None}  # the in-progress transmission's abort Event, if any
     current_wpm = {"value": args.tx_wpm}  # adjusted at runtime by QRQ/QRS
+    current_signal = {"rst": None}  # live-measured signal report (contact mode) - see StreamDecoder.signal_report
+    tx_state = {"active": False}  # single source of truth for the header's TRANSMITTING suffix
 
     def append_transcript_line(line: str):
         new_transcript = transcript_area.text + line + "\n"
@@ -355,12 +373,22 @@ def main():
             Document(new_transcript, cursor_position=len(new_transcript)), bypass_readonly=True)
         app.invalidate()
 
-    def set_tx_status(active: bool):
+    def render_header():
+        # Reads tx_state rather than taking an "active" argument so the
+        # decode-worker thread can safely refresh the signal-report portion
+        # of the header (called every ~stride_seconds) without racing or
+        # clobbering an in-progress transmission's TRANSMITTING suffix.
         cat = f"{serial_port} @ {format_serial_settings(serial_settings)}" if serial_port else "none"
-        suffix = " - TRANSMITTING (Esc to abort)" if active else ""
-        header.text = (f" Audio: {device_name!r} - CAT: {cat}{suffix} - {current_wpm['value']:.0f} WPM - "
-                        f"DE {args.my_call.upper()} - Enter to send, Esc to abort, Ctrl+C/Ctrl+Q to quit ")
+        suffix = " - TRANSMITTING (Esc to abort)" if tx_state["active"] else ""
+        sig = f" - Sig: {current_signal['rst']}" if current_signal["rst"] else ""
+        header.text = (f" Audio: {device_name!r} - CAT: {cat}{suffix} - {current_wpm['value']:.0f} WPM"
+                        f"{sig} - DE {args.my_call.upper()} - "
+                        f"Enter to send, Esc to abort, Ctrl+C/Ctrl+Q to quit ")
         app.invalidate()
+
+    def set_tx_status(active: bool):
+        tx_state["active"] = active
+        render_header()
 
     def on_abort():
         abort_event = current_tx_abort["event"]
@@ -407,7 +435,7 @@ def main():
                             else:
                                 record = append_qso(args.adif_log, my_call=args.my_call,
                                                      their_call=current_qso["call"], freq_hz=freq_hz,
-                                                     rst_sent=args.my_rst,
+                                                     rst_sent=current_qso["rst_sent"] or args.my_rst,
                                                      rst_rcvd=current_qso["rst_rcvd"],
                                                      their_name=current_qso["their_name"],
                                                      their_qth=current_qso["their_qth"])
@@ -426,8 +454,8 @@ def main():
                     except Exception as exc:
                         append_transcript_line(f"[frequency poll / log failed: {exc}]")
                     finally:
-                        current_qso.update({"call": None, "exchange": None,
-                                            "rst_rcvd": None, "their_name": None, "their_qth": None})
+                        current_qso.update({"call": None, "exchange": None, "rst_rcvd": None,
+                                            "rst_sent": None, "their_name": None, "their_qth": None})
             finally:
                 current_tx_abort["event"] = None
                 set_tx_status(False)
@@ -439,6 +467,10 @@ def main():
     def on_inject_accept(buf) -> bool:
         text = buf.text.strip()
         if text:
+            # --fake-decode has no StreamDecoder/worker() loop grouping
+            # fragments by detected transmission boundary - each injected
+            # message is one complete transmission, so show it immediately.
+            append_transcript_line(text)
             on_text(text)
         return False  # clear the field after feeding it in
 
@@ -448,7 +480,11 @@ def main():
         inject_handler=on_inject_accept if args.fake_decode else None)
 
     def on_text(text: str):
-        append_transcript_line(text)
+        # Transcript DISPLAY grouping (one line per detected transmission,
+        # not per ~4s decode fragment) happens in worker()'s accumulator,
+        # not here - this still reacts to each raw fragment immediately for
+        # QRQ/QRS, callsign/RST extraction, and response generation, which
+        # shouldn't wait for a silence gap to be detected.
         log_conversation("received", text)
         text_upper = text.upper()
 
@@ -505,8 +541,16 @@ def main():
             if already_worked and "CQ" in text_upper:
                 response = f"[{their_call} already logged on {band} - not calling]"
             else:
+                # Live-measured (see StreamDecoder.signal_report) unless
+                # --no-auto-rst or no measurement exists yet (e.g. the very
+                # first exchange, or --fake-decode). Frozen into current_qso
+                # now rather than re-read at ADIF-log time, so the logged
+                # record reflects what was actually SENT, not whatever the
+                # live reading has drifted to by QSO completion.
+                my_rst = args.my_rst if args.no_auto_rst else (current_signal["rst"] or args.my_rst)
+                current_qso["rst_sent"] = my_rst
                 response = generate_contact_response(text, args.my_call, args.my_name,
-                                                      args.my_qth, args.my_rst)
+                                                      args.my_qth, my_rst)
 
         else:  # ragchew
             if their_call:
@@ -517,13 +561,32 @@ def main():
         app.invalidate()
 
     def worker():
+        # FCC callsign rescoring rides on beam search: reuse the verification
+        # index already loaded above rather than reading it twice
+        final_rescore = None
+        if lm is not None and active_callsigns and not args.no_fcc_rescore:
+            final_rescore = lambda text: sum(
+                2.0 for tok in text.split() if is_us_pattern(tok) and tok in active_callsigns)
         decoder = StreamDecoder(model, vocab, args.torch_device, MODEL_SAMPLE_RATE,
                                  window_seconds=args.window_seconds, stride_seconds=args.stride_seconds,
-                                 lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width)
+                                 lm=lm, lm_weight=args.lm_weight, beam_width=args.beam_width,
+                                 final_rescore=final_rescore)
+        current_line = []
         try:
-            for text in iter_decoded_stream(device, decoder):
+            for text, boundary in iter_decoded_stream(device, decoder):
+                if current_signal["rst"] != decoder.signal_report:
+                    current_signal["rst"] = decoder.signal_report
+                    render_header()
                 if text:
+                    current_line.append(text)
                     on_text(text)
+                if boundary and current_line:
+                    # A detected silence gap beyond the current WPM-adaptive
+                    # threshold ends the line here - one transmission per
+                    # transcript line (e.g. a repeated CQ shows as separate
+                    # lines) instead of an endless undifferentiated scroll.
+                    append_transcript_line("".join(current_line))
+                    current_line = []
         except Exception as exc:  # surface audio/decoding errors instead of silently dying
             append_transcript_line(f"[worker error: {exc}]")
 

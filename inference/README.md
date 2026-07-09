@@ -50,8 +50,20 @@ so nothing gets corrupted at window boundaries the way a non-overlapping design
 would. Each window's core region is committed and the segments are stitched
 together as audio arrives.
 
+Output is printed one line per detected transmission, not a continuous
+scroll — a silence gap clearly longer than the current sending speed's
+normal inter-word gap ends the line (speed is estimated continuously from
+decoded characters per second, not from raw audio timing). A station
+repeating the same CQ prints as separate lines instead of one run-on.
+
 The model was trained at 8 kHz — captured audio is resampled to match
 automatically regardless of the input device's native rate.
+
+Pass `--lm /path/to/ham_char_lm.json` to decode with beam search + a
+ham-domain character language model instead of greedy decoding — measurably
+more accurate on real audio. `--lm-weight` (default `0.1`) and `--beam-width`
+(default `20`) were tuned via `model/evaluate.py --sweep`; re-sweep if you
+retrain or fine-tune, the right values aren't guaranteed to transfer.
 
 ---
 

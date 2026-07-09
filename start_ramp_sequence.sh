@@ -1,4 +1,7 @@
 #!/bin/bash
+# DEPRECATED - superseded by start_v4_training.sh (on-the-fly augmentation
+# replaces the ramp-phase curriculum, which twice collapsed at the
+# 50pct->combined jump). Kept for reference only.
 export MORSE_AI_DATA=/root/morse-ai-data
 cd /root/morse-ai
 source .venv/bin/activate
