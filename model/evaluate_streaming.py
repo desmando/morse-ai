@@ -14,6 +14,16 @@ clip-based eval ever was. decode_stream tracks the CW tone across windows
 with the same ToneTracker policy the live path uses, so this measures the
 actual deployed front-end behavior.
 
+The reference text is normalize_transcript(), NOT build_manifest.py's
+clean_transcript() - clean_transcript() strips the announcer header/footer
+("NOW XX WPM = TEXT IS FROM...") because that's the right training target,
+but the header really is spoken in the audio, so scoring against a
+reference that's had it removed would count a correct decode of it as pure
+error - this measurably distorted results before being fixed (one file's
+CER dropped from 13.0% to 2.2% once compared against the un-stripped
+text), hitting short recordings hardest since the fixed-size header is a
+bigger fraction of a short reference.
+
 Decoding defaults to beam search + the ham character LM when the LM file
 exists (--lm auto; --lm none for greedy).
 
@@ -36,7 +46,7 @@ import soundfile as sf
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from dataprep.build_manifest import clean_transcript
+from dataprep.build_manifest import normalize_transcript
 from model.decoder import cer, decode_stream, edit_distance, load_checkpoint_model, wer
 from model.evaluate import resolve_lm
 from paths import DATA_ROOT
@@ -145,7 +155,7 @@ def main():
         audio, sr = sf.read(mp3_path)
         if audio.ndim > 1:
             audio = audio.mean(axis=1)
-        ref = clean_transcript(txt_path.read_text(encoding="utf-8", errors="replace")).upper()
+        ref = normalize_transcript(txt_path.read_text(encoding="utf-8", errors="replace")).upper()
         if not ref:
             continue
 

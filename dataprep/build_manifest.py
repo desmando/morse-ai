@@ -53,14 +53,33 @@ FOOTER_RE = re.compile(
 )
 
 
-def clean_transcript(raw: str) -> str:
-    # strip control chars (e.g. trailing 0x1A DOS EOF markers some of these old
-    # files end with), plus the C1 range (0x80-0x9F) some older ARRL transcripts
-    # use as decorative bullets around "NOW xx WPM"/"QST DE W1AW" announcements,
-    # and U+FFFD (produced by decoding those same stray bytes as UTF-8) - none of
-    # this is actually keyed, so it shouldn't end up in the label vocab.
+def normalize_transcript(raw: str) -> str:
+    """Strips control chars (e.g. trailing 0x1A DOS EOF markers some of these
+    old files end with), plus the C1 range (0x80-0x9F) some older ARRL
+    transcripts use as decorative bullets around "NOW xx WPM"/"QST DE W1AW"
+    announcements, and U+FFFD (produced by decoding those same stray bytes as
+    UTF-8) - none of this is actually keyed - and collapses whitespace.
+    Does NOT strip the announcer header/footer (see clean_transcript) - use
+    this directly when you need text that matches what's actually in the
+    audio (e.g. scoring a decoder against it), not a training target."""
     text = re.sub(r"[\x00-\x08\x0b-\x1f\x7f-\x9f�]", "", raw)
-    text = re.sub(r"\s+", " ", text).strip()
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def clean_transcript(raw: str) -> str:
+    """normalize_transcript() plus stripping the announcer header/footer -
+    the WPM/citation announcement IS real keyed content (it gets sent too),
+    but it's near-identical across hundreds of files and sits at a fixed
+    position, so at low WPM the *first* training clip of nearly every old
+    file would otherwise be labeled "NOW " and nothing else, drowning out
+    real content. Correct for training targets; do NOT use this to build a
+    reference for scoring a decoder against real audio - the header/footer
+    really is in the audio, so a correct decode of it would count as pure
+    error against a reference that's had it removed (measured: one file's
+    CER dropped from 13.0% to 2.2% once compared against the un-stripped
+    text instead - see model/evaluate_streaming.py, which uses
+    normalize_transcript() directly for exactly this reason)."""
+    text = normalize_transcript(raw)
     text = HEADER_RE.sub("", text, count=1)
     text = FOOTER_RE.sub("", text, count=1)
     return text.strip()
